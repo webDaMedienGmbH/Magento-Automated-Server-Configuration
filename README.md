@@ -1,4 +1,58 @@
 MASC-M
 ======
 
-MagenX - Automated Server Configuration for Magento
+#### MagenX - Automated Server Configuration for Magento
+Get a fully configured server with Magento in just 15 minutes.
+
+**System requirements**:<br/>
+*Dedicated server / VPS*<br/>
+*CentOS 6 x64 minimal*<br/>
+*Bash*<br/>
+
+**Installs**:<br/>
+*All selected repositories*<br/>
+*Percona 5.5.latest*<br/>
+*php-5.4.latest (with apc)*<br/>
+*nginx 1.13.latest*<br/>
+*memcached latest*<br/>
+*Varnish 3 latest*<br/>
+*Magento 1.7.0.2 latest*<br/>
+
+**Additional**:<br/>
+*Chive - web-based database management tool*<br/>
+*Memcached Admin - web-based administration for memcached to monitor and debug purpose*<br/>
+*mysqltuner.pl - database tuning script*<br/>
+*mysqlreport.pl - Make easy-to-read MySQL status reports*<br/>
+*apc admin panel*<br/>
+*MagenX default my.cnf for Percona*<br/>
+
+**Configuration**:<br/>
+*Optimizes php.ini, apc.ini, fastcgi_params, memcached*<br/>
+*php-fpm = ondemand*<br/>
+*MagenX nginx config for your domain*<br/>
+*Generates Mysql root and user passwords*<br/>
+*runs mysql_secure_installation*<br/>
+*Creates database*<br/>
+*Installs Magento*<br/>
+*Magento cron*<br/>
+*Creates new sudo user*<br/>
+*PermitRootLogin no*<br/>
+*Changes SSH default port*<br/>
+
+
+**TODO**:<br/>
+*pre-set Magento TwoLevel Cache backend*<br/>
+*apc cache control in admin*<br/>
+*Fail2ban as option for mail and nginx filters*<br/>
+*Automated backup to S3, Gdrive and DropBox*<br/>
+*full page cache pre-installation*<br/>
+*Postfix and Dovecot with virtual mail users*<br/>
+
+*Auto-Install Magento extensions -*<br/>
+*shipping matrix*<br/>
+*order export*<br/>
+*custom pdf*<br/>
+*smtp pro*<br/>
+*enhanced admin grids*<br/>
+*your selected extension*<br/>
+ 
