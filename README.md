@@ -23,7 +23,6 @@ Get a fully configured server with Magento in just 15 minutes.
 *Memcached Admin - web-based administration for memcached to monitor and debug purpose*<br/>
 *mysqltuner.pl - database tuning script*<br/>
 *mysqlreport.pl - Make easy-to-read MySQL status reports*<br/>
-*apc admin panel*<br/>
 *MagenX default my.cnf for Percona*<br/>
 
 **Configuration**:<br/>
