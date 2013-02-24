@@ -17,7 +17,6 @@
                 <hashed_directory_umask><![CDATA[]]></hashed_directory_umask>
                 <file_name_prefix><![CDATA[]]></file_name_prefix>
         </slow_backend_options>
-
 <memcached>
         <servers>
         <server>
