@@ -26,7 +26,7 @@ Get a fully configured server with Magento in just 15 minutes.
 *MagenX default my.cnf for Percona*<br/>
 
 **Configuration**:<br/>
-*Optimizes php.ini, apc.ini, fastcgi_params, memcached*<br/>
+*Optimizes php.ini, apc.ini, fastcgi_params, memcached, sysctl*<br/>
 *php-fpm = ondemand*<br/>
 *MagenX nginx config for your domain*<br/>
 *Generates Mysql root and user passwords*<br/>
@@ -39,7 +39,7 @@ Get a fully configured server with Magento in just 15 minutes.
 *Creates new sudo user*<br/>
 *PermitRootLogin no*<br/>
 *Changes SSH default port*<br/>
-*Fail2ban filters as option for mail and nginx*<br/>
+*Fail2ban filters for mail and nginx*<br/>
 *apc cache control in admin*<br/>
 *Automated backup to S3 with crontab*<br/>
 
