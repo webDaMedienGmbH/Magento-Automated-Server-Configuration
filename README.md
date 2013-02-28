@@ -11,12 +11,12 @@ Get a fully configured server with Magento in just 15 minutes.
 
 **Installs**:<br/>
 *All selected repositories*<br/>
-*Percona 5.5.latest*<br/>
-*php-5.4.latest (with apc)*<br/>
-*nginx 1.13.latest*<br/>
-*memcached latest*<br/>
-*Varnish 3 latest*<br/>
-*Magento 1.7.0.2 latest*<br/>
+*Percona 5.5 .latest*<br/>
+*php-5.4 .latest (with apc)*<br/>
+*nginx .latest*<br/>
+*memcached .latest*<br/>
+*Varnish 3 .latest*<br/>
+*Magento 1.7.0.2 .latest*<br/>
 
 **Additional**:<br/>
 *~~Chive~~ MyWebSQL- web-based database management tool*<br/>
