@@ -40,11 +40,11 @@ Get a fully configured server with Magento in just 15 minutes.
 *PermitRootLogin no*<br/>
 *Changes SSH default port*<br/>
 *Fail2ban filters for mail and nginx*<br/>
+*Magento TwoLevel Cache backend*<br/>
 *apc cache control in admin*<br/>
 *Automated backup to S3 with crontab*<br/>
 
 **TODO**:<br/>
-*pre-set Magento TwoLevel Cache backend*<br/>
 *full page cache pre-installation*<br/>
 *Postfix and Dovecot with virtual mail users*<br/>
 
