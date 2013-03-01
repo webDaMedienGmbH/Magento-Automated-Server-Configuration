@@ -19,8 +19,7 @@ Get a fully configured server with Magento in just 15 minutes.
 *Magento 1.7.0.2 .latest*<br/>
 
 **Additional**:<br/>
-*~~Chive~~ MyWebSQL- web-based database management tool*<br/>
-*~~Memcached Admin - web-based administration for memcached to monitor and debug purpose~~*<br/>
+*MyWebSQL- web-based database management tool*<br/>
 *mysqltuner.pl - database tuning script*<br/>
 *mysqlreport.pl - Make easy-to-read MySQL status reports*<br/>
 *MagenX default my.cnf for Percona*<br/>
@@ -36,12 +35,13 @@ Get a fully configured server with Magento in just 15 minutes.
 *cleanup*<br/>
 *chown and chmod files*<br/>
 *Magento cron*<br/>
+*apc cache control in admin*<br/>
+*Magento TwoLevel Cache backend*<br/>
 *Creates new sudo user*<br/>
 *PermitRootLogin no*<br/>
 *Changes SSH default port*<br/>
-*Fail2ban filters for mail and nginx*<br/>
-*Magento TwoLevel Cache backend*<br/>
-*apc cache control in admin*<br/>
+*Fail2ban filters for nginx*<br/>
+*Test for CSF firewall*<br/>
 *Automated backup to S3 with crontab*<br/>
 
 **TODO**:<br/>
