@@ -1,4 +1,4 @@
-MASC-M
+MASC-M<sup>™</sup>
 ======
 
 #### MagenX - Automated Server Configuration for Magento
