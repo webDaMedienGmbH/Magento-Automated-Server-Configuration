@@ -2,8 +2,8 @@
 KEY_OWNER=4f09fdcf5c89e32c6f712ecf90632615
 #====================================================================#
 #  MagenX - Automated Server Configuration for Magento               #
-#	Copyright (C) 2013 admin@magentomod.com                          #
-#	All rights reserved.                                             #
+#    Copyright (C) 2013 admin@magentomod.com                      #
+#	All rights reserved.                                         #
 #====================================================================#
 SELF=$(basename $0)
 MASCM_VER="2.0"
@@ -192,21 +192,21 @@ printf "\033c"
         echo
         cecho "- For repositories installation enter:  \033[01;34m repo"
         cecho "- For packages installation enter:  \033[01;34m packages"
-	    cecho "- To download latest Magento enter:  \033[01;34m magento"
-	    cecho "- To setup Magento database enter:  \033[01;34m database"
-	    cecho "- Install Magento (no sample data):  \033[01;34m install"
-	    echo
-	    cecho :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-	    echo
-	    cecho "- To configure system backup enter:  \033[01;34m  backup"
-	    cecho "- To make your server secure enter:  \033[01;34m protect"
-	    cecho "- To install CSF firewall enter:  \033[01;34m   firewall"
-	    echo
-	    cecho :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-	    echo
-	    cecho "- To quit enter:  \033[01;34m exit"
-	    echo
-	    echo
+	cecho "- To download latest Magento enter:  \033[01;34m magento"
+	cecho "- To setup Magento database enter:  \033[01;34m database"
+	cecho "- Install Magento (no sample data):  \033[01;34m install"
+	echo
+	cecho :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+	echo
+	cecho "- To configure system backup enter:  \033[01;34m  backup"
+	cecho "- To make your server secure enter:  \033[01;34m protect"
+	cecho "- To install CSF firewall enter:  \033[01;34m   firewall"
+	echo
+	cecho :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+	echo
+	cecho "- To quit enter:  \033[01;34m exit"
+	echo
+	echo
 }
 while [ 1 ]
 do
@@ -247,20 +247,20 @@ if [ "$repoE_install" == "y" ];then
         echo
         cok "Running Installation of Extra Packages for Enterprise Linux"
         echo
-            echo -n "     PROCESSING  "
-            quick_progress &
-            pid="$!"
-	rpm -Uvh http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm >/dev/null 2>&1
-            stop_progress "$pid"
+			echo -n "     PROCESSING  "
+		quick_progress &
+		pid="$!"
+		rpm -Uvh http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm >/dev/null 2>&1
+		stop_progress "$pid"
                 rpm  --quiet -q epel-release
                 if [ "$?" = 0 ]
                     then
                     cok "INSTALLED OK"
-					else
-                    cwarn "ERROR"
-					exit
-                fi
 		else
+                    cwarn "ERROR"
+		exit
+                fi
+	else
         cinfo "EPEL repository installation skipped. Next step"
 fi
 echo
@@ -272,22 +272,22 @@ if [ "$repoC_install" == "y" ];then
 		echo
         cok "Running Installation of CentALT repository"
 		echo
-            echo -n "     PROCESSING  "
-            quick_progress &
-            pid="$!"
-	rpm -Uvh http://centos.alt.ru/pub/repository/centos/6/x86_64/centalt-release-6-1.noarch.rpm >/dev/null 2>&1
+			echo -n "     PROCESSING  "
+		quick_progress &
+		pid="$!"
+		rpm -Uvh http://centos.alt.ru/pub/repository/centos/6/x86_64/centalt-release-6-1.noarch.rpm >/dev/null 2>&1
 		stop_progress "$pid"
                 rpm  --quiet -q centalt-release
                 if [ "$?" = 0 ]
                     then
                     cok "INSTALLED OK"
-					else
+		else
                     cwarn "ERROR"
-					exit
+		exit
                 fi
-			echo
-			cok "Locking CentALT only for Nginx and Memcached always latest build"
-			echo "includepkgs=nginx* memcached" >> /etc/yum.repos.d/centalt.repo
+	echo
+		cok "Locking CentALT only for Nginx and Memcached always latest build"
+		echo "includepkgs=nginx* memcached" >> /etc/yum.repos.d/centalt.repo
   else
         cinfo "CentALT repository installation skipped. Next step"
 fi
@@ -301,19 +301,19 @@ if [ "$repoF_install" == "y" ];then
         cok "Running Installation of Repoforge"
 		echo
 			echo -n "     PROCESSING  "
-            quick_progress &
-            pid="$!"
-	rpm -Uvh http://pkgs.repoforge.org/rpmforge-release/rpmforge-release-0.5.2-2.el6.rf.x86_64.rpm >/dev/null 2>&1
+		quick_progress &
+		pid="$!"
+		rpm -Uvh http://pkgs.repoforge.org/rpmforge-release/rpmforge-release-0.5.2-2.el6.rf.x86_64.rpm >/dev/null 2>&1
 		stop_progress "$pid"
                 rpm  --quiet -q rpmforge-release
                 if [ "$?" = 0 ]
                     then
                     cok "INSTALLED OK"
-					else
+		else
                     cwarn "ERROR"
-					exit
+		exit
                 fi
-			echo
+	echo
   else
         cinfo "Repoforge installation skipped. Next step"
 fi
@@ -327,19 +327,19 @@ if [ "$repoP_install" == "y" ];then
         cok "Running Installation of Percona repository"
 		echo
 			echo -n "     PROCESSING  "
-            quick_progress &
-            pid="$!"
-	rpm -Uhv http://www.percona.com/downloads/percona-release/percona-release-0.0-1.x86_64.rpm >/dev/null 2>&1
+		quick_progress &
+		pid="$!"
+		rpm -Uhv http://www.percona.com/downloads/percona-release/percona-release-0.0-1.x86_64.rpm >/dev/null 2>&1
 		stop_progress "$pid"
                 rpm  --quiet -q percona-release
                 if [ "$?" = 0 ]
                     then
                     cok "INSTALLED OK"
-					else
+		else
                     cwarn "ERROR"
-					exit
+		exit
                 fi
-			echo
+	echo
   else
         cinfo "Percona repository installation skipped. Next step"
 fi
@@ -353,19 +353,19 @@ if [ "$repoIU_install" == "y" ];then
         cok "Running Installation of IUScommunity repository "
 		echo
 			echo -n "     PROCESSING  "
-            quick_progress &
-            pid="$!"
-	rpm -Uvh http://dl.iuscommunity.org/pub/ius/stable/Redhat/6/x86_64/ius-release-1.0-10.ius.el6.noarch.rpm >/dev/null 2>&1
+		quick_progress &
+		pid="$!"
+		rpm -Uvh http://dl.iuscommunity.org/pub/ius/stable/Redhat/6/x86_64/ius-release-1.0-10.ius.el6.noarch.rpm >/dev/null 2>&1
 		stop_progress "$pid"
                 rpm  --quiet -q ius-release
                 if [ "$?" = 0 ]
                     then
                     cok "INSTALLED OK"
-					else
+		else
                     cwarn "ERROR"
-					exit
+		exit
                 fi
-			echo
+	echo
   else
         cinfo "IUScommunity repository installation skipped. Next step"
 fi
@@ -380,20 +380,20 @@ if [ "$sys_update" == "y" ];then
         cok "RUNNING SYSTEM UPDATE"
 		echo
 			echo -n "     PROCESSING  "
-            long_progress &
-            pid="$!"
-            yum -y -q update >/dev/null 2>&1
-			stop_progress "$pid"
-			cok "UPDATED OK"
+		long_progress &
+		pid="$!"
+		yum -y -q update >/dev/null 2>&1
+		stop_progress "$pid"
+		cok "UPDATED OK"
 		echo
 		cok "INSTALLING ADDITIONAL PACKAGES:"
 		echo
 		echo -n "     PROCESSING  "
-            long_progress &
-            pid="$!"
+			long_progress &
+			pid="$!"
 			yum -q -y install wget curl mcrypt sudo crontabs gcc vim mlocate unzip >/dev/null 2>&1
 			stop_progress "$pid"
-			cok "INSTALLED OK"
+		cok "INSTALLED OK"
 		echo
   else
         cinfo "System Update skipped. Next step"
@@ -424,29 +424,29 @@ if [ "$percona_install" == "y" ];then
         cok "Running Percona Installation"
 		echo
 			echo -n "     PROCESSING  "
-            long_progress &
-            pid="$!"
-			yum -y -q install Percona-Server-client-55 Percona-Server-server-55  >/dev/null 2>&1
-			stop_progress "$pid"
-                rpm  --quiet -q Percona-Server-client-55 Percona-Server-server-55
-                if [ "$?" = 0 ]
-                    then
+		long_progress &
+		pid="$!"
+		yum -y -q install Percona-Server-client-55 Percona-Server-server-55  >/dev/null 2>&1
+		stop_progress "$pid"
+			rpm  --quiet -q Percona-Server-client-55 Percona-Server-server-55
+			if [ "$?" = 0 ]
+		then
                     cok "INSTALLED OK"
-					else
+		else
                     cwarn "ERROR"
-					exit
-                fi
+		exit
+		fi
 			echo
 			chkconfig mysql on
 		echo
-			cecho "Percona doesnt have its own my.cnf file"
-			cecho "Downloading from MagenX Github repository default config"
+		cecho "Percona doesnt have its own my.cnf file"
+		cecho "Downloading from MagenX Github repository default config"
 			wget -O /etc/my.cnf_  -q https://raw.github.com/magenx/magento-mysql/master/my.cnf/my.cnf
-			echo
-			cok "my.cnf downloaded to /etc and saved as my.cnf_"
-			cecho "Please correct it according to your servers specs, rename and restart your mysql server"
-		wget -O /etc/mysqlreport.pl  -q  http://hackmysql.com/scripts/mysqlreport
-		wget -O /etc/mysqltuner.pl  -q  https://raw.github.com/rackerhacker/MySQLTuner-perl/master/mysqltuner.pl
+		echo
+		cok "my.cnf downloaded to /etc and saved as my.cnf_"
+		cecho "Please correct it according to your servers specs, rename and restart your mysql server"
+			wget -O /etc/mysqlreport.pl  -q  http://hackmysql.com/scripts/mysqlreport
+			wget -O /etc/mysqltuner.pl  -q  https://raw.github.com/rackerhacker/MySQLTuner-perl/master/mysqltuner.pl
 		cecho "Please use these tools to check and finetune your database"
 		cecho "perl /etc/mysqlreport.pl"
 		cecho "perl /etc/mysqltuner.pl"
@@ -463,18 +463,18 @@ if [ "$php_install" == "y" ];then
         cok "Running PHP Installation"
 		echo
 			echo -n "     PROCESSING  "
-            long_progress &
-            pid="$!"
-			yum -y -q install php54 php54-cli php54-common php54-fpm php54-gd php54-curl php54-mbstring php54-bcmath php54-soap php54-mcrypt php54-mysql php54-pdo php54-xml php54-pecl-apc php54-pecl-memcache  >/dev/null 2>&1
-			stop_progress "$pid"
-                rpm  --quiet -q php54
+		long_progress &
+		pid="$!"
+		yum -y -q install php54 php54-cli php54-common php54-fpm php54-gd php54-curl php54-mbstring php54-bcmath php54-soap php54-mcrypt php54-mysql php54-pdo php54-xml php54-pecl-apc php54-pecl-memcache  >/dev/null 2>&1
+		stop_progress "$pid"
+		rpm  --quiet -q php54
                 if [ "$?" = 0 ]
                     then
                     cok "INSTALLED OK"
-					yum list installed | grep php54 | awk '{print "      ",$1}'
-					else
+		yum list installed | grep php54 | awk '{print "      ",$1}'
+		else
                     cwarn "ERROR"
-					exit
+		exit
                 fi
 		echo
 		chkconfig php-fpm on
@@ -491,19 +491,19 @@ if [ "$nginx_install" == "y" ];then
         cok "Running NGINX Installation"
 		echo
 			echo -n "     PROCESSING  "
-            start_progress &
-            pid="$!"
-			yum -y -q install nginx  >/dev/null 2>&1
-			stop_progress "$pid"
+		start_progress &
+		pid="$!"
+		yum -y -q install nginx  >/dev/null 2>&1
+		stop_progress "$pid"
                 rpm  --quiet -q nginx
                 if [ $? = 0 ]
                     then
                     cok "INSTALLED OK"
-					else
+		else
                     cwarn "ERROR"
-					exit
+		exit
                 fi
-		echo
+	echo
 		chkconfig nginx on
 		chkconfig httpd off
   else
@@ -519,19 +519,19 @@ if [ "$varnish_install" == "y" ];then
         cok "Running Varnish 3 Installation"
 		echo
 			echo -n "     PROCESSING  "
-            quick_progress &
-            pid="$!"
-			rpm -Uhv http://repo.varnish-cache.org/redhat/varnish-3.0/el6/x86_64/varnish-3.0.3-1.el6.x86_64.rpm http://repo.varnish-cache.org/redhat/varnish-3.0/el6/x86_64/varnish-libs-3.0.3-1.el6.x86_64.rpm >/dev/null 2>&1
-			stop_progress "$pid"
-                rpm  --quiet -q varnish
+		quick_progress &
+		pid="$!"
+		rpm -Uhv http://repo.varnish-cache.org/redhat/varnish-3.0/el6/x86_64/varnish-3.0.3-1.el6.x86_64.rpm http://repo.varnish-cache.org/redhat/varnish-3.0/el6/x86_64/varnish-libs-3.0.3-1.el6.x86_64.rpm >/dev/null 2>&1
+		stop_progress "$pid"
+		rpm  --quiet -q varnish
                 if [ "$?" = 0 ]
                     then
                     cok "INSTALLED OK"
-					else
+		else
                     cwarn "ERROR"
-					exit
+		exit
                 fi
-		echo
+	echo
   else
         cinfo "Varnish 3 installation skipped. Next step"
 fi
@@ -545,19 +545,19 @@ if [ "$memd_install" == "y" ];then
         cok "Running Memcached Installation"
 		echo
 			echo -n "     PROCESSING  "
-            start_progress &
-            pid="$!"
-			yum -y -q install memcached  >/dev/null 2>&1
-			stop_progress "$pid"
+		start_progress &
+		pid="$!"
+		yum -y -q install memcached  >/dev/null 2>&1
+		stop_progress "$pid"
                 rpm  --quiet -q memcached
                 if [ "$?" = 0 ]
                     then
                     cok "INSTALLED OK"
-					else
+		else
                     cwarn "ERROR"
-					exit
+		exit
                 fi
-		echo
+	echo
 		chkconfig memcached on
   else
         cinfo "Memcached installation skipped. Next step"
@@ -572,17 +572,17 @@ if [ "$f2b_install" == "y" ];then
         cok "Running Fail2Ban Installation"
 		echo
 			echo -n "     PROCESSING  "
-            start_progress &
-            pid="$!"
-			yum -y -q install fail2ban  >/dev/null 2>&1
-			stop_progress "$pid"
+		start_progress &
+		pid="$!"
+		yum -y -q install fail2ban  >/dev/null 2>&1
+		stop_progress "$pid"
                 rpm  --quiet -q memcached
                 if [ "$?" = 0 ]
                     then
                     cok "INSTALLED OK"
-					else
+		else
                     cwarn "ERROR"
-					exit
+		exit
                 fi
 		echo
 		chkconfig fail2ban on
@@ -759,9 +759,9 @@ if [ "$new_down" == "y" ];then
 			pid="$!"
 			wget -qO - http://www.magentocommerce.com/downloads/assets/1.7.0.2/magento-1.7.0.2.tar.gz | tar -xzp
 			stop_progress "$pid"
-			echo
+		echo
 		cecho "Cleanup"
-        mv magento/* .
+		mv magento/* .
 		rm -rf magento RELEASE_NOTES.txt LICENSE.txt LICENSE.html LICENSE_AFL.txt index.php.sample php.ini.sample
 		echo
 cecho "============================================================================="
@@ -1002,12 +1002,12 @@ echo
 echo
 cecho "RESETTING FILE PERMISSIONS ..."
 		find . -type f -exec chmod 644 {} \;
-        find . -type d -exec chmod 755 {} \;
+		find . -type d -exec chmod 755 {} \;
 		chmod -R o+w var app/etc
-        chmod -R o+w media       
+		chmod -R o+w media       
 		chown -R $FPM_USER:$FPM_USER $MY_SHOP_PATH
-cok "ok"
-echo
+	cok "ok"
+	echo
 	cok "Writing Magento cron.php into crontab"
 #write out current crontab
 	crontab -l > magecron
@@ -1215,26 +1215,26 @@ then
 	echo
 	sleep 2
 		cecho "Lets install s3tools first"
-        cd /etc/yum.repos.d/
+		cd /etc/yum.repos.d/
 		wget -q http://s3tools.org/repo/RHEL_6/s3tools.repo
 		echo
-		echo -n "     PROCESSING  "
-            start_progress &
-            pid="$!"
-			yum -y -q install s3cmd  >/dev/null 2>&1
-			stop_progress "$pid"
+			echo -n "     PROCESSING  "
+		start_progress &
+		pid="$!"
+		yum -y -q install s3cmd  >/dev/null 2>&1
+		stop_progress "$pid"
                 rpm  --quiet -q s3cmd
                 if [ "$?" = 0 ]
                     then
                     cok "INSTALLED OK"
-					else
+		else
                     cwarn "ERROR"
-					exit
+		exit
                 fi
-		echo
+	echo
 		cecho "Prepare your Access and Secret Keys"
-		echo
-		sleep 2
+	echo
+	sleep 2
 		cecho "Configuring s3tools now"
 		s3cmd --configure
     fi
@@ -1280,10 +1280,10 @@ echo -n "---> CHECKPOINT 2. Backup your shop files now? [y/n][n]: "
 read back_files
 	if [ "$back_files" == "y" ];then
 	SHOP_PATH=$(cat ~/mascm/.mascm_index | grep webshop | awk '{print $3}')
-			cecho "Compressing the backup."
-			tar -cvpzf  /tmp/shop_$(date +%a-%d-%m-%Y-%S).tar.gz  $SHOP_PATH
-			cecho "Site backup compressed."
-			echo
+	cecho "Compressing the backup."
+	tar -cvpzf  /tmp/shop_$(date +%a-%d-%m-%Y-%S).tar.gz  $SHOP_PATH
+	cecho "Site backup compressed."
+	echo
 	fi
 echo
 # Creating cron to S3
@@ -1291,22 +1291,22 @@ echo -n "---> Download backup files and database and add S3 to cron? [y/n][n]: "
 read s3_now
 	if [ "$s3_now" == "y" ];then
 	DB_HOST=$(cat ~/mascm/.mascm_index | grep database | awk '{print $2}')
-    DB_NAME=$(cat ~/mascm/.mascm_index | grep database | awk '{print $3}')
-    DB_USER_NAME=$(cat ~/mascm/.mascm_index | grep database | awk '{print $4}')
-    DB_PASS=$(cat ~/mascm/.mascm_index | grep database | awk '{print $5}')
+	DB_NAME=$(cat ~/mascm/.mascm_index | grep database | awk '{print $3}')
+	DB_USER_NAME=$(cat ~/mascm/.mascm_index | grep database | awk '{print $4}')
+	DB_PASS=$(cat ~/mascm/.mascm_index | grep database | awk '{print $5}')
 	DBSAVE_FOLDER=$(cat ~/mascm/.mascm_index| grep dump | awk '{print $2}')
 	SHOP_PATH=$(cat ~/mascm/.mascm_index | grep webshop | awk '{print $3}')
 	echo
 		echo -n "---> Create your new bucket now? [y/n][n]: "
 		read s3_bucket_new
-		if [ "$s3_bucket_new" == "y" ];then
-				cecho "CREATE YOUR BUCKET UNIQUE NAME"
-			    read -p "---> Confirm your S3 bucket name for files: " S3_BUCKET
-				s3cmd mb s3://$S3_BUCKET
-		else
+	if [ "$s3_bucket_new" == "y" ];then
+		cecho "CREATE YOUR BUCKET UNIQUE NAME"
+		read -p "---> Confirm your S3 bucket name for files: " S3_BUCKET
+		s3cmd mb s3://$S3_BUCKET
+	else
 		echo
 		read -p "---> Confirm your S3 bucket name: " S3_BUCKET
-		fi
+	fi
 		cecho "CREATING CRON DATA TO USE AUTO-BACKUP TO S3"	
 		cecho "Magento files auto-backup..."
 cat > ~/mascm/S3_AB_FILES_CRON.sh <<END
@@ -1354,15 +1354,15 @@ echo
 cwarn "Then run this cleanup tool:"
 echo
 echo -n "---> Cleanup your local temporary backup? [y/n][n]: "
-				read s3_tmp_rm
-				if [ "$s3_tmp_rm" == "y" ];then
-					# remove
-					find  /tmp/shop_*.tar.gz -type f -exec rm {} \;
-					find  $DBSAVE_FOLDER/db_*.tar.gz -type f -exec rm {} \;
-					cecho "Removing the cache files..."
-					cecho "Files removed."
-					cok "All done."
-				fi
+	read s3_tmp_rm
+	if [ "$s3_tmp_rm" == "y" ];then
+	# remove
+		find  /tmp/shop_*.tar.gz -type f -exec rm {} \;
+		find  $DBSAVE_FOLDER/db_*.tar.gz -type f -exec rm {} \;
+	cecho "Removing the cache files..."
+	cecho "Files removed."
+	cok "All done."
+	fi
 echo
 echo
 pause '---> Press [Enter] key to show menu'
@@ -1500,11 +1500,11 @@ echo
 				stop_progress "$pid"
 				cok "INSTALLED OK"
 				echo
-								if [ -f /etc/fail2ban/jail.conf ]
-									then
-									cecho "Edit /etc/fail2ban/jail.conf [ssh-iptables] to 'enabled  = false', then restart fail2ban"
-								fi
-			fi
+	if [ -f /etc/fail2ban/jail.conf ]
+	then
+	cecho "Edit /etc/fail2ban/jail.conf [ssh-iptables] to 'enabled  = false', then restart fail2ban"
+	fi
+	fi
 fi
 echo
 echo
