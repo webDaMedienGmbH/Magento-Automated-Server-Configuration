@@ -29,7 +29,7 @@ function cwarn() {
         RESET='\033[00;00m'     # normal white
         MESSAGE=${@:-"${RESET}Error: No message passed"}
         echo -e "${COLOR}${MESSAGE}${RESET}" | awk '{print "    ",$0}'
-}
+} 
 function cok() {
         COLOR='\033[01;32m'     # bold green
         RESET='\033[00;00m'     # normal white
