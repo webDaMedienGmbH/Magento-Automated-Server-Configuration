@@ -8,6 +8,7 @@ KEY_OWNER=4f09fdcf5c89e32c6f712ecf90632615
 SELF=$(basename $0)
 MASCM_VER="2.0"
 
+
 # The base md5sum location to cotrol license
 MASCM_BASE=http://www.magentomod.com/mascm
 
