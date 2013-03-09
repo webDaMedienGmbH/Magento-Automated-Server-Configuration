@@ -1,9 +1,9 @@
 #!/bin/bash
 KEY_OWNER=4f09fdcf5c89e32c6f712ecf90632615
 #====================================================================#
-#  MagenX - Automated Server Configuration for Magento              #
-#	Copyright (C) 2013 admin@magentomod.com                          #
-#	All rights reserved.                                             #
+#  MagenX - Automated Server Configuration for Magento               #
+#	Copyright (C) 2013 admin@magentomod.com                      #
+#	All rights reserved.                                         #
 #====================================================================#
 SELF=$(basename $0)
 MASCM_VER="2.0"
