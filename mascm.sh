@@ -2,8 +2,8 @@
 KEY_OWNER=4f09fdcf5c89e32c6f712ecf90632615
 #====================================================================#
 #  MagenX - Automated Server Configuration for Magento               #
-#	Copyright (C) 2013 admin@magentomod.com                      #
-#	All rights reserved.                                         #
+#	Copyright (C) 2013 admin@magentomod.com                          #
+#	All rights reserved.                                             #
 #====================================================================#
 SELF=$(basename $0)
 MASCM_VER="2.0"
@@ -192,21 +192,21 @@ printf "\033c"
         echo
         cecho "- For repositories installation enter:  \033[01;34m repo"
         cecho "- For packages installation enter:  \033[01;34m packages"
-	cecho "- To download latest Magento enter:  \033[01;34m magento"
-	cecho "- To setup Magento database enter:  \033[01;34m database"
-	cecho "- Install Magento (no sample data):  \033[01;34m install"
-	echo
-	cecho :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-	echo
-	cecho "- To configure system backup enter:  \033[01;34m  backup"
-	cecho "- To make your server secure enter:  \033[01;34m protect"
-	cecho "- To install CSF firewall enter:  \033[01;34m   firewall"
-	echo
-	cecho :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-	echo
-	cecho "- To quit enter:  \033[01;34m exit"
-	echo
-	echo
+	    cecho "- To download latest Magento enter:  \033[01;34m magento"
+	    cecho "- To setup Magento database enter:  \033[01;34m database"
+	    cecho "- Install Magento (no sample data):  \033[01;34m install"
+	    echo
+	    cecho :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+	    echo
+	    cecho "- To configure system backup enter:  \033[01;34m  backup"
+	    cecho "- To make your server secure enter:  \033[01;34m protect"
+	    cecho "- To install CSF firewall enter:  \033[01;34m   firewall"
+	    echo
+	    cecho :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+	    echo
+	    cecho "- To quit enter:  \033[01;34m exit"
+	    echo
+	    echo
 }
 while [ 1 ]
 do
