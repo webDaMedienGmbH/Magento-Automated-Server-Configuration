@@ -169,10 +169,10 @@ echo
 cecho "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 echo
 echo
-				echo -n "---> Do you agree to these terms?  [y/n][y]:"
-				read terms_agree
-					if [ "$terms_agree" == "y" ];then
-					echo "yes" > ~/mascm/.terms
+			echo -n "---> Do you agree to these terms?  [y/n][y]:"
+			read terms_agree
+				if [ "$terms_agree" == "y" ];then
+				echo "yes" > ~/mascm/.terms
 			else
 			echo "Exiting"
 			echo
@@ -192,21 +192,21 @@ printf "\033c"
         echo
         cecho "- For repositories installation enter:  \033[01;34m repo"
         cecho "- For packages installation enter:  \033[01;34m packages"
-		cecho "- To download latest Magento enter:  \033[01;34m magento"
-		cecho "- To setup Magento database enter:  \033[01;34m database"
-		cecho "- Install Magento (no sample data):  \033[01;34m install"
-		echo
-		cecho :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-		echo
-		cecho "- To configure system backup enter:  \033[01;34m  backup"
-		cecho "- To make your server secure enter:  \033[01;34m protect"
-		cecho "- To install CSF firewall enter:  \033[01;34m   firewall"
-		echo
-		cecho :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-		echo
-		cecho "- To quit enter:  \033[01;34m exit"
-		echo
-		echo
+	cecho "- To download latest Magento enter:  \033[01;34m magento"
+	cecho "- To setup Magento database enter:  \033[01;34m database"
+	cecho "- Install Magento (no sample data):  \033[01;34m install"
+	echo
+	cecho :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+	echo
+	cecho "- To configure system backup enter:  \033[01;34m  backup"
+	cecho "- To make your server secure enter:  \033[01;34m protect"
+	cecho "- To install CSF firewall enter:  \033[01;34m   firewall"
+	echo
+	cecho :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+	echo
+	cecho "- To quit enter:  \033[01;34m exit"
+	echo
+	echo
 }
 while [ 1 ]
 do
@@ -250,7 +250,7 @@ if [ "$repoE_install" == "y" ];then
             echo -n "     PROCESSING  "
             quick_progress &
             pid="$!"
-			rpm -Uvh http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm >/dev/null 2>&1
+	rpm -Uvh http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm >/dev/null 2>&1
             stop_progress "$pid"
                 rpm  --quiet -q epel-release
                 if [ "$?" = 0 ]
@@ -275,8 +275,8 @@ if [ "$repoC_install" == "y" ];then
             echo -n "     PROCESSING  "
             quick_progress &
             pid="$!"
-			rpm -Uvh http://centos.alt.ru/pub/repository/centos/6/x86_64/centalt-release-6-1.noarch.rpm >/dev/null 2>&1
-			stop_progress "$pid"
+	rpm -Uvh http://centos.alt.ru/pub/repository/centos/6/x86_64/centalt-release-6-1.noarch.rpm >/dev/null 2>&1
+		stop_progress "$pid"
                 rpm  --quiet -q centalt-release
                 if [ "$?" = 0 ]
                     then
@@ -303,8 +303,8 @@ if [ "$repoF_install" == "y" ];then
 			echo -n "     PROCESSING  "
             quick_progress &
             pid="$!"
-			rpm -Uvh http://pkgs.repoforge.org/rpmforge-release/rpmforge-release-0.5.2-2.el6.rf.x86_64.rpm >/dev/null 2>&1
-			stop_progress "$pid"
+	rpm -Uvh http://pkgs.repoforge.org/rpmforge-release/rpmforge-release-0.5.2-2.el6.rf.x86_64.rpm >/dev/null 2>&1
+		stop_progress "$pid"
                 rpm  --quiet -q rpmforge-release
                 if [ "$?" = 0 ]
                     then
@@ -329,8 +329,8 @@ if [ "$repoP_install" == "y" ];then
 			echo -n "     PROCESSING  "
             quick_progress &
             pid="$!"
-			rpm -Uhv http://www.percona.com/downloads/percona-release/percona-release-0.0-1.x86_64.rpm >/dev/null 2>&1
-			stop_progress "$pid"
+	rpm -Uhv http://www.percona.com/downloads/percona-release/percona-release-0.0-1.x86_64.rpm >/dev/null 2>&1
+		stop_progress "$pid"
                 rpm  --quiet -q percona-release
                 if [ "$?" = 0 ]
                     then
@@ -355,8 +355,8 @@ if [ "$repoIU_install" == "y" ];then
 			echo -n "     PROCESSING  "
             quick_progress &
             pid="$!"
-			rpm -Uvh http://dl.iuscommunity.org/pub/ius/stable/Redhat/6/x86_64/ius-release-1.0-10.ius.el6.noarch.rpm >/dev/null 2>&1
-			stop_progress "$pid"
+	rpm -Uvh http://dl.iuscommunity.org/pub/ius/stable/Redhat/6/x86_64/ius-release-1.0-10.ius.el6.noarch.rpm >/dev/null 2>&1
+		stop_progress "$pid"
                 rpm  --quiet -q ius-release
                 if [ "$?" = 0 ]
                     then
