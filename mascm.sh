@@ -1,5 +1,5 @@
 #!/bin/bash
-KEY_OWNER=4f09fdcf5c89e32c6f712ecf90632615
+#KEY_OWNER=4f09fdcf5c89e32c6f712ecf90632615
 #====================================================================#
 #  MagenX - Automated Server Configuration for Magento               #
 #    Copyright (C) 2013 admin@magentomod.com                      #
@@ -81,21 +81,21 @@ clear
 echo
 echo
 # Check license key
-  KEY_OUT=$(curl $MASCM_BASE/ver 2>&1 | grep $KEY_OWNER | awk '{print $2}')
-  KEY_IN=$(echo $HOSTNAME | md5sum | awk '{print $1}')
-  if [[ "$KEY_OUT" == "$KEY_IN" ]]; then
-    cok "PASS: INTEGRITY CHECK FOR '$SELF' ON '$HOSTNAME' OK"
- elif [[ "$KEY_OUT" != "$KEY_IN" ]]; then
-    cwarn "ERROR: INTEGRITY CHECK FAILED! MD5 MISMATCH!"
-    cwarn "YOU CAN NOT RUN THIS SCRIPT WITHOUT A LICENSE KEY"
-    echo "Local md5:  $KEY_IN"
-    echo "Remote md5: $KEY_OUT"
-    echo
-    echo "-----> NOTE: PLEASE REPORT IT TO: admin@magentomod.com"
-	echo
-	echo
-	exit 1
-fi
+#  KEY_OUT=$(curl $MASCM_BASE/ver 2>&1 | grep $KEY_OWNER | awk '{print $2}')
+#  KEY_IN=$(echo $HOSTNAME | md5sum | awk '{print $1}')
+#  if [[ "$KEY_OUT" == "$KEY_IN" ]]; then
+#    cok "PASS: INTEGRITY CHECK FOR '$SELF' ON '$HOSTNAME' OK"
+# elif [[ "$KEY_OUT" != "$KEY_IN" ]]; then
+#    cwarn "ERROR: INTEGRITY CHECK FAILED! MD5 MISMATCH!"
+#    cwarn "YOU CAN NOT RUN THIS SCRIPT WITHOUT A LICENSE KEY"
+#    echo "Local md5:  $KEY_IN"
+#    echo "Remote md5: $KEY_OUT"
+#    echo
+#    echo "-----> NOTE: PLEASE REPORT IT TO: admin@magentomod.com"
+#	echo
+#	echo
+#	exit 1
+#fi
 
 # root?
 if [[ $EUID -ne 0 ]]; then
