@@ -589,7 +589,7 @@ if [ "$f2b_install" == "y" ];then
 cok "Writing nginx 403 filter"
 cat > /etc/fail2ban/filter.d/nginx-403.conf <<END
 [Definition]
-failregex = ^<HOST> -.*HTTP/1\..* 403
+failregex = directory index of .* is forbidden, client: <HOST>
 END
 cok "Writing nginx 403 action"
 cat > /etc/fail2ban/action.d/nginx-403.conf <<END
@@ -604,9 +604,7 @@ enabled = true
 port = http,https
 filter = nginx-403
 action = nginx-403
-logpath = /var/log/nginx/access.log
-bantime = 84600
-maxretry = 3
+logpath = /var/log/nginx/error.log
 END
 cok "Creating banlist dir"
 mkdir -p /etc/nginx/banlist/
