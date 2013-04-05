@@ -355,7 +355,7 @@ if [ "$repoIU_install" == "y" ];then
 			echo -n "     PROCESSING  "
 		quick_progress &
 		pid="$!"
-		rpm -Uvh http://dl.iuscommunity.org/pub/ius/stable/Redhat/6/x86_64/ius-release-1.0-10.ius.el6.noarch.rpm >/dev/null 2>&1
+		rpm -Uvh http://dl.iuscommunity.org/pub/ius/stable/CentOS/6/x86_64/ius-release-1.0-11.ius.centos6.noarch.rpm >/dev/null 2>&1
 		stop_progress "$pid"
                 rpm  --quiet -q ius-release
                 if [ "$?" = 0 ]
