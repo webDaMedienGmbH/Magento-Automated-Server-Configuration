@@ -939,7 +939,7 @@ server {
     
     ## Execute PHP scripts
     location ~ .php$ {
-        add_header X-Config-By 'MagenX -= www.magentomod.com =-';
+        add_header X-Config-By 'MagenX -= www.magenx.com =-';
         try_files \$uri \$uri/ =404;
         #try_files \$uri \$uri/ @handler;
         fastcgi_pass   127.0.0.1:9000;
@@ -979,7 +979,8 @@ cok "INSTALLING APC CACHE CONTROL INTO MAGENTO ADMIN"
 pause '------> Press [Enter] key to continue'
 echo
 		cd $MY_SHOP_PATH
-		wget -qO - http://www.magentomod.com/mascm/apcadmin.tar.gz | tar -xzp
+		wget -qO- -O master.zip --no-check-certificate https://github.com/buric/Inchoo_Apc/archive/master.zip && unzip -qq master.zip && rm -rf master.zip
+		cp -rf Inchoo_Apc-master/*  .
 	cok "APC cache installed into System > Cache Management"
 	cok "ok"
 echo
