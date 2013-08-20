@@ -43,9 +43,10 @@ Get a fully configured server with Magento in just 15 minutes.
 *Fail2ban filters for nginx*<br/>
 *Test for CSF firewall*<br/>
 *Automated backup to S3 with crontab*<br/>
+*Lesti FPC*<br/>
+
 
 **TODO**:<br/>
-*full page cache pre-installation*<br/>
 *Postfix and Dovecot with virtual mail users*<br/>
 
 *Auto-Install Magento extensions -*<br/>
@@ -53,6 +54,5 @@ Get a fully configured server with Magento in just 15 minutes.
 *order export*<br/>
 *custom pdf*<br/>
 *smtp pro*<br/>
-*enhanced admin grids*<br/>
 *your selected extension*<br/>
  
