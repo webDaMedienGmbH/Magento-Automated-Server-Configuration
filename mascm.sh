@@ -521,7 +521,7 @@ if [ "$varnish_install" == "y" ];then
 			echo -n "     PROCESSING  "
 		quick_progress &
 		pid="$!"
-		rpm -Uhv http://repo.varnish-cache.org/redhat/varnish-3.0/el6/x86_64/varnish-3.0.3-1.el6.x86_64.rpm http://repo.varnish-cache.org/redhat/varnish-3.0/el6/x86_64/varnish-libs-3.0.3-1.el6.x86_64.rpm >/dev/null 2>&1
+		rpm -Uhv http://repo.varnish-cache.org/redhat/varnish-3.0/el6/x86_64/varnish-3.0.4-1.el6.x86_64.rpm http://repo.varnish-cache.org/redhat/varnish-3.0/el6/x86_64/varnish-libs-3.0.4-1.el6.x86_64.rpm >/dev/null 2>&1
 		stop_progress "$pid"
 		rpm  --quiet -q varnish
                 if [ "$?" = 0 ]
@@ -590,6 +590,11 @@ cok "Writing nginx 403 filter"
 cat > /etc/fail2ban/filter.d/nginx-403.conf <<END
 [Definition]
 failregex = directory index of .* is forbidden, client: <HOST>
+            ^<HOST> .*"GET \/w00tw00t\.at\.ISC\.SANS\.DFind\:\).*".*
+            ^<HOST> .*"GET .*phppath/php.*" 444 .*
+            ^<HOST> .*"POST .*444 .*
+            ^<HOST> .*"GET .*444 .*
+            ^<HOST> .*"GET .*wp-login.php.*404.*
 END
 cok "Writing nginx 403 action"
 cat > /etc/fail2ban/action.d/nginx-403.conf <<END
@@ -964,6 +969,16 @@ echo
 ###################################################################################
 #                   LOADING ALL THE POSSIBLE EXTENSIONS FROM HERE                 #
 ###################################################################################
+echo
+cok "INSTALLING LESTI FPC INTO MAGENTO"
+pause '------> Press [Enter] key to continue'
+echo
+		cd $MY_SHOP_PATH
+		wget -qO- -O master.zip --no-check-certificate https://github.com/GordonLesti/Lesti_Fpc/archive/master.zip && unzip -qq master.zip && rm -rf master.zip
+		cp -rf Lesti_Fpc-master/app .
+		rm -rf Lesti_Fpc-master
+	cok "Installed LESTI FPC into System > Configuration"
+	cok "ok"
 echo
 cok "INSTALLING ENHANCED ADMIN GRIDS INTO MAGENTO"
 pause '------> Press [Enter] key to continue'
