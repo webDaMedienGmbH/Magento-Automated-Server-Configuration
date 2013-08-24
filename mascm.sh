@@ -912,7 +912,7 @@ server {
         #allow 1.2.3.4;
         #allow 1.2.3.4;
         #deny all;
-        #rewrite ^/downloader/(.*)$ /downloader/index.php\$1;
+        #rewrite ^/downloader/(.*)$ /downloader/index.php$1;
         #}
     #location /admin  {
         #allow 1.2.3.4;
