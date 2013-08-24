@@ -900,7 +900,7 @@ server {
     ####################################################################################
 
     ## These locations would be hidden by .htaccess normally, protected
-    location ~ (/(app/|includes/|/pkginfo/|var/|errors/local.xml)|/\.svn/|/.hta.+) {
+    location ~ (/(app/|includes/|/pkginfo/|var/|errors/local.xml)|/\.svn/|/\.ht.+) {
         deny all;
         #internal;
         }
@@ -912,7 +912,7 @@ server {
         #allow 1.2.3.4;
         #allow 1.2.3.4;
         #deny all;
-        #rewrite ^/downloader/(.*)$ /downloader/index.php$1;
+        #rewrite ^/downloader/(.*)$ /downloader/index.php\$1;
         #}
     #location /admin  {
         #allow 1.2.3.4;
@@ -937,7 +937,7 @@ server {
         }
  
     location ~ .php/ { ## Forward paths like /js/index.php/x.js to relevant handler
-        rewrite ^(.*.php)/ $1 last;
+        rewrite ^(.*.php)/  \$1 last;
         }
 
     ####################################################################################
