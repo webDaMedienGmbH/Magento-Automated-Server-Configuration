@@ -303,7 +303,7 @@ if [ "$repoF_install" == "y" ];then
 			echo -n "     PROCESSING  "
 		quick_progress &
 		pid="$!"
-		rpm -Uvh http://pkgs.repoforge.org/rpmforge-release/rpmforge-release-0.5.2-2.el6.rf.x86_64.rpm >/dev/null 2>&1
+		rpm -Uvh http://pkgs.repoforge.org/rpmforge-release/rpmforge-release-0.5.3-1.el6.rf.x86_64.rpm >/dev/null 2>&1
 		stop_progress "$pid"
                 rpm  --quiet -q rpmforge-release
                 if [ "$?" = 0 ]
