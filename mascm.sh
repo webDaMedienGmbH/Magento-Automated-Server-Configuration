@@ -521,8 +521,7 @@ if [ "$varnish_install" == "y" ];then
 			echo -n "     PROCESSING  "
 		quick_progress &
 		pid="$!"
-		rpm -Uhv http://repo.varnish-cache.org/redhat/varnish-3.0/el6/x86_64/varnish-3.0.4-1.el6.x86_64.rpm http://repo.varnish-cache.org/redhat/varnish-3.0/el6/x86_64/varnish-libs-3.0.4-1.el6.x86_64.rpm >/dev/null 2>&1
-		stop_progress "$pid"
+rpm -Uhv http://repo.varnish-cache.org/redhat/varnish-3.0/el6/x86_64/varnish/varnish-3.0.4-1.el6.x86_64.rpm http://repo.varnish-cache.org/redhat/varnish-3.0/el6/x86_64/varnish/varnish-libs-3.0.4-1.el6.x86_64.rpm		stop_progress "$pid"
 		rpm  --quiet -q varnish
                 if [ "$?" = 0 ]
                     then
