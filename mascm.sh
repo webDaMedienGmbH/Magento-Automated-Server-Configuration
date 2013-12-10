@@ -2,14 +2,14 @@
 #KEY_OWNER=4f09fdcf5c89e32c6f712ecf90632615
 #====================================================================#
 #  MagenX - Automated Server Configuration for Magento               #
-#    Copyright (C) 2013 admin@magentomod.com                      #
+#    Copyright (C) 2013 admin@magenx.com                      #
 #	All rights reserved.                                         #
 #====================================================================#
 SELF=$(basename $0)
-MASCM_VER="2.0"
+MASCM_VER="3.0"
 
 # The base md5sum location to cotrol license
-MASCM_BASE=http://www.magentomod.com/mascm
+#MASCM_BASE=http://www.magenx.com/mascm
 
 # quick-n-dirty - color, indent, echo, pause, proggress bar settings
 function cecho() {
@@ -80,18 +80,18 @@ clear
 ###################################################################################
 echo
 echo
-# Check license key
+# Check licence key
 #  KEY_OUT=$(curl $MASCM_BASE/ver 2>&1 | grep $KEY_OWNER | awk '{print $2}')
 #  KEY_IN=$(echo $HOSTNAME | md5sum | awk '{print $1}')
 #  if [[ "$KEY_OUT" == "$KEY_IN" ]]; then
 #    cok "PASS: INTEGRITY CHECK FOR '$SELF' ON '$HOSTNAME' OK"
 # elif [[ "$KEY_OUT" != "$KEY_IN" ]]; then
 #    cwarn "ERROR: INTEGRITY CHECK FAILED! MD5 MISMATCH!"
-#    cwarn "YOU CAN NOT RUN THIS SCRIPT WITHOUT A LICENSE KEY"
+#    cwarn "YOU CAN NOT RUN THIS SCRIPT WITHOUT A LICENCE KEY"
 #    echo "Local md5:  $KEY_IN"
 #    echo "Remote md5: $KEY_OUT"
 #    echo
-#    echo "-----> NOTE: PLEASE REPORT IT TO: admin@magentomod.com"
+#    echo "-----> NOTE: PLEASE REPORT IT TO: admin@magenx.com"
 #	echo
 #	echo
 #	exit 1
@@ -130,10 +130,10 @@ fi
 # check if memory is enough
 UNITS=$(cat /proc/meminfo | grep MemTotal | awk '{print $3}')
 TOTALMEM=$(cat /proc/meminfo | grep MemTotal | awk '{print $2}')
-if [ "$TOTALMEM" -gt "3800000" ]; then
+if [ "$TOTALMEM" -gt "1500000" ]; then
 cok "PASS: YOU HAVE $TOTALMEM $UNITS OF RAM"
   else
-  cwarn "WARNING: YOU HAVE LESS THAN 4GB OF RAM"
+  cwarn "WARNING: YOU HAVE LESS THAN 1GB OF RAM"
 fi
 
 # network is up?
@@ -391,7 +391,7 @@ if [ "$sys_update" == "y" ];then
 		echo -n "     PROCESSING  "
 			long_progress &
 			pid="$!"
-			yum -q -y install wget curl mcrypt sudo crontabs gcc vim mlocate unzip >/dev/null 2>&1
+			yum -q -y install redis wget curl mcrypt sudo crontabs gcc vim mlocate unzip >/dev/null 2>&1
 			stop_progress "$pid"
 		cok "INSTALLED OK"
 		echo
@@ -411,7 +411,7 @@ printf "\033c"
 "packages")
 echo
 echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-cok NOW INSTALLING PHP, NGINX, PERCONA, VARNISH, MEMCACHED, FAIL2BAN
+cok NOW INSTALLING PHP, NGINX, PERCONA, VARNISH, MEMCACHED, REDIS, FAIL2BAN
 echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 echo
 echo
@@ -465,7 +465,7 @@ if [ "$php_install" == "y" ];then
 			echo -n "     PROCESSING  "
 		long_progress &
 		pid="$!"
-		yum -y -q install php54 php54-cli php54-common php54-fpm php54-gd php54-curl php54-mbstring php54-bcmath php54-soap php54-mcrypt php54-mysql php54-pdo php54-xml php54-pecl-apc php54-pecl-memcache  >/dev/null 2>&1
+		yum -y -q install php54 php54-cli php54-common php54-fpm php54-gd php54-curl php54-mbstring php54-bcmath php54-soap php54-mcrypt php54-mysql php54-pdo php54-xml php54-pecl-apc php54-pecl-memcache php54-pecl-redis  >/dev/null 2>&1
 		stop_progress "$pid"
 		rpm  --quiet -q php54
                 if [ "$?" = 0 ]
@@ -505,6 +505,7 @@ if [ "$nginx_install" == "y" ];then
                 fi
 	echo
 		chkconfig nginx on
+		chkconfig redis on
 		chkconfig httpd off
   else
         cinfo "NGINX installation skipped. Next step"
