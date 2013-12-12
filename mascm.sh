@@ -679,7 +679,7 @@ extension = apc.so
 [APC]
 apc.enabled = 1
 apc.shm_segments = 1
-apc.shm_size = 256M
+apc.shm_size = 1G
 apc.num_files_hint = 5000
 apc.user_entries_hint = 5000
 apc.ttl = 7200
@@ -693,7 +693,9 @@ apc.file_update_protection = 2
 apc.enable_cli = 1
 apc.max_file_size = 5M
 apc.use_request_time = 0
-apc.stat = 1
+apc.stat = 0
+apc.file_md5 = 1
+apc.canonicalize = 0
 apc.write_lock = 1
 apc.report_autofilter = 0
 apc.include_once_override = 0
@@ -830,6 +832,9 @@ http   {
 
     #ssl_session_cache shared:SSL:15m;
     #ssl_session_timeout 15m;
+	#ssl_protocols             SSLv3 TLSv1 TLSv1.1 TLSv1.2;
+    #ssl_ciphers               "EECDH+ECDSA+AESGCM EECDH+aRSA+AESGCM EECDH+ECDSA+SHA384 EECDH+ECDSA+SHA256 EECDH+aRSA+SHA384 EECDH+aRSA+SHA256 EECDH+aRSA+RC4 EECDH EDH+aRSA RC4 !aNULL !eNULL !LOW !3DES !MD5 !EXP !PSK !SRP !DSS !RC4";
+    #ssl_prefer_server_ciphers on;
 
     keepalive_timeout   10;
 
@@ -844,6 +849,23 @@ http   {
 	   #www.domain3.de 3store_code; ## German store
 	   #www.domain4.com 4store_code; ## different products
 	   #}
+server {
+    listen 80 default;
+    return 444;
+}
+
+#server {
+    #listen 443 default;
+    #ssl_certificate     /etc/ssl/certs/www_server_com.chained.crt; 
+    #ssl_certificate_key /etc/ssl/certs/server.key;
+    #return 444;
+#}
+
+#server {
+#    listen 80;  ## change to 8080 with Varnish
+#    server_name example.com;
+#    return 301 $scheme://www.example.com$request_uri;
+#}
 
 server {   
     listen 80; ## change to 8080 with Varnish
@@ -861,10 +883,6 @@ server {
 
        #ssl_certificate     /etc/ssl/certs/www_server_com.chained.crt; 
        #ssl_certificate_key /etc/ssl/certs/server.key;
-
-       #ssl_protocols             SSLv3 TLSv1 TLSv1.1 TLSv1.2;
-       #ssl_ciphers               RC4:HIGH:!aNULL:!MD5:!kEDH;
-       #ssl_prefer_server_ciphers on;
 
     ####################################################################################
    
@@ -926,6 +944,10 @@ server {
 
     ## Images, scripts and styles set far future Expires header
     location ~* \.(js|css|png|jpg|jpeg|gif|ico)$ {
+	    open_file_cache max=10000 inactive=8h;
+        open_file_cache_valid 1h;
+        open_file_cache_min_uses 2;
+        open_file_cache_errors off;
         expires max;
         log_not_found off;
         }
@@ -946,6 +968,8 @@ server {
     ## Execute PHP scripts
     location ~ .php$ {
         add_header X-Config-By 'MagenX -= www.magenx.com =-';
+		add_header X-UA-Compatible 'IE=Edge,chrome=1';
+        add_header X-Time-Spent \$request_time;
         try_files \$uri \$uri/ =404;
         #try_files \$uri \$uri/ @handler;
         fastcgi_pass   127.0.0.1:9000;
