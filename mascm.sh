@@ -215,25 +215,25 @@ do
         case "$CHOICE" in
                 "repo")
 echo
-#echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-#cwarn "secure /tmp and /var/tmp"
-#echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-#echo
-#echo -n "---> Would you like to secure /tmp and /var/tmp? [y/n][n]:" 
-#read secure_tmp
-#if [ "$secure_tmp" == "y" ];then
-#        echo
-#		cd
-#			rm -rf /tmp
-#			mkdir /tmp
-#			mount -t tmpfs -o rw,noexec,nosuid tmpfs /tmp
-#			chmod 1777 /tmp
-#			echo "tmpfs   /tmp    tmpfs   rw,noexec,nosuid        0       0" >> /etc/fstab
-#			rm -rf /var/tmp
-#			ln -s /tmp /var/tmp
-#			echo
-#		cok "SECURED OK"
-#fi
+echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+cwarn "secure /tmp and /var/tmp"
+echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+echo
+echo -n "---> Would you like to secure /tmp and /var/tmp? [y/n][n]:" 
+read secure_tmp
+if [ "$secure_tmp" == "y" ];then
+        echo
+		cd
+			rm -rf /tmp
+			mkdir /tmp
+			mount -t tmpfs -o rw,noexec,nosuid tmpfs /tmp
+			chmod 1777 /tmp
+			echo "tmpfs   /tmp    tmpfs   rw,noexec,nosuid        0       0" >> /etc/fstab
+			rm -rf /var/tmp
+			ln -s /tmp /var/tmp
+			echo
+		cok "tmp SECURED OK"
+fi
 echo
 echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 cok NOW BEGIN REPOSITORIES INSTALLATION
@@ -623,7 +623,7 @@ fi
 echo
 cecho "============================================================================="
 echo
-echo -n "---> Load optimized apc, php, fpm, fastcgi, memcached, sysctl? [y/n][n]:"
+echo -n "---> Load optimized configs of apc, php, fpm, fastcgi, memcached, sysctl, varnish? [y/n][n]:"
 read load_configs
 if [ "$load_configs" == "y" ];then
 echo
@@ -995,14 +995,14 @@ echo
 #                   LOADING ALL THE POSSIBLE EXTENSIONS FROM HERE                 #
 ###################################################################################
 echo
-cok "INSTALLING LESTI FPC INTO MAGENTO"
+cok "INSTALLING TURPENTINE VARNISH FPC INTO MAGENTO"
 pause '------> Press [Enter] key to continue'
 echo
 		cd $MY_SHOP_PATH
-		wget -qO- -O master.zip --no-check-certificate https://github.com/GordonLesti/Lesti_Fpc/archive/master.zip && unzip -qq master.zip && rm -rf master.zip
-		cp -rf Lesti_Fpc-master/app .
-		rm -rf Lesti_Fpc-master
-	cok "Installed LESTI FPC into System > Configuration"
+		wget -qO- -O master.zip --no-check-certificate https://github.com/nexcess/magento-turpentine/archive/master.zip && unzip -qq master.zip && rm -rf master.zip
+		cp -rf magento-turpentine-master/app .
+		rm -rf magento-turpentine-master
+	cok "Installed TURPENTINE VARNISH FPC into System > Configuration"
 	cok "ok"
 echo
 cok "INSTALLING ENHANCED ADMIN GRIDS INTO MAGENTO"
@@ -1040,10 +1040,27 @@ wget -q https://github.com/magenx/MASC-M/blob/master/local.xml
 cecho "Add contents of this file $MY_SHOP_PATH/local.xml to your app/etc/local.xml"
 cecho "to enable twolevel cache backend with apc and memcached"
 echo
+cok "NOW WE LOAD VARNISH CONFIGURATION"
+echo -e '\nDAEMON_OPTS="-a :80 \
+             -T localhost:6082 \
+             -f '$MY_SHOP_PATH'/var/default.vcl \
+             -u varnish -g varnish \
+             -p cli_buffer=26384 \
+             -S /etc/varnish/secret \
+             -s malloc,1G"' >> /etc/sysconfig/varnish
+
+sed -i 's/VARNISH_LISTEN_PORT=6081/VARNISH_LISTEN_PORT=80/' /etc/sysconfig/varnish
+sed -i 's,VARNISH_VCL_CONF=/etc/varnish/default.vcl,VARNISH_VCL_CONF='$MY_SHOP_PATH'/default.vcl,' /etc/sysconfig/varnish
+
+VSECRET=$(cat /etc/varnish/secret)
+echo 'this is Varnish secret key -->  '$VSECRET'  <-- copy it'
+cecho "Varnish settings loaded ... \033[01;32m  ok"
+echo
+pause '------> Press [Enter] key to reset permissions and create a cronjob'
 echo
 cecho "RESETTING FILE PERMISSIONS ..."
-		find . -type f -exec chmod 644 {} \;
-		find . -type d -exec chmod 755 {} \;
+		find . -type f -exec chmod 664 {} \;
+		find . -type d -exec chmod 775 {} \;
 		chmod -R o+w var app/etc
 		chmod -R o+w media       
 		chown -R $FPM_USER:$FPM_USER $MY_SHOP_PATH

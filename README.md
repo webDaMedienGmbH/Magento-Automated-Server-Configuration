@@ -44,7 +44,7 @@ Get a fully configured server with Magento in just 15 minutes.
 *Fail2ban filters for nginx*<br/>
 *Test for CSF firewall*<br/>
 *Automated backup to S3 with crontab*<br/>
-*Lesti FPC*<br/>
+*Turpentine Varnish FPC*<br/>
 
 
 **TODO**:<br/>
