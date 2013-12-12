@@ -1050,7 +1050,7 @@ echo -e '\nDAEMON_OPTS="-a :80 \
              -s malloc,1G"' >> /etc/sysconfig/varnish
 
 sed -i 's/VARNISH_LISTEN_PORT=6081/VARNISH_LISTEN_PORT=80/' /etc/sysconfig/varnish
-sed -i 's,VARNISH_VCL_CONF=/etc/varnish/default.vcl,VARNISH_VCL_CONF='$MY_SHOP_PATH'/default.vcl,' /etc/sysconfig/varnish
+sed -i 's,VARNISH_VCL_CONF=/etc/varnish/default.vcl,VARNISH_VCL_CONF='$MY_SHOP_PATH'/var/default.vcl,' /etc/sysconfig/varnish
 
 VSECRET=$(cat /etc/varnish/secret)
 echo 'this is Varnish secret key -->  '$VSECRET'  <-- copy it'
