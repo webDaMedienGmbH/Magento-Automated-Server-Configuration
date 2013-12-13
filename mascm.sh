@@ -708,7 +708,7 @@ cecho "apc.ini loaded ... \033[01;32m  ok"
 cp /etc/php.ini /etc/php.ini.BACK
 sed -i 's/^\(max_execution_time = \)[0-9]*/\17200/' /etc/php.ini
 sed -i 's/^\(max_input_time = \)[0-9]*/\17200/' /etc/php.ini
-sed -i 's/^\(memory_limit = \)[0-9]*M/\1256M/' /etc/php.ini
+sed -i 's/^\(memory_limit = \)[0-9]*M/\1512M/' /etc/php.ini
 sed -i 's/^\(post_max_size = \)[0-9]*M/\132M/' /etc/php.ini
 sed -i 's/^\(upload_max_filesize = \)[0-9]*M/\132M/' /etc/php.ini
 sed -i 's/expose_php = On/expose_php = Off/' /etc/php.ini
@@ -763,7 +763,7 @@ if [ "$new_down" == "y" ];then
 		echo -n "      DOWNLOADING MAGENTO  "
 			long_progress &
 			pid="$!"
-			wget -qO - http://www.magentocommerce.com/downloads/assets/1.7.0.2/magento-1.7.0.2.tar.gz | tar -xzp
+			wget -qO - http://www.magentocommerce.com/downloads/assets/1.8.1.0/magento-1.8.1.0.tar.gz | tar -xzp
 			stop_progress "$pid"
 		echo
 		cecho "Cleanup"
@@ -1036,9 +1036,6 @@ echo
 	cok "ok"
 echo
 echo
-wget -q https://github.com/magenx/MASC-M/blob/master/local.xml
-cecho "Add contents of this file $MY_SHOP_PATH/local.xml to your app/etc/local.xml"
-cecho "to enable twolevel cache backend with apc and memcached"
 echo
 cok "NOW WE LOAD VARNISH CONFIGURATION"
 echo -e '\nDAEMON_OPTS="-a :80 \
@@ -1228,7 +1225,7 @@ cok "ok"
     cecho " MAGENTO FRONTEND AND BACKEND LINKS"
     echo
     echo "      Store: $MAGE_SITE_URL"
-    echo "      Admin: $MAGE_SITE_URL/ admin/"
+    echo "      Admin: $MAGE_SITE_URL admin/"
     echo
     cecho "============================================================================="
     cecho " MAGENTO ADMIN ACCOUNT"
@@ -1245,6 +1242,39 @@ cok "ok"
     echo
     cecho "============================================================================="
 	echo
+echo
+echo
+cecho "-= FINAL MAINTENANCE AND CLEANUP =-"
+echo
+echo "changing your local.xml file with memcache sessions and redis cache backends"
+echo
+sed -i '/<session_save>/d' $SHOP_PATH/app/etc/local.xml
+sed -i '/<global>/ a\
+<session_save><![CDATA[memcache]]></session_save> \
+<session_save_path><![CDATA[tcp://127.0.0.1:11211?persistent=1&weight=2&timeout=10&retry_interval=10]]></session_save_path> \
+        <cache> \
+          <backend>Cm_Cache_Backend_Redis</backend> \
+          <default_priority>10</default_priority> \
+          <auto_refresh_fast_cache>1</auto_refresh_fast_cache> \
+            <server>127.0.0.1</server> \
+            <port>6379</port> \
+            <persistent><![CDATA[db0]]></persistent> \
+            <database>0</database> \
+            <password></password> \
+            <force_standalone>0</force_standalone> \
+            <connect_retries>1</connect_retries> \
+            <read_timeout>10</read_timeout> \
+            <automatic_cleaning_factor>0</automatic_cleaning_factor> \
+            <compress_data>1</compress_data> \
+            <compress_tags>1</compress_tags> \
+            <compress_threshold>204800</compress_threshold> \
+            <compression_lib>gzip</compression_lib> \
+        </cache>' $SHOP_PATH/app/etc/local.xml
+echo
+echo "cleaning up indexes locks and running reindexall"	
+rm -rf 	$SHOP_PATH/var/locks/*
+php $SHOP_PATH/shell/indexer.php -reindexall
+echo 
 echo
 cok "NOW LOGIN TO YOUR WEB BACKEND AND CHECK EVERYTHING"
 echo
