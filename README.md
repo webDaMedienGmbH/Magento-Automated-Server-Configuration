@@ -1,6 +1,8 @@
 MASC-M<sup>™</sup>
 ======
 
+---->> Magento 1.8.1.0
+
 #### MagenX - Automated Server Configuration for Magento
 Get a fully configured server with Magento in just 15 minutes.
 
@@ -12,12 +14,12 @@ Get a fully configured server with Magento in just 15 minutes.
 **Installs**:<br/>
 *All selected repositories*<br/>
 *Percona 5.5 .latest*<br/>
-*php-5.4 .latest (with apc, redis, memcache)*<br/>
-*nginx .latest*<br/>
-*memcached .latest*<br/>
-*redis .latest*<br/>
+*php-5.4 .latest (with apc, phpredis, memcache)*<br/>
+*Nginx .latest*<br/>
+*Memcached .latest*<br/>
+*Redis .latest*<br/>
 *Varnish 3 .latest*<br/>
-*Magento 1.7.0.2 .latest*<br/>
+*Magento 1.8.1.0 .latest*<br/>
 
 **Additional**:<br/>
 *MyWebSQL- web-based database management tool*<br/>
@@ -37,7 +39,8 @@ Get a fully configured server with Magento in just 15 minutes.
 *chown and chmod files*<br/>
 *Magento cron*<br/>
 *apc cache control in admin*<br/>
-*Magento TwoLevel Cache backend*<br/>
+*Magento Redis Cache backend*<br/>
+*Magento memcache sessions*<br/>
 *Creates new sudo user*<br/>
 *PermitRootLogin no*<br/>
 *Changes SSH default port*<br/>
@@ -48,12 +51,7 @@ Get a fully configured server with Magento in just 15 minutes.
 
 
 **TODO**:<br/>
-*Postfix and Dovecot with virtual mail users*<br/>
 
 *Auto-Install Magento extensions -*<br/>
-*shipping matrix*<br/>
-*order export*<br/>
-*custom pdf*<br/>
-*smtp pro*<br/>
 *your selected extension*<br/>
  
