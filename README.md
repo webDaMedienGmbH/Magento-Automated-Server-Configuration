@@ -22,7 +22,7 @@ Get a fully configured server with Magento in just 15 minutes.
 *Magento 1.8.1.0 .latest*<br/>
 
 **Additional**:<br/>
-*MyWebSQL- web-based database management tool*<br/>
+*Adminer - single file database management script*<br/>
 *mysqltuner.pl - database tuning script*<br/>
 *mysqlreport.pl - Make easy-to-read MySQL status reports*<br/>
 *MagenX default my.cnf for Percona*<br/>
