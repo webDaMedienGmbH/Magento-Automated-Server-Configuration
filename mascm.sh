@@ -1024,15 +1024,13 @@ echo
 	cok "APC cache installed into System > Cache Management"
 	cok "ok"
 echo
-cok "INSTALLING MyWebSQL - Web-based MySQL Admin Interface"
+cok "INSTALLING Adminer - single file MySQL Admin Interface"
 pause '------> Press [Enter] key to continue'
 echo
 		cd $MY_SHOP_PATH
-		wget -qO- -O mywebsql.zip http://sourceforge.net/projects/mywebsql/files/latest/download?source=files && unzip -qq mywebsql.zip && rm -rf mywebsql.zip
-		MYWEB_FOLDER=$(head -c 500 /dev/urandom | tr -dc 'a-zA-Z' | fold -w 7 | head -n 1)
-		mv mywebsql db_$MYWEB_FOLDER
-	cok "MyWebSQL installed to db_$MYWEB_FOLDER"
-	cecho "Allow access to db_$MYWEB_FOLDER from subdomain or to your ip only!"
+		MYSQL_FILE=$(head -c 500 /dev/urandom | tr -dc 'a-zA-Z' | fold -w 7 | head -n 1)
+		wget -qO- -O adminer_$MYSQL_FILE.php http://downloads.sourceforge.net/adminer/adminer-3.7.1.php
+	cok "Adminer installed to $MY_SHOP_PATH/adminer_$MYSQL_FILE.php"
 	cok "ok"
 echo
 echo
