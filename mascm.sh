@@ -864,7 +864,7 @@ server {
 #server {
 #    listen 80;  ## change to 8080 with Varnish
 #    server_name example.com;
-#    return 301 $scheme://www.example.com$request_uri;
+#    return 301 \$scheme://www.example.com\$request_uri;
 #}
 
 server {   
@@ -1077,6 +1077,7 @@ echo
 service php-fpm start
 service nginx start
 service memcached start
+service redis start
 echo
 echo
 echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
