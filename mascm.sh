@@ -1040,9 +1040,14 @@ echo -e '\nDAEMON_OPTS="-a :80 \
              -T localhost:6082 \
              -f '$MY_SHOP_PATH'/var/default.vcl \
              -u varnish -g varnish \
+             -p thread_pool_min=200 \
+             -p thread_pool_max=4000 \
+             -p thread_pool_add_delay=2 \
+             -p cli_timeout=25 \
              -p cli_buffer=26384 \
+             -p session_linger=100 \
              -S /etc/varnish/secret \
-             -s malloc,1G"' >> /etc/sysconfig/varnish
+             -s malloc,2G"' >> /etc/sysconfig/varnish
 
 sed -i 's/VARNISH_LISTEN_PORT=6081/VARNISH_LISTEN_PORT=80/' /etc/sysconfig/varnish
 sed -i 's,VARNISH_VCL_CONF=/etc/varnish/default.vcl,VARNISH_VCL_CONF='$MY_SHOP_PATH'/var/default.vcl,' /etc/sysconfig/varnish
@@ -1272,7 +1277,7 @@ sed -i '/<global>/ a\
 echo
 echo "cleaning up indexes locks and running reindexall"	
 rm -rf 	$SHOP_PATH/var/locks/*
-php $SHOP_PATH/shell/indexer.php -reindexall
+php $SHOP_PATH/shell/indexer.php --reindexall
 echo 
 echo
 cok "NOW LOGIN TO YOUR WEB BACKEND AND CHECK EVERYTHING"
