@@ -1259,8 +1259,8 @@ sed -i '/<global>/ a\
 <session_save><![CDATA[memcache]]></session_save> \
 <session_save_path><![CDATA[tcp://127.0.0.1:11211?persistent=1&weight=2&timeout=10&retry_interval=10]]></session_save_path> \
         <cache> \
+        <backend>Cm_Cache_Backend_Redis</backend> \
         <backend_options> \
-          <backend>Cm_Cache_Backend_Redis</backend> \
           <default_priority>10</default_priority> \
           <auto_refresh_fast_cache>1</auto_refresh_fast_cache> \
             <server>127.0.0.1</server> \
