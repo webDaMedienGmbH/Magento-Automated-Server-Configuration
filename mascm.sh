@@ -630,7 +630,7 @@ echo
 cecho "YOU HAVE TO CHECK THEM AFTER ANYWAY"
    cat > /etc/sysctl.conf <<END
 fs.file-max = 360000
- 
+vm.swappiness = 10
 net.ipv4.ip_forward = 0
 net.ipv4.conf.default.rp_filter = 1
 net.ipv4.conf.default.accept_source_route = 0
@@ -729,6 +729,8 @@ cecho "memcached config loaded ... \033[01;32m  ok"
 echo -e '\nfastcgi_read_timeout 7200;\nfastcgi_send_timeout 7200;\nfastcgi_connect_timeout 65;\n' >> /etc/nginx/fastcgi_params
 cecho "fastcgi_params loaded ... \033[01;32m  ok"
 echo
+echo "*				soft		nofile			20000" >> /etc/security/limits.conf
+echo "*				hard		nofile			65000" >> /etc/security/limits.conf
   else
         cinfo "Not loading optimized configs. Next step"
 fi
@@ -1257,6 +1259,7 @@ sed -i '/<global>/ a\
 <session_save><![CDATA[memcache]]></session_save> \
 <session_save_path><![CDATA[tcp://127.0.0.1:11211?persistent=1&weight=2&timeout=10&retry_interval=10]]></session_save_path> \
         <cache> \
+        <backend_options> \
           <backend>Cm_Cache_Backend_Redis</backend> \
           <default_priority>10</default_priority> \
           <auto_refresh_fast_cache>1</auto_refresh_fast_cache> \
@@ -1273,6 +1276,7 @@ sed -i '/<global>/ a\
             <compress_tags>1</compress_tags> \
             <compress_threshold>204800</compress_threshold> \
             <compression_lib>gzip</compression_lib> \
+        </backend_options> \
         </cache>' $SHOP_PATH/app/etc/local.xml
 echo
 echo "cleaning up indexes locks and running reindexall"	
