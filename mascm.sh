@@ -677,6 +677,7 @@ cecho "sysctl.conf loaded ... \033[01;32m  ok"
 cat > /etc/php.d/apc.ini <<END
 extension = apc.so
 [APC]
+apc.enable_opcode_cache = 1
 apc.enabled = 1
 apc.shm_segments = 1
 apc.shm_size = 1G
