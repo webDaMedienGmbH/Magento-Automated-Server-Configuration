@@ -287,7 +287,7 @@ if [ "$repoC_install" == "y" ];then
                 fi
 	echo
 		cok "Locking CentALT only for Nginx and Memcached always latest build"
-		echo "includepkgs=nginx*  postfix* dovecot* redis* memcached" >> /etc/yum.repos.d/centalt.repo
+		echo "includepkgs=nginx* vsftpd bind* sphinx  postfix* dovecot* redis* memcached" >> /etc/yum.repos.d/centalt.repo
   else
         cinfo "CentALT repository installation skipped. Next step"
 fi
