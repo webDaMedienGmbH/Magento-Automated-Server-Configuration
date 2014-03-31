@@ -714,9 +714,9 @@ sed -i 's/^\(post_max_size = \)[0-9]*M/\132M/' /etc/php.ini
 sed -i 's/^\(upload_max_filesize = \)[0-9]*M/\132M/' /etc/php.ini
 sed -i 's/expose_php = On/expose_php = Off/' /etc/php.ini
 sed -i 's/;realpath_cache_size = 16k/realpath_cache_size = 512k/' /etc/php.ini
-sed -i 's/;realpath_cache_ttl = 120/realpath_cache_ttl = 84600/' /etc/php.ini
+sed -i 's/;realpath_cache_ttl = 120/realpath_cache_ttl = 86400/' /etc/php.ini
 sed -i 's/short_open_tag = Off/short_open_tag = On/' /etc/php.ini
-sed -i 's/; max_input_vars = 1000/max_input_vars = 8000/' /etc/php.ini
+sed -i 's/; max_input_vars = 1000/max_input_vars = 20000/' /etc/php.ini
 sed -i 's/pm = dynamic/pm = ondemand/' /etc/php-fpm.d/www.conf
 cecho "php.ini loaded ... \033[01;32m  ok"
 cat > /etc/sysconfig/memcached <<END 
