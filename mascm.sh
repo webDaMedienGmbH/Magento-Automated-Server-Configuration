@@ -266,18 +266,45 @@ fi
 echo
 cecho "============================================================================="
 echo
-echo -n "---> Start CentALT Repository installation? [y/n][n]:"
+echo -n "---> Start Nginx (mainline) Repository installation? [y/n][n]:"
 read repoC_install
 if [ "$repoC_install" == "y" ];then
 		echo
-        cok "Running Installation of CentALT repository"
+        cok "Running Installation of Nginx (mainline) repository"
+		echo
+			cecho "Downloading Nginx GPG key"
+			wget -O /etc/pki/rpm-gpg/nginx_signing.key  http://nginx.org/packages/keys/nginx_signing.key
+		echo
+			cecho "Creating Nginx (mainline) repository file"
+		echo
+cat >> /etc/yum.repos.d/nginx.repo <<END
+[nginx]
+name=nginx repo
+baseurl=http://nginx.org/packages/mainline/centos/6/x86_64/
+enabled=1
+gpgkey=file:///etc/pki/rpm-gpg/nginx_signing.key
+gpgcheck=1
+END
+		echo
+		cok "INSTALLED OK"
+  else
+        cinfo "Nginx (mainline) repository installation skipped. Next step"
+fi
+echo
+cecho "============================================================================="
+echo
+echo -n "---> Start Les RPM de Remi repository installation? [y/n][n]:"
+read repoF_install
+if [ "$repoF_install" == "y" ];then
+		echo
+        cok "Running Installation of Les RPM de Remi"
 		echo
 			echo -n "     PROCESSING  "
 		quick_progress &
 		pid="$!"
-		rpm -Uvh http://centos.alt.ru/pub/repository/centos/6/x86_64/centalt-release-6-1.noarch.rpm >/dev/null 2>&1
+		rpm -Uvh http://rpms.famillecollet.com/enterprise/6/remi/x86_64/remi-release-6.5-1.el6.remi.noarch.rpm >/dev/null 2>&1
 		stop_progress "$pid"
-                rpm  --quiet -q centalt-release
+                rpm  --quiet -q remi-release
                 if [ "$?" = 0 ]
                     then
                     cok "INSTALLED OK"
@@ -286,10 +313,8 @@ if [ "$repoC_install" == "y" ];then
 		exit
                 fi
 	echo
-		cok "Locking CentALT only for Nginx and Memcached always latest build"
-		echo "includepkgs=nginx* vsftpd bind* sphinx  postfix* dovecot* redis* memcached" >> /etc/yum.repos.d/centalt.repo
   else
-        cinfo "CentALT repository installation skipped. Next step"
+        cinfo "Les RPM de Remi installation skipped. Next step"
 fi
 echo
 cecho "============================================================================="
@@ -391,7 +416,7 @@ if [ "$sys_update" == "y" ];then
 		echo -n "     PROCESSING  "
 			long_progress &
 			pid="$!"
-			yum -q -y install redis wget curl mcrypt sudo crontabs gcc vim mlocate unzip >/dev/null 2>&1
+			yum -q -y install wget curl mcrypt sudo crontabs gcc vim mlocate unzip >/dev/null 2>&1
 			stop_progress "$pid"
 		cok "INSTALLED OK"
 		echo
@@ -505,7 +530,6 @@ if [ "$nginx_install" == "y" ];then
                 fi
 	echo
 		chkconfig nginx on
-		chkconfig redis on
 		chkconfig httpd off
   else
         cinfo "NGINX installation skipped. Next step"
@@ -539,16 +563,16 @@ fi
 echo
 cecho "============================================================================="
 echo
-echo -n "---> Start Memcached installation? [y/n][n]:"
-read memd_install
-if [ "$memd_install" == "y" ];then
+echo -n "---> Start Memcached and Redis installation? [y/n][n]:"
+read memdred_install
+if [ "$memdred_install" == "y" ];then
 		echo
-        cok "Running Memcached Installation"
+        cok "Running Memcached and Redis Installation"
 		echo
 			echo -n "     PROCESSING  "
 		start_progress &
 		pid="$!"
-		yum -y -q install memcached  >/dev/null 2>&1
+		yum --enablerepo=remi -y -q install memcached redis >/dev/null 2>&1
 		stop_progress "$pid"
                 rpm  --quiet -q memcached
                 if [ "$?" = 0 ]
@@ -560,8 +584,9 @@ if [ "$memd_install" == "y" ];then
                 fi
 	echo
 		chkconfig memcached on
+		chkconfig redis on
   else
-        cinfo "Memcached installation skipped. Next step"
+        cinfo "Memcached and Redis installation skipped. Next step"
 fi
 echo
 cecho "============================================================================="
