@@ -1,3 +1,10 @@
+Removed CentALT repository<br/>
+replaced CentALT with Nginx (mainline) for the latest nginx package and<br/>
+Les RPM de Remi for redis and memcached<br/>
+<br/>
+<br/>
+
+
 MASC-M<sup>™</sup>
 ======
 
