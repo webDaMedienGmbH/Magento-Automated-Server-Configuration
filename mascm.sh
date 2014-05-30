@@ -1075,6 +1075,7 @@ echo -e '\nDAEMON_OPTS="-a :80 \
              -p thread_pool_add_delay=2 \
              -p cli_timeout=25 \
              -p cli_buffer=26384 \
+			 -p esi_syntax=0x2 \
              -p session_linger=100 \
              -S /etc/varnish/secret \
              -s malloc,2G"' >> /etc/sysconfig/varnish
