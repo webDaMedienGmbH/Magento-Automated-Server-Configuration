@@ -466,10 +466,10 @@ if [ "$percona_install" == "y" ];then
 		echo
 		cecho "Percona doesnt have its own my.cnf file"
 		cecho "Downloading from MagenX Github repository default config"
-			wget -O /etc/my.cnf_  -q https://raw.github.com/magenx/magento-mysql/master/my.cnf/my.cnf
+			wget -O /etc/my.cnf  -q https://raw.githubusercontent.com/magenx/magento-mysql/master/my.cnf/my.cnf
 		echo
-		cok "my.cnf downloaded to /etc and saved as my.cnf_"
-		cecho "Please correct it according to your servers specs, rename and restart your mysql server"
+		cok "my.cnf downloaded to /etc and saved as my.cnf"
+		cecho "Please correct it according to your servers specs and restart your mysql server"
 			wget -O /etc/mysqlreport.pl  -q  http://hackmysql.com/scripts/mysqlreport
 			wget -O /etc/mysqltuner.pl  -q  https://raw.github.com/rackerhacker/MySQLTuner-perl/master/mysqltuner.pl
 		cecho "Please use these tools to check and finetune your database"
@@ -739,7 +739,7 @@ sed -i 's/^\(post_max_size = \)[0-9]*M/\132M/' /etc/php.ini
 sed -i 's/^\(upload_max_filesize = \)[0-9]*M/\132M/' /etc/php.ini
 sed -i 's/expose_php = On/expose_php = Off/' /etc/php.ini
 sed -i 's/;realpath_cache_size = 16k/realpath_cache_size = 512k/' /etc/php.ini
-sed -i 's/;realpath_cache_ttl = 120/realpath_cache_ttl = 86400/' /etc/php.ini
+sed -i 's/;realpath_cache_ttl = 120/realpath_cache_ttl = 84600/' /etc/php.ini
 sed -i 's/short_open_tag = Off/short_open_tag = On/' /etc/php.ini
 sed -i 's/; max_input_vars = 1000/max_input_vars = 20000/' /etc/php.ini
 sed -i 's/pm = dynamic/pm = ondemand/' /etc/php-fpm.d/www.conf
@@ -748,15 +748,15 @@ cat > /etc/sysconfig/memcached <<END
 PORT="11211"
 USER="memcached"
 MAXCONN="5024"
-CACHESIZE="256"
+CACHESIZE="64"
 OPTIONS="-l 127.0.0.1"
 END
 cecho "memcached config loaded ... \033[01;32m  ok"
 echo -e '\nfastcgi_read_timeout 7200;\nfastcgi_send_timeout 7200;\nfastcgi_connect_timeout 65;\n' >> /etc/nginx/fastcgi_params
 cecho "fastcgi_params loaded ... \033[01;32m  ok"
 echo
-echo "*				soft		nofile			20000" >> /etc/security/limits.conf
-echo "*				hard		nofile			65000" >> /etc/security/limits.conf
+echo "*		soft	nofile		40000" >> /etc/security/limits.conf
+echo "*		hard	nofile		100000" >> /etc/security/limits.conf
   else
         cinfo "Not loading optimized configs. Next step"
 fi
@@ -816,8 +816,9 @@ then
 FAIL2BAN='include /etc/nginx/banlist/403.conf;'
 fi
 cat > /etc/nginx/nginx.conf <<END
-user  $FPM_USER;
+user  nginx;
 worker_processes  $MY_CPU; ## = CPU qty
+worker_rlimit_nofile 40000;
 
 error_log   /var/log/nginx/error.log;
 #error_log  /var/log/nginx/error.log  notice;
@@ -827,6 +828,7 @@ pid        /var/run/nginx.pid;
 
 events {
     worker_connections  1024;
+    multi_accept on;
     use epoll;
        }
 
@@ -835,9 +837,8 @@ http   {
     include       /etc/nginx/mime.types;
     default_type  application/octet-stream;
 
-    log_format  main  '\$remote_addr - \$remote_user [\$time_local] "\$request" '
-                      '\$status \$body_bytes_sent "\$http_referer" '
-                      '"\$http_user_agent" "\$http_x_forwarded_for"';
+    geoip_country  /usr/share/GeoIP/GeoIP.dat; ## the country IP database
+    log_format  main  '\$remote_addr - \$remote_user [\$time_local] "\$request" \$status \$body_bytes_sent "\$http_referer" "\$http_user_agent" - [\$geoip_country_name]';
 
     #log_format error403  '\$remote_addr - \$remote_user [\$time_local] '
     #                 '\$status "\$request"  "\$http_x_forwarded_for"';					  
@@ -855,8 +856,8 @@ http   {
     gzip_proxied        any;
     gzip_types          text/css application/x-javascript;
     gzip_buffers        16 8k;
-    gzip_comp_level     8;
-    gzip_min_length     1024;
+    gzip_comp_level     6;
+    gzip_min_length     800;
 
     #ssl_session_cache shared:SSL:15m;
     #ssl_session_timeout 15m;
@@ -877,16 +878,17 @@ http   {
 	   #www.domain3.de 3store_code; ## German store
 	   #www.domain4.com 4store_code; ## different products
 	   #}
+	   
 server {
-    listen 80 default;
+    listen 80;
     return 444;
 }
 
 #server {
-    #listen 443 default;
-    #ssl_certificate     /etc/ssl/certs/www_server_com.chained.crt; 
-    #ssl_certificate_key /etc/ssl/certs/server.key;
-    #return 444;
+#     listen 443;
+#     ssl_certificate     /etc/ssl/certs/www_server_com.chained.crt; 
+#     ssl_certificate_key /etc/ssl/certs/server.key;
+#     return 444;
 #}
 
 #server {
@@ -897,11 +899,11 @@ server {
 
 server {   
     listen 80; ## change to 8080 with Varnish
-    #listen 443 ssl;
+    #listen 443 spdy ssl;
     server_name $MY_DOMAIN; ## Domain is here
     root $MY_SHOP_PATH;
 
-    access_log  /var/log/nginx/access_mydomain.log  main;
+    access_log  /var/log/nginx/access_$MY_DOMAIN.log  main;
     
     ## Nginx will not add the port in the url when the request is redirected.
     #port_in_redirect off; 
@@ -972,7 +974,7 @@ server {
 
     ## Images, scripts and styles set far future Expires header
     location ~* \.(js|css|png|jpg|jpeg|gif|ico)$ {
-	    open_file_cache max=10000 inactive=8h;
+        open_file_cache max=10000 inactive=8h;
         open_file_cache_valid 1h;
         open_file_cache_min_uses 2;
         open_file_cache_errors off;
@@ -984,7 +986,7 @@ server {
 
     ## Main Magento location
     location @handler {
-        rewrite / /index.php;
+        rewrite / /index.php?\$args;
         }
  
     location ~ .php/ { ## Forward paths like /js/index.php/x.js to relevant handler
@@ -1057,7 +1059,7 @@ pause '------> Press [Enter] key to continue'
 echo
 		cd $MY_SHOP_PATH
 		MYSQL_FILE=$(head -c 500 /dev/urandom | tr -dc 'a-zA-Z' | fold -w 7 | head -n 1)
-		wget -qO- -O adminer_$MYSQL_FILE.php http://downloads.sourceforge.net/adminer/adminer-3.7.1.php
+		wget -qO- -O adminer_$MYSQL_FILE.php http://downloads.sourceforge.net/adminer/adminer-4.1.0.php
 	cok "Adminer installed to $MY_SHOP_PATH/adminer_$MYSQL_FILE.php"
 	cok "ok"
 echo
@@ -1077,9 +1079,6 @@ echo -e '\nDAEMON_OPTS="-a :80 \
              -S /etc/varnish/secret \
              -s malloc,2G"' >> /etc/sysconfig/varnish
 
-sed -i 's/VARNISH_LISTEN_PORT=6081/VARNISH_LISTEN_PORT=80/' /etc/sysconfig/varnish
-sed -i 's,VARNISH_VCL_CONF=/etc/varnish/default.vcl,VARNISH_VCL_CONF='$MY_SHOP_PATH'/var/default.vcl,' /etc/sysconfig/varnish
-
 VSECRET=$(cat /etc/varnish/secret)
 echo 'this is Varnish secret key -->  '$VSECRET'  <-- copy it'
 cecho "Varnish settings loaded ... \033[01;32m  ok"
@@ -1094,12 +1093,13 @@ cecho "RESETTING FILE PERMISSIONS ..."
 		chown -R $FPM_USER:$FPM_USER $MY_SHOP_PATH
 	cok "ok"
 	echo
-	cok "Writing Magento cron.php into crontab"
+	cok "Writing Magento cron.sh into crontab"
+	chmod +x $MY_SHOP_PATH/cron.sh
 #write out current crontab
 	crontab -l > magecron
 	cok "thats ok"
 #echo new cron into cron file
-	echo "*/5 * * * * php -q $MY_SHOP_PATH/cron.php" >> magecron
+	echo "*/2 * * * * /bin/sh $MY_SHOP_PATH/cron.sh" >> magecron
 #install new cron file
 	crontab magecron
 	rm magecron
@@ -1549,7 +1549,7 @@ fi
 	cok "REMEMBER YOUR PORT: $NEW_SSH_PORT, LOGIN: $NEW_ROOT_NAME AND PASSWORD $NEW_ROOT_PASSGEN"
 	else
 	mv /etc/ssh/sshd_config.BACK /etc/ssh/sshd_config
-	cwarn "Writing your ssh_config back ... \033[01;32m ok"
+	cwarn "Writing your sshd_config back ... \033[01;32m ok"
 	service sshd restart
 	    if [ -f /etc/fail2ban/jail.conf ]
 then
@@ -1581,7 +1581,7 @@ echo
 			echo -n "     PROCESSING  "
             quick_progress &
             pid="$!"
-			wget -qO - http://www.configserver.com/free/csf.tgz | tar -xzp
+			wget -qO - http://www.configserver.com/free/csf.tgz | tar -xz
 			stop_progress "$pid"
 				echo
 			cd csf
