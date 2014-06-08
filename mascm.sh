@@ -837,8 +837,8 @@ http   {
     include       /etc/nginx/mime.types;
     default_type  application/octet-stream;
 
-    geoip_country  /usr/share/GeoIP/GeoIP.dat; ## the country IP database
-    log_format  main  '\$remote_addr - \$remote_user [\$time_local] "\$request" \$status \$body_bytes_sent "\$http_referer" "\$http_user_agent" - [\$geoip_country_name]';
+#    geoip_country  /usr/share/GeoIP/GeoIP.dat; ## the country IP database
+    log_format  main  '\$remote_addr - \$remote_user [\$time_local] "\$request" \$status \$body_bytes_sent "\$http_referer" "\$http_user_agent"';
 
     #log_format error403  '\$remote_addr - \$remote_user [\$time_local] '
     #                 '\$status "\$request"  "\$http_x_forwarded_for"';					  
