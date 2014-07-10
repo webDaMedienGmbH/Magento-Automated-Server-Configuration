@@ -6,7 +6,7 @@
 #	All rights reserved.                                         #
 #====================================================================#
 SELF=$(basename $0)
-MASCM_VER="3.0"
+MASCM_VER="5.0.1.9"
 
 # The base md5sum location to cotrol license
 #MASCM_BASE=http://www.magenx.com/mascm
@@ -369,31 +369,31 @@ if [ "$repoP_install" == "y" ];then
         cinfo "Percona repository installation skipped. Next step"
 fi
 echo
-cecho "============================================================================="
-echo
-echo -n "---> Start IUScommunity repository installation? [y/n][n]:"
-read repoIU_install
-if [ "$repoIU_install" == "y" ];then
-		echo
-        cok "Running Installation of IUScommunity repository "
-		echo
-			echo -n "     PROCESSING  "
-		quick_progress &
-		pid="$!"
-		rpm -Uvh http://dl.iuscommunity.org/pub/ius/stable/CentOS/6/x86_64/ius-release-1.0-11.ius.centos6.noarch.rpm >/dev/null 2>&1
-		stop_progress "$pid"
-                rpm  --quiet -q ius-release
-                if [ "$?" = 0 ]
-                    then
-                    cok "INSTALLED OK"
-		else
-                    cwarn "ERROR"
-		exit
-                fi
-	echo
-  else
-        cinfo "IUScommunity repository installation skipped. Next step"
-fi
+#cecho "============================================================================="
+#echo
+#echo -n "---> Start IUScommunity repository installation? [y/n][n]:"
+#read repoIU_install
+#if [ "$repoIU_install" == "y" ];then
+#		echo
+#       cok "Running Installation of IUScommunity repository "
+#		echo
+#			echo -n "     PROCESSING  "
+#		quick_progress &
+#		pid="$!"
+#		rpm -Uvh http://dl.iuscommunity.org/pub/ius/stable/CentOS/6/x86_64/ius-release-1.0-11.ius.centos6.noarch.rpm >/dev/null 2>&1
+#		stop_progress "$pid"
+#               rpm  --quiet -q ius-release
+#                if [ "$?" = 0 ]
+#                    then
+#                   cok "INSTALLED OK"
+#		else
+#                    cwarn "ERROR"
+#		exit
+#                fi
+#	echo
+#  else
+#        cinfo "IUScommunity repository installation skipped. Next step"
+#fi
 ###################################################################################
 #                                 REPOSITORIES END                                #
 ###################################################################################
@@ -416,7 +416,7 @@ if [ "$sys_update" == "y" ];then
 		echo -n "     PROCESSING  "
 			long_progress &
 			pid="$!"
-			yum -q -y install wget curl mcrypt sudo crontabs gcc vim mlocate unzip >/dev/null 2>&1
+			yum -q -y install wget curl mcrypt sudo crontabs gcc vim mlocate unzip proftpd inotify-tools >/dev/null 2>&1
 			stop_progress "$pid"
 		cok "INSTALLED OK"
 		echo
@@ -442,18 +442,18 @@ echo
 echo
 cecho "============================================================================="
 echo
-echo -n "---> Start Percona installation? [y/n][n]:"
+echo -n "---> Start Percona 5.6 installation? [y/n][n]:"
 read percona_install
 if [ "$percona_install" == "y" ];then
 		echo
-        cok "Running Percona Installation"
+        cok "Running Percona 5.6 Installation"
 		echo
 			echo -n "     PROCESSING  "
 		long_progress &
 		pid="$!"
-		yum -y -q install Percona-Server-client-55 Percona-Server-server-55  >/dev/null 2>&1
+		yum -y -q install Percona-Server-client-56 Percona-Server-server-56  >/dev/null 2>&1
 		stop_progress "$pid"
-			rpm  --quiet -q Percona-Server-client-55 Percona-Server-server-55
+			rpm  --quiet -q Percona-Server-client-56 Percona-Server-server-56
 			if [ "$?" = 0 ]
 		then
                     cok "INSTALLED OK"
@@ -468,7 +468,7 @@ if [ "$percona_install" == "y" ];then
 		cecho "Downloading from MagenX Github repository default config"
 			wget -O /etc/my.cnf  -q https://raw.githubusercontent.com/magenx/magento-mysql/master/my.cnf/my.cnf
 		echo
-		cok "my.cnf downloaded to /etc and saved as my.cnf"
+		cok "my.cnf downloaded to /etc/ and saved"
 		cecho "Please correct it according to your servers specs and restart your mysql server"
 			wget -O /etc/mysqlreport.pl  -q  http://hackmysql.com/scripts/mysqlreport
 			wget -O /etc/mysqltuner.pl  -q  https://raw.github.com/rackerhacker/MySQLTuner-perl/master/mysqltuner.pl
@@ -481,22 +481,22 @@ fi
 echo
 cecho "============================================================================="
 echo
-echo -n "---> Start PHP installation? [y/n][n]:"
+echo -n "---> Start PHP 5.5 installation? [y/n][n]:"
 read php_install
 if [ "$php_install" == "y" ];then
 		echo
-        cok "Running PHP Installation"
+        cok "Running PHP 5.5 Installation"
 		echo
 			echo -n "     PROCESSING  "
 		long_progress &
 		pid="$!"
-		yum -y -q install php54 php54-cli php54-common php54-fpm php54-gd php54-curl php54-mbstring php54-bcmath php54-soap php54-mcrypt php54-mysql php54-pdo php54-xml php54-pecl-apc php54-pecl-memcache php54-pecl-redis  >/dev/null 2>&1
+		yum --enablerepo=remi,remi-php55 -y -q install php php-cli php-common php-fpm php-gd php-curl php-mbstring php-bcmath php-soap php-mcrypt php-mysql php-pdo php-xml php-pecl-memcache php-pecl-redis php-opcache php-pecl-geoip >/dev/null 2>&1
 		stop_progress "$pid"
-		rpm  --quiet -q php54
+		rpm  --quiet -q php
                 if [ "$?" = 0 ]
                     then
                     cok "INSTALLED OK"
-		yum list installed | grep php54 | awk '{print "      ",$1}'
+		yum list installed | grep php | awk '{print "      ",$1}'
 		else
                     cwarn "ERROR"
 		exit
@@ -504,7 +504,7 @@ if [ "$php_install" == "y" ];then
 		echo
 		chkconfig php-fpm on
    else
-        cinfo "PHP installation skipped. Next step"
+        cinfo "PHP 5.5 installation skipped. Next step"
 fi
 echo
 cecho "============================================================================="
@@ -602,7 +602,7 @@ if [ "$f2b_install" == "y" ];then
 		pid="$!"
 		yum -y -q install fail2ban  >/dev/null 2>&1
 		stop_progress "$pid"
-                rpm  --quiet -q memcached
+                rpm  --quiet -q fail2ban
                 if [ "$?" = 0 ]
                     then
                     cok "INSTALLED OK"
@@ -699,37 +699,39 @@ END
 sysctl -q -p 
 echo
 cecho "sysctl.conf loaded ... \033[01;32m  ok"
-cat > /etc/php.d/apc.ini <<END
-extension = apc.so
-[APC]
-apc.enable_opcode_cache = 1
-apc.enabled = 1
-apc.shm_segments = 1
-apc.shm_size = 128M
-apc.num_files_hint = 5000
-apc.user_entries_hint = 5000
-apc.ttl = 7200
-apc.user_ttl = 7200
-apc.gc_ttl = 3600
-apc.cache_by_default = 1
-apc.filters = "apc\.php$"
-apc.mmap_file_mask = "/tmp/apc.XXXXXX"
-apc.slam_defense = 0
-apc.file_update_protection = 2
-apc.enable_cli = 1
-apc.max_file_size = 5M
-apc.use_request_time = 0
-apc.stat = 0
-apc.file_md5 = 1
-apc.canonicalize = 0
-apc.write_lock = 1
-apc.report_autofilter = 0
-apc.include_once_override = 0
-apc.coredump_unmap = 0
-apc.stat_ctime = 0
+cat > /etc/php.d/opcache.ini <<END
+; Enable Zend OPcache extension
+zend_extension=opcache.so
+
+opcache.enable = 1
+opcache.enable_cli = 1
+opcache.memory_consumption = 256
+opcache.interned_strings_buffer = 4
+opcache.max_accelerated_files = 10000
+opcache.max_wasted_percentage = 5
+opcache.use_cwd = 1
+opcache.validate_timestamps = 0
+;opcache.revalidate_freq = 2
+opcache.file_update_protection = 2
+opcache.revalidate_path = 0
+opcache.save_comments = 1
+opcache.load_comments = 1
+opcache.fast_shutdown = 0
+opcache.enable_file_override = 0
+opcache.optimization_level = 0xffffffff
+opcache.inherited_hack = 1
+opcache.blacklist_filename = "/etc/php.d/blacklist.txt"
+opcache.max_file_size = 0
+opcache.consistency_checks = 0
+opcache.force_restart_timeout = 60
+opcache.error_log = ""
+opcache.log_verbosity_level = 1
+opcache.preferred_memory_model = ""
+opcache.protect_memory = 0
+;opcache.mmap_base = ""
 END
 
-cecho "apc.ini loaded ... \033[01;32m  ok"
+cecho "opcache.ini loaded ... \033[01;32m  ok"
 #Tweak php.ini.
 cp /etc/php.ini /etc/php.ini.BACK
 sed -i 's/^\(max_execution_time = \)[0-9]*/\17200/' /etc/php.ini
@@ -755,7 +757,7 @@ cecho "memcached config loaded ... \033[01;32m  ok"
 echo -e '\nfastcgi_read_timeout 7200;\nfastcgi_send_timeout 7200;\nfastcgi_connect_timeout 65;\n' >> /etc/nginx/fastcgi_params
 cecho "fastcgi_params loaded ... \033[01;32m  ok"
 echo
-echo "*		soft	nofile		40000" >> /etc/security/limits.conf
+echo "*		soft	nofile		60000" >> /etc/security/limits.conf
 echo "*		hard	nofile		100000" >> /etc/security/limits.conf
   else
         cinfo "Not loading optimized configs. Next step"
@@ -778,7 +780,7 @@ echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 echo
 FPM=$(find /etc/php-fpm.d/ -name 'www.conf')
 FPM_USER=$(grep "user" $FPM | grep "=" | awk '{print $3}')
-echo -n "---> Download latest Magento version? [y/n][n]:"
+echo -n "---> Download latest Magento version (1.9.0.1) ? [y/n][n]:"
 read new_down
 if [ "$new_down" == "y" ];then
      read -e -p "---> Edit your installation folder full path: " -i "/var/www/html/myshop.com" MY_SHOP_PATH
@@ -791,12 +793,9 @@ if [ "$new_down" == "y" ];then
 		echo -n "      DOWNLOADING MAGENTO  "
 			long_progress &
 			pid="$!"
-			wget -qO - http://www.magentocommerce.com/downloads/assets/1.8.1.0/magento-1.8.1.0.tar.gz | tar -xzp
+			wget -qO - http://www.magentocommerce.com/downloads/assets/1.9.0.1/magento-1.9.0.1.tar.gz | tar -xzp --strip 1
 			stop_progress "$pid"
 		echo
-		cecho "Cleanup"
-		mv magento/* .
-		rm -rf magento RELEASE_NOTES.txt LICENSE.txt LICENSE.html LICENSE_AFL.txt index.php.sample php.ini.sample
 		echo
 cecho "============================================================================="
 cok "      == MAGENTO DOWNLOADED AND READY FOR INSTALLATION =="
@@ -858,9 +857,14 @@ http   {
     gzip_buffers        16 8k;
     gzip_comp_level     6;
     gzip_min_length     800;
-
-    #ssl_session_cache shared:SSL:15m;
-    #ssl_session_timeout 15m;
+	
+    open_file_cache max=10000 inactive=8h;
+    open_file_cache_valid 1h;
+    open_file_cache_min_uses 2;
+    open_file_cache_errors off;
+		
+    #ssl_session_cache         shared:SSL:15m;
+    #ssl_session_timeout       15m;
 	#ssl_protocols             SSLv3 TLSv1 TLSv1.1 TLSv1.2;
     #ssl_ciphers               "EECDH+ECDSA+AESGCM EECDH+aRSA+AESGCM EECDH+ECDSA+SHA384 EECDH+ECDSA+SHA256 EECDH+aRSA+SHA384 EECDH+aRSA+SHA256 EECDH+aRSA+RC4 EECDH EDH+aRSA RC4 !aNULL !eNULL !LOW !3DES !MD5 !EXP !PSK !SRP !DSS !RC4";
     #ssl_prefer_server_ciphers on;
@@ -886,7 +890,7 @@ server {
 
 #server {
 #     listen 443;
-#     ssl_certificate     /etc/ssl/certs/www_server_com.chained.crt; 
+#     ssl_certificate     /etc/ssl/certs/server.crt; 
 #     ssl_certificate_key /etc/ssl/certs/server.key;
 #     return 444;
 #}
@@ -911,7 +915,7 @@ server {
     ####################################################################################
     ## SSL CONFIGURATION
 
-       #ssl_certificate     /etc/ssl/certs/www_server_com.chained.crt; 
+       #ssl_certificate     /etc/ssl/certs/server.crt; 
        #ssl_certificate_key /etc/ssl/certs/server.key;
 
     ####################################################################################
@@ -944,12 +948,13 @@ server {
     ## Main Magento location
     location / {
         try_files \$uri \$uri/ @handler;
+		expires max;
         }
 
     ####################################################################################
 
     ## These locations would be hidden by .htaccess normally, protected
-    location ~ (/(app/|includes/|/pkginfo/|var/|errors/local.xml)|/\.svn/|/\.ht.+) {
+    location ~ (/(app/|includes/|/pkginfo/|var/|errors/local.xml)|/\.) {
         deny all;
         #internal;
         }
@@ -972,31 +977,19 @@ server {
 
     ####################################################################################
 
-    ## Images, scripts and styles set far future Expires header
-    location ~* \.(js|css|png|jpg|jpeg|gif|ico)$ {
-        open_file_cache max=10000 inactive=8h;
-        open_file_cache_valid 1h;
-        open_file_cache_min_uses 2;
-        open_file_cache_errors off;
-        expires max;
-        log_not_found off;
-        }
-
-    ####################################################################################
-
     ## Main Magento location
     location @handler {
         rewrite / /index.php?\$args;
         }
  
-    location ~ .php/ { ## Forward paths like /js/index.php/x.js to relevant handler
-        rewrite ^(.*.php)/  \$1 last;
+    location ~ \.php/ { ## Forward paths like /js/index.php/x.js to relevant handler
+        rewrite ^(.*\.php)/  \$1 last;
         }
 
     ####################################################################################
     
     ## Execute PHP scripts
-    location ~ .php$ {
+    location ~ \.php$ {
         add_header X-Config-By 'MagenX -= www.magenx.com =-';
 		add_header X-UA-Compatible 'IE=Edge,chrome=1';
         add_header X-Time-Spent \$request_time;
@@ -1035,34 +1028,49 @@ echo
 	cok "Installed TURPENTINE VARNISH FPC into System > Configuration"
 	cok "ok"
 echo
-cok "INSTALLING ENHANCED ADMIN GRIDS INTO MAGENTO"
-pause '------> Press [Enter] key to continue'
 echo
-		cd $MY_SHOP_PATH
-		wget -qO- -O eagrid.zip --no-check-certificate https://github.com/mage-eag/mage-enhanced-admin-grids/archive/0.8.9.zip && unzip -qq eagrid.zip && rm -rf eagrid.zip
-		cp -rf mage-enhanced-admin-grids-0.8.9/* .
-		rm -rf mage-enhanced-admin-grids-0.8.9
-	cok "Installed ENHANCED ADMIN GRIDS into System > Configuration"
-	cok "ok"
-echo
-cok "INSTALLING APC CACHE CONTROL INTO MAGENTO ADMIN"
-pause '------> Press [Enter] key to continue'
-echo
-		cd $MY_SHOP_PATH
-		wget -qO- -O master.zip --no-check-certificate https://github.com/buric/Inchoo_Apc/archive/master.zip && unzip -qq master.zip && rm -rf master.zip
-		cp -rf Inchoo_Apc-master/*  .
-	cok "APC cache installed into System > Cache Management"
-	cok "ok"
-echo
-cok "INSTALLING Adminer - single file MySQL Admin Interface"
+cok "INSTALLING phpMyAdmin - advanced MySQL interface"
 pause '------> Press [Enter] key to continue'
 echo
 		cd $MY_SHOP_PATH
 		MYSQL_FILE=$(head -c 500 /dev/urandom | tr -dc 'a-zA-Z' | fold -w 7 | head -n 1)
-		wget -qO- -O adminer_$MYSQL_FILE.php http://downloads.sourceforge.net/adminer/adminer-4.1.0.php
-	cok "Adminer installed to $MY_SHOP_PATH/adminer_$MYSQL_FILE.php"
+		mkdir -p $MYSQL_FILE
+		cd $MYSQL_FILE
+		wget -qO - http://sourceforge.net/projects/phpmyadmin/files/phpMyAdmin/4.2.5/phpMyAdmin-4.2.5-all-languages.tar.gz | tar -xzp --strip 1
+		echo
+	cok "phpMyAdmin installed to $MY_SHOP_PATH/$MYSQL_FILE/"
 	cok "ok"
 echo
+echo
+cok "INSTALLING OPCACHE interface"
+pause '------> Press [Enter] key to continue'
+echo
+		cd $MY_SHOP_PATH
+		OPCACHE_FILE=$(head -c 500 /dev/urandom | tr -dc 'a-zA-Z' | fold -w 7 | head -n 1)
+		wget -qO ${OPCACHE_FILE}_opcache_gui.php https://raw.githubusercontent.com/amnuts/opcache-gui/master/index.php
+		echo
+	cok "OPCACHE interface installed to $MY_SHOP_PATH/${OPCACHE_FILE}_opcache_gui.php"
+	cok "ok"
+echo
+echo
+cok "INSTALLING magento /app/ folder monitor and opcache invalidation script"
+pause '------> Press [Enter] key to continue'
+cat > /root/app_monitor.sh <<END
+#!/bin/bash
+## monitor app folder and log modified files
+/usr/bin/inotifywait -e modify \
+    -mrq --timefmt %a-%b-%d-%T --format '%w%f %T' ${MY_SHOP_PATH}/app | while read line; do
+    echo "\$line " >> /var/log/app_monitor.log
+    FILE=\$(echo \$line | cut -d'.' -f1-3 | sed 's/\/\./\//g')
+    curl "http://$MY_DOMAIN/${OPCACHE_FILE}_opcache_gui.php?page=invalidate&file=\${FILE}"
+done
+END
+echo
+	cok "Script installed to /root/app_monitor.sh"
+	cok "ok"
+echo
+echo
+	echo "/root/app_monitor.sh &" >> /etc/rc.local
 echo
 echo
 cok "NOW WE LOAD VARNISH CONFIGURATION"
@@ -1075,7 +1083,7 @@ echo -e '\nDAEMON_OPTS="-a :80 \
              -p thread_pool_add_delay=2 \
              -p cli_timeout=25 \
              -p cli_buffer=26384 \
-			 -p esi_syntax=0x2 \
+             -p esi_syntax=0x2 \
              -p session_linger=100 \
              -S /etc/varnish/secret \
              -s malloc,2G"' >> /etc/sysconfig/varnish
@@ -1089,8 +1097,7 @@ echo
 cecho "RESETTING FILE PERMISSIONS ..."
 		find . -type f -exec chmod 664 {} \;
 		find . -type d -exec chmod 775 {} \;
-		chmod -R o+w var app/etc
-		chmod -R o+w media       
+		chmod 777 -R var media
 		chown -R $FPM_USER:$FPM_USER $MY_SHOP_PATH
 	cok "ok"
 	echo
@@ -1100,7 +1107,7 @@ cecho "RESETTING FILE PERMISSIONS ..."
 	crontab -l > magecron
 	cok "thats ok"
 #echo new cron into cron file
-	echo "*/2 * * * * /bin/sh $MY_SHOP_PATH/cron.sh" >> magecron
+	echo "* * * * * /bin/sh $MY_SHOP_PATH/cron.sh" >> magecron
 #install new cron file
 	crontab magecron
 	rm magecron
@@ -1224,7 +1231,7 @@ echo
 cok "NOW INSTALLING MAGENTO WITHOUT SAMPLE DATA"
 SHOP_PATH=$(cat ~/mascm/.mascm_index | grep webshop | awk '{print $3}')
 cd $SHOP_PATH
-    chmod o+x mage
+    chmod +x mage
     ./mage mage-setup .
 
 php -f install.php -- \
@@ -1258,7 +1265,6 @@ cok "ok"
     cecho " MAGENTO FRONTEND AND BACKEND LINKS"
     echo
     echo "      Store: $MAGE_SITE_URL"
-    echo "      Admin: $MAGE_SITE_URL admin/"
     echo
     cecho "============================================================================="
     cecho " MAGENTO ADMIN ACCOUNT"
@@ -1309,9 +1315,11 @@ echo
 echo "cleaning up indexes locks and running reindexall"	
 rm -rf 	$SHOP_PATH/var/locks/*
 php $SHOP_PATH/shell/indexer.php --reindexall
-echo 
 echo
-cok "NOW LOGIN TO YOUR WEB BACKEND AND CHECK EVERYTHING"
+chmod +x /root/app_monitor.sh
+/root/app_monitor.sh &
+echo
+cok "NOW LOGIN TO YOUR BACKEND AND CHECK EVERYTHING"
 echo
 pause '---> Press [Enter] key to show menu'
 ;;
