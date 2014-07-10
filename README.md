@@ -37,10 +37,9 @@ Get a fully configured server with Magento in just 15 minutes.
 *runs mysql_secure_installation*<br/>
 *Creates database*<br/>
 *Installs Magento*<br/>
-*cleanup*<br/>
 *chown and chmod files*<br/>
 *Magento cron*<br/>
-*apc cache control in admin*<br/>
+*opcache invalidation*<br/>
 *Magento Redis Cache backend*<br/>
 *Magento memcache sessions*<br/>
 *Creates new sudo user*<br/>
