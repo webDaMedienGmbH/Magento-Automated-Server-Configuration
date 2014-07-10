@@ -1,14 +1,9 @@
-Removed CentALT repository<br/>
-replaced CentALT with Nginx (mainline) for the latest nginx package and<br/>
-Les RPM de Remi for redis and memcached<br/>
-<br/>
-<br/>
 
 
 MASC-M<sup>™</sup>
 ======
 
----->> Magento 1.8.1.0
+---->> Magento **1.9.0.1**
 
 #### MagenX - Automated Server Configuration for Magento
 Get a fully configured server with Magento in just 15 minutes.
@@ -20,22 +15,22 @@ Get a fully configured server with Magento in just 15 minutes.
 
 **Installs**:<br/>
 *All selected repositories*<br/>
-*Percona 5.5 .latest*<br/>
-*php-5.4 .latest (with apc, phpredis, memcache)*<br/>
-*Nginx .latest*<br/>
+*Percona 5.6 .latest*<br/>
+*PHP 5.5 .latest (with -opcache, php-redis, -memcache)*<br/>
+*Nginx .latest (mainline)*<br/>
 *Memcached .latest*<br/>
 *Redis .latest*<br/>
 *Varnish 3 .latest*<br/>
-*Magento 1.8.1.0 .latest*<br/>
+*Magento 1.9.0.1 .latest*<br/>
 
 **Additional**:<br/>
-*Adminer - single file database management script*<br/>
+*phpMyAdmin 4.2.5 - advanced database management*<br/>
 *mysqltuner.pl - database tuning script*<br/>
 *mysqlreport.pl - Make easy-to-read MySQL status reports*<br/>
 *MagenX default my.cnf for Percona*<br/>
 
 **Configuration**:<br/>
-*Optimizes php.ini, apc.ini, fastcgi_params, memcached, sysctl*<br/>
+*Optimizes php.ini, fastcgi_params, memcached, sysctl*<br/>
 *php-fpm = ondemand*<br/>
 *MagenX nginx config for your domain*<br/>
 *Generates Mysql root and user passwords*<br/>
