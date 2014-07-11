@@ -720,7 +720,7 @@ opcache.fast_shutdown = 0
 opcache.enable_file_override = 0
 opcache.optimization_level = 0xffffffff
 opcache.inherited_hack = 1
-opcache.blacklist_filename = "/etc/php.d/blacklist.txt"
+opcache.blacklist_filename=/etc/php.d/opcache*.blacklist
 opcache.max_file_size = 0
 opcache.consistency_checks = 0
 opcache.force_restart_timeout = 60
@@ -1285,7 +1285,7 @@ echo
 echo
 cecho "-= FINAL MAINTENANCE AND CLEANUP =-"
 echo
-echo "changing your local.xml file with memcache sessions and redis cache backends"
+echo "---> CHANGING YOUR LOCAL.XML FILE WITH MEMCACHE SESSIONS AND REDIS CACHE BACKENDS"
 echo
 sed -i '/<session_save>/d' $SHOP_PATH/app/etc/local.xml
 sed -i '/<global>/ a\
@@ -1312,12 +1312,14 @@ sed -i '/<global>/ a\
         </backend_options> \
         </cache>' $SHOP_PATH/app/etc/local.xml
 echo
-echo "cleaning up indexes locks and running reindexall"	
+echo "---> CLEANING UP INDEXES LOCKS AND RUNNING REINDEXALL"	
+echo
 rm -rf 	$SHOP_PATH/var/locks/*
 php $SHOP_PATH/shell/indexer.php --reindexall
 echo
 chmod +x /root/app_monitor.sh
 /root/app_monitor.sh &
+echo
 echo
 cok "NOW LOGIN TO YOUR BACKEND AND CHECK EVERYTHING"
 echo
