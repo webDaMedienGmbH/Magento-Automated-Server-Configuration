@@ -743,8 +743,14 @@ sed -i 's/expose_php = On/expose_php = Off/' /etc/php.ini
 sed -i 's/;realpath_cache_size = 16k/realpath_cache_size = 512k/' /etc/php.ini
 sed -i 's/;realpath_cache_ttl = 120/realpath_cache_ttl = 84600/' /etc/php.ini
 sed -i 's/short_open_tag = Off/short_open_tag = On/' /etc/php.ini
-sed -i 's/; max_input_vars = 1000/max_input_vars = 20000/' /etc/php.ini
+sed -i 's/; max_input_vars = 1000/max_input_vars = 50000/' /etc/php.ini
+sed -i 's/mysql.allow_persistent = On/mysql.allow_persistent = Off/' /etc/php.ini
+sed -i 's/mysqli.allow_persistent = On/mysqli.allow_persistent = Off/' /etc/php.ini
+sed -i 's/;date.timezone =/date.timezone = UTC/' /etc/php.ini
 sed -i 's/pm = dynamic/pm = ondemand/' /etc/php-fpm.d/www.conf
+sed -i 's/;pm.max_requests = 500/pm.max_requests = 10000/' /etc/php-fpm.d/www.conf
+sed -i 's/pm.max_children = 50/pm.max_children = 500/' /etc/php-fpm.d/www.conf
+
 cecho "php.ini loaded ... \033[01;32m  ok"
 cat > /etc/sysconfig/memcached <<END 
 PORT="11211"
