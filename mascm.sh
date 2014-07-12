@@ -128,12 +128,12 @@ cok "PASS: YOUR ARCHITECTURE IS 64-BIT"
 fi
 
 # check if memory is enough
-UNITS=$(cat /proc/meminfo | grep MemTotal | awk '{print $3}')
-TOTALMEM=$(cat /proc/meminfo | grep MemTotal | awk '{print $2}')
-if [ "$TOTALMEM" -gt "1500000" ]; then
-cok "PASS: YOU HAVE $TOTALMEM $UNITS OF RAM"
+TOTALMEM=$(awk '/MemTotal/ { print $2 }' /proc/meminfo)
+if [ "$TOTALMEM" -gt "3000000" ]; then
+cok "PASS: YOU HAVE $TOTALMEM kB OF RAM"
   else
-  cwarn "WARNING: YOU HAVE LESS THAN 1GB OF RAM"
+  cwarn "WARNING: YOU HAVE LESS THAN 3GB OF RAM"
+  cwarn "this is not good for import/export and full reindex"
 fi
 
 # network is up?
@@ -273,7 +273,7 @@ if [ "$repoC_install" == "y" ];then
         cok "Running Installation of Nginx (mainline) repository"
 		echo
 			cecho "Downloading Nginx GPG key"
-			wget -O /etc/pki/rpm-gpg/nginx_signing.key  http://nginx.org/packages/keys/nginx_signing.key
+			wget -qO /etc/pki/rpm-gpg/nginx_signing.key  http://nginx.org/packages/keys/nginx_signing.key
 		echo
 			cecho "Creating Nginx (mainline) repository file"
 		echo
@@ -369,34 +369,6 @@ if [ "$repoP_install" == "y" ];then
         cinfo "Percona repository installation skipped. Next step"
 fi
 echo
-#cecho "============================================================================="
-#echo
-#echo -n "---> Start IUScommunity repository installation? [y/n][n]:"
-#read repoIU_install
-#if [ "$repoIU_install" == "y" ];then
-#		echo
-#       cok "Running Installation of IUScommunity repository "
-#		echo
-#			echo -n "     PROCESSING  "
-#		quick_progress &
-#		pid="$!"
-#		rpm -Uvh http://dl.iuscommunity.org/pub/ius/stable/CentOS/6/x86_64/ius-release-1.0-11.ius.centos6.noarch.rpm >/dev/null 2>&1
-#		stop_progress "$pid"
-#               rpm  --quiet -q ius-release
-#                if [ "$?" = 0 ]
-#                    then
-#                   cok "INSTALLED OK"
-#		else
-#                    cwarn "ERROR"
-#		exit
-#                fi
-#	echo
-#  else
-#        cinfo "IUScommunity repository installation skipped. Next step"
-#fi
-###################################################################################
-#                                 REPOSITORIES END                                #
-###################################################################################
 echo
 cecho "============================================================================="
 echo -n "---> Start System Update? [y/n][n]:"
@@ -416,7 +388,7 @@ if [ "$sys_update" == "y" ];then
 		echo -n "     PROCESSING  "
 			long_progress &
 			pid="$!"
-			yum -q -y install wget curl mcrypt sudo crontabs gcc vim mlocate unzip proftpd inotify-tools >/dev/null 2>&1
+			yum -q -y install wget curl bc mcrypt sudo crontabs gcc vim mlocate unzip proftpd inotify-tools >/dev/null 2>&1
 			stop_progress "$pid"
 		cok "INSTALLED OK"
 		echo
@@ -456,23 +428,28 @@ if [ "$percona_install" == "y" ];then
 			rpm  --quiet -q Percona-Server-client-56 Percona-Server-server-56
 			if [ "$?" = 0 ]
 		then
-                    cok "INSTALLED OK"
+             cok "INSTALLED OK"
 		else
-                    cwarn "ERROR"
+             cwarn "ERROR"
 		exit
 		fi
 			echo
 			chkconfig mysql on
 		echo
-		cecho "Percona doesnt have its own my.cnf file"
-		cecho "Downloading from MagenX Github repository default config"
-			wget -O /etc/my.cnf  -q https://raw.githubusercontent.com/magenx/magento-mysql/master/my.cnf/my.cnf
+		cecho "Downloading my.cnf file from MagenX Github repository"
+		wget -O /etc/my.cnf  -q https://raw.githubusercontent.com/magenx/magento-mysql/master/my.cnf/my.cnf
 		echo
-		cok "my.cnf downloaded to /etc/ and saved"
-		cecho "Please correct it according to your servers specs and restart your mysql server"
-			wget -O /etc/mysqlreport.pl  -q  http://hackmysql.com/scripts/mysqlreport
-			wget -O /etc/mysqltuner.pl  -q  https://raw.github.com/rackerhacker/MySQLTuner-perl/master/mysqltuner.pl
-		cecho "Please use these tools to check and finetune your database"
+		echo
+		cecho "We need to correct your innodb_buffer_pool_size"
+		IBPS=$(echo "0.5*$(awk '/MemTotal/ { print $2 / (1024*1024)}' /proc/meminfo | cut -d'.' -f1)" | bc | xargs printf "%1.0f")
+		sed -i "s/innodb_buffer_pool_size = 4G/innodb_buffer_pool_size = ${IBPS}G/" /etc/my.cnf
+		echo
+		cinfo "Your innodb_buffer_pool_size = ${IBPS}G"
+		echo
+		echo
+        wget -O /etc/mysqlreport.pl  -q  http://hackmysql.com/scripts/mysqlreport
+        wget -O /etc/mysqltuner.pl  -q  https://raw.githubusercontent.com/major/MySQLTuner-perl/master/mysqltuner.pl
+		cecho "Please use these tools to check and finetune your database:"
 		cecho "perl /etc/mysqlreport.pl"
 		cecho "perl /etc/mysqltuner.pl"
   else
@@ -494,13 +471,13 @@ if [ "$php_install" == "y" ];then
 		stop_progress "$pid"
 		rpm  --quiet -q php
                 if [ "$?" = 0 ]
-                    then
-                    cok "INSTALLED OK"
+                 then
+                 cok "INSTALLED OK"
 		yum list installed | grep php | awk '{print "      ",$1}'
 		else
-                    cwarn "ERROR"
+        cwarn "ERROR"
 		exit
-                fi
+     fi
 		echo
 		chkconfig php-fpm on
    else
@@ -1338,137 +1315,63 @@ pause '---> Press [Enter] key to show menu'
 echo
 cecho "============================================================================="
 echo
-cecho "ONLY AMAZON S3 AND FTP OPTIONS ARE AVAILABLE DUE TO THE SIZE OF THE FILES"
+cecho "BACKUP YOUR MAGENTO FILES TO AMAZON S3"
+cecho "AWS Free Tier includes 5GB storage, 20K Get Requests, and 2K Put Requests."
+cecho "Go to http://aws.amazon.com/s3/ , click on the Sign Up button."
 echo
-if [ ! -f /etc/yum.repos.d/s3tools.repo ]
-then
-	echo -n "---> Install Amazon S3 s3tools? [y/n][n]:"
+echo -n "---> Install AWS Command Line Interface? [y/n][n]:"
 	read S3_backup
 	if [ "$S3_backup" == "y" ];then
+		yum -y -q install python-setuptools
+        easy_install pip
+        pip install --upgrade awscli
 	echo
-		cecho "AWS Free Tier includes 5GB storage, 20K Get Requests, and 2K Put Requests."
-		echo
-		cecho "Go to http://aws.amazon.com/s3/ , click on the Sign Up button." 
-		cecho "You will have to supply your Credit Card details."
-		cecho "At the end you should posses your Access and Secret Keys."
 	echo
-	sleep 2
-		cecho "Lets install s3tools first"
-		cd /etc/yum.repos.d/
-		wget -q http://s3tools.org/repo/RHEL_6/s3tools.repo
-		echo
-			echo -n "     PROCESSING  "
-		start_progress &
-		pid="$!"
-		yum -y -q install s3cmd  >/dev/null 2>&1
-		stop_progress "$pid"
-                rpm  --quiet -q s3cmd
-                if [ "$?" = 0 ]
-                    then
-                    cok "INSTALLED OK"
-		else
-                    cwarn "ERROR"
-		exit
-                fi
-	echo
-		cecho "Prepare your Access and Secret Keys"
+		cecho "Prepare your Access and Secret Key"
 	echo
 	sleep 2
-		cecho "Configuring s3tools now"
-		s3cmd --configure
-    fi
-fi
+		cecho "Configuring AWS Command Line Interface now"
 	echo
-echo
-cecho "============================================================================="
-echo
-echo -n "---> CHECKPOINT 1. Backup Magento database now? [y/n][n]: "
-read dump_db
-if [ "$dump_db" == "y" ];then
-DB_HOST=$(cat ~/mascm/.mascm_index | grep database | awk '{print $2}')
-DB_NAME=$(cat ~/mascm/.mascm_index | grep database | awk '{print $3}')
-DB_USER_NAME=$(cat ~/mascm/.mascm_index | grep database | awk '{print $4}')
-DB_PASS=$(cat ~/mascm/.mascm_index | grep database | awk '{print $5}')
-		if grep -q "dump" ~/mascm/.mascm_index ; then
-		DBSAVE_FOLDER=$(cat ~/mascm/.mascm_index| grep dump | awk '{print $2}')
-            echo "Saving the database"
-                mysqldump -u $DB_USER_NAME -p$DB_PASS --single-transaction $DB_NAME | gzip > $DBSAVE_FOLDER/db_$(date +%a-%d-%m-%Y-%S).sql.gz
-                cok "Magento database dump saved to $DBSAVE_FOLDER"
-			echo
-			else
-            read -e -p "---> Enter mysql backup folder path: " -i "/home/backup/db" DBSAVE_FOLDER
-                mkdir -p $DBSAVE_FOLDER
-cat >> ~/mascm/.mascm_index <<END
-dump	$DBSAVE_FOLDER
-END
-                echo "Saving the database"
-                mysqldump -u $DB_USER_NAME -p$DB_PASS --single-transaction $DB_NAME | gzip > $DBSAVE_FOLDER/db_$(date +%a-%d-%m-%Y-%S).sql.gz
-                cok "Magento database saved to $DBSAVE_FOLDER"
-                chmod 640 $DBSAVE_FOLDER/*
-				echo
-			echo
-        fi
-  else
-         cinfo "No backup created"
+		aws configure
 fi
 echo
-cecho "============================================================================="
 echo
-# Just compressing files to tmp
-echo -n "---> CHECKPOINT 2. Backup your shop files now? [y/n][n]: "
-read back_files
-	if [ "$back_files" == "y" ];then
-	SHOP_PATH=$(cat ~/mascm/.mascm_index | grep webshop | awk '{print $3}')
-	cecho "Compressing the backup."
-	tar -cvpzf  /tmp/shop_$(date +%a-%d-%m-%Y-%S).tar.gz  $SHOP_PATH
-	cecho "Site backup compressed."
-	echo
-	fi
+cecho "============================================================================="
 echo
 # Creating cron to S3
-echo -n "---> Download backup files and database and add S3 to cron? [y/n][n]: "
+echo -n "---> Upload backup files and database and add to cron? [y/n][n]: "
+echo
 read s3_now
 	if [ "$s3_now" == "y" ];then
 	DB_HOST=$(cat ~/mascm/.mascm_index | grep database | awk '{print $2}')
 	DB_NAME=$(cat ~/mascm/.mascm_index | grep database | awk '{print $3}')
 	DB_USER_NAME=$(cat ~/mascm/.mascm_index | grep database | awk '{print $4}')
 	DB_PASS=$(cat ~/mascm/.mascm_index | grep database | awk '{print $5}')
-	DBSAVE_FOLDER=$(cat ~/mascm/.mascm_index| grep dump | awk '{print $2}')
 	SHOP_PATH=$(cat ~/mascm/.mascm_index | grep webshop | awk '{print $3}')
 	echo
-		echo -n "---> Create your new bucket now? [y/n][n]: "
-		read s3_bucket_new
-	if [ "$s3_bucket_new" == "y" ];then
-		cecho "CREATE YOUR BUCKET UNIQUE NAME"
-		read -p "---> Confirm your S3 bucket name for files: " S3_BUCKET
-		s3cmd mb s3://$S3_BUCKET
-	else
-		echo
-		read -p "---> Confirm your S3 bucket name: " S3_BUCKET
-	fi
-		cecho "CREATING CRON DATA TO USE AUTO-BACKUP TO S3"	
-		cecho "Magento files auto-backup..."
-cat > ~/mascm/S3_AB_FILES_CRON.sh <<END
+		read -p "---> Confirm your S3 bucket name for backup: " S3_BUCKET
+		read -e -p "---> Confirm your local temporary folder: " -i "/home"  SAVE_FOLDER
+echo
+cecho "CREATING CRON DATA TO USE AUTO-BACKUP TO S3"	
+cecho "Magento files cron backup"
+cat > /root/S3_AB_FILES_CRON.sh <<END
 #!/bin/bash
 echo "Compressing the backup."
-tar -cvpzf  /tmp/shop_$(date +%a-%d-%m-%Y-%S).tar.gz  $SHOP_PATH
+tar -cvpzf  $SAVE_FOLDER/shop_\$(date +%a-%d-%m-%Y-%S).tar.gz  $SHOP_PATH
 echo "Site backup compressed."
 echo "Uploading the new site backup..."
-s3cmd put /tmp/shop_*.tar.gz  s3://$S3_BUCKET
+aws s3 mv $SAVE_FOLDER/shop_*.tar.gz  s3://$S3_BUCKET/
 echo "Backup uploaded."
-find  /tmp/shop_*.tar.gz -type f -exec rm {} \;
-cecho "Removing the cache files..."
-cecho "Files removed."
 cok "All done."
 END
 	
-	cecho "Magento database auto-backup..."
-cat > ~/mascm/S3_AB_DB_CRON.sh <<END
+cecho "Magento database cron backup..."
+cat > /root/S3_AB_DB_CRON.sh <<END
 #!/bin/bash
 echo "Compressing the backup."
-mysqldump -u $DB_USER_NAME -p$DB_PASS --single-transaction $DB_NAME | gzip > $DBSAVE_FOLDER/db_$(date +%a-%d-%m-%Y-%S).sql.gz
+mysqldump -u $DB_USER_NAME -p$DB_PASS --single-transaction $DB_NAME | gzip > $SAVE_FOLDER/db_\$(date +%a-%d-%m-%Y-%S).sql.gz
 echo "Uploading database dump..."
-s3cmd put $DBSAVE_FOLDER/db_*.tar.gz  s3://$S3_BUCKET
+aws s3 mv $SAVE_FOLDER/db_*.tar.gz  s3://$S3_BUCKET/
 echo "Backup uploaded."
 END
 	
@@ -1476,8 +1379,8 @@ END
 	#write out current crontab
 	crontab -l > magecron
 	#echo new cron into cron file
-	echo "0 0 * * 0 sh ~/mascm/S3_AB_FILES_CRON.sh" >> magecron
-	echo "0 5 * * * sh ~/mascm/S3_AB_DB_CRON.sh" >> magecron
+	echo "0 0 * * 0 sh /root/S3_AB_FILES_CRON.sh" >> magecron
+	echo "0 5 * * * sh /root/S3_AB_DB_CRON.sh" >> magecron
 	#install new cron file
 	crontab magecron
 	rm magecron
@@ -1486,22 +1389,6 @@ END
 	cecho "Edit crontab if you need different settings"
 	echo
 	fi	
-echo
-cecho "PLEASE DOWNLOAD YOUR CHECKPOIN BACKUPS MANUALLY WITH FTP CLIENT"
-cecho "at /tmp/shop_*.tar.gz and $DBSAVE_FOLDER/db_*.tar.gz"
-echo
-cwarn "Then run this cleanup tool:"
-echo
-echo -n "---> Cleanup your local temporary backup? [y/n][n]: "
-	read s3_tmp_rm
-	if [ "$s3_tmp_rm" == "y" ];then
-	# remove
-		find  /tmp/shop_*.tar.gz -type f -exec rm {} \;
-		find  $DBSAVE_FOLDER/db_*.tar.gz -type f -exec rm {} \;
-	cecho "Removing the cache files..."
-	cecho "Files removed."
-	cok "All done."
-	fi
 echo
 echo
 pause '---> Press [Enter] key to show menu'
@@ -1518,7 +1405,7 @@ echo
 echo -n "---> Generate a password for the new user? [y/n][n]:"
 read new_rpass_gen
 if [ "$new_rpass_gen" == "y" ];then
-        NEW_ROOT_PASSGEN=$(head -c 500 /dev/urandom | tr -dc 'a-zA-Z0-9~!@#$%^&*-_' | fold -w 15 | head -n 1)
+        NEW_ROOT_PASSGEN=$(head -c 500 /dev/urandom | tr -dc 'a-zA-Z0-9~!@#$%^&' | fold -w 15 | head -n 1)
                 cecho "Password: \033[01;31m $NEW_ROOT_PASSGEN"
                 cok "!REMEMBER IT AND KEEP IT SAFE!"
 				echo
