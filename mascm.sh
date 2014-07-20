@@ -6,7 +6,7 @@
 #	All rights reserved.                                         #
 #====================================================================#
 SELF=$(basename $0)
-MASCM_VER="5.0.1.9"
+MASCM_VER="5.1.1.9"
 
 # The base md5sum location to cotrol license
 #MASCM_BASE=http://www.magenx.com/mascm
@@ -99,26 +99,26 @@ echo
 
 # root?
 if [[ $EUID -ne 0 ]]; then
-cwarn "ERROR: THIS SCRIPT MUST BE RUN AS ROOT!"
-echo "------> USE SUPER-USER PRIVILEGES."
+  cwarn "ERROR: THIS SCRIPT MUST BE RUN AS ROOT!"
+  echo "------> USE SUPER-USER PRIVILEGES."
   exit 1
-else
-  cok PASS: ROOT!
+  else
+  cok "PASS: ROOT!"
 fi
 
 # do we have CentOS 6?
 if grep -q "CentOS release 6" /etc/redhat-release ; then
-cok "PASS: CENTOS RELEASE 6"
+  cok "PASS: CENTOS RELEASE 6"
   else 
-cwarn "ERROR: UNABLE TO DETERMINE DISTRIBUTION TYPE."
-echo "------> THIS CONFIGURATION FOR CENTOS 6."
-echo
+  cwarn "ERROR: UNABLE TO DETERMINE DISTRIBUTION TYPE."
+  echo "------> THIS CONFIGURATION FOR CENTOS 6."
+  echo
   exit 1
 fi
 
 # check if x64. if not, beat it...
 ARCH=$(uname -m)
-if [ "$ARCH" = "x86_64" ]; then
+if [ "${ARCH}" = "x86_64" ]; then
 cok "PASS: YOUR ARCHITECTURE IS 64-BIT"
   else
   cwarn "ERROR: YOUR ARCHITECTURE IS 32-BIT?"
@@ -130,10 +130,22 @@ fi
 # check if memory is enough
 TOTALMEM=$(awk '/MemTotal/ { print $2 }' /proc/meminfo)
 if [ "$TOTALMEM" -gt "3000000" ]; then
-cok "PASS: YOU HAVE $TOTALMEM kB OF RAM"
+  cok "PASS: YOU HAVE $TOTALMEM kB OF RAM"
   else
   cwarn "WARNING: YOU HAVE LESS THAN 3GB OF RAM"
   cwarn "this is not good for import/export and full reindex"
+fi
+
+# some selinux, sir?
+SELINUX=$(awk '/^SELINUX=/'  /etc/selinux/config)
+if [ "$SELINUX" != "SELINUX=disabled" ]; then
+  cwarn "ERROR: SELINUX IS ENABLED"
+  echo "------> PLEASE CHECK YOUR SELINUX SETTINGS"
+  echo
+  exit 1
+  else
+  cok "PASS: SELINUX IS DISABLED"
+echo
 fi
 
 # network is up?
@@ -141,12 +153,12 @@ host1=74.125.24.106
 host2=208.80.154.225
 RESULT=$(((ping -w3 -c2 $host1 || ping -w3 -c2 $host2) > /dev/null 2>&1) && echo "up" || (echo "down" && exit 1))
 if [[ $RESULT == up ]]; then
-cok "PASS: NETWORK IS UP. GREAT, LETS START!"
+  cok "PASS: NETWORK IS UP. GREAT, LETS START!"
   else
-cwarn "ERROR: NETWORK IS DOWN?"
-echo "------> PLEASE CHECK YOUR NETWORK SETTINGS."
-echo
-echo
+  cwarn "ERROR: NETWORK IS DOWN?"
+  echo "------> PLEASE CHECK YOUR NETWORK SETTINGS."
+  echo
+  echo
   exit 1
 fi
 echo
@@ -154,129 +166,229 @@ echo
 #                                     CHECKS END                                  #
 ###################################################################################
 echo
-if grep -q "yes" ~/mascm/.terms >/dev/null 2>&1 ; then
-echo "loading menu"
-sleep 1
-	else
-cecho "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
-echo
-cecho "BY INSTALLING THIS SOFTWARE AND BY USING ANY AND ALL SOFTWARE"
-cecho "YOU ACKNOWLEDGE AND AGREE:"
-echo
-cecho "THIS SOFTWARE AND ALL SOFTWARE PROVIDED IS PROVIDED AS IS"
-cecho "UNSUPPORTED AND WE ARE NOT RESPONSIBLE FOR ANY DAMAGE"
-echo
-cecho "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
-echo
-echo
-			echo -n "---> Do you agree to these terms?  [y/n][y]:"
-			read terms_agree
-				if [ "$terms_agree" == "y" ];then
-				echo "yes" > ~/mascm/.terms
-			else
-			echo "Exiting"
-			echo
-		exit 1
-		fi
-	fi
+if grep -q "yes" /root/mascm/.terms >/dev/null 2>&1 ; then
+  echo "loading menu"
+  sleep 1
+  else
+  cecho "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+  echo
+  cecho "BY INSTALLING THIS SOFTWARE AND BY USING ANY AND ALL SOFTWARE"
+  cecho "YOU ACKNOWLEDGE AND AGREE:"
+  echo
+  cecho "THIS SOFTWARE AND ALL SOFTWARE PROVIDED IS PROVIDED AS IS"
+  cecho "UNSUPPORTED AND WE ARE NOT RESPONSIBLE FOR ANY DAMAGE"
+  echo
+  cecho "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+  echo
+   echo
+    echo -n "---> Do you agree to these terms?  [y/n][y]:"
+    read terms_agree
+  if [ "$terms_agree" == "y" ];then
+    echo "yes" > /root/mascm/.terms
+	  else
+        echo "Going out. EXIT"
+        echo
+    exit 1
+  fi
+fi
 ###################################################################################
 #                                  HEADER MENU START                              #
 ###################################################################################
 
 showMenu () {
 printf "\033c"
-        echo
+    echo
 		echo
         cecho "Magento Server Configuration v.$MASCM_VER"
-        cecho :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+        cecho ":::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
         echo
-        cecho "- For repositories installation enter:  \033[01;34m repo"
-        cecho "- For packages installation enter:  \033[01;34m packages"
-	cecho "- To download latest Magento enter:  \033[01;34m magento"
-	cecho "- To setup Magento database enter:  \033[01;34m database"
-	cecho "- Install Magento (no sample data):  \033[01;34m install"
-	echo
-	cecho :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-	echo
-	cecho "- To configure system backup enter:  \033[01;34m  backup"
-	cecho "- To make your server secure enter:  \033[01;34m protect"
-	cecho "- To install CSF firewall enter:  \033[01;34m   firewall"
-	echo
-	cecho :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-	echo
-	cecho "- To quit enter:  \033[01;34m exit"
-	echo
-	echo
+        cecho "-> Install repository and LEMP packages:  \033[01;34m  lemp"
+        cecho "-> Download latest Magento package     :  \033[01;34m  magento"
+        cecho "-> Setup Magento database enter        :  \033[01;34m  database"
+        cecho "-> Install Magento (no sample data)    :  \033[01;34m  install"
+        echo
+        cecho ":::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
+        echo
+        cecho "-> Configure ProFTPd server            :  \033[01;34m  proftpd"
+        cecho "-> Configure system backup             :  \033[01;34m  backup"
+        cecho "-> Change root user and ssh port       :  \033[01;34m  protect"
+        cecho "-> Install CSF firewall                :  \033[01;34m  firewall"
+        echo
+        cecho ":::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
+        echo
+        cecho "-> To quit and exit                    :  \033[01;34m  exit"
+        echo
+    echo
 }
 while [ 1 ]
 do
         showMenu
         read CHOICE
         case "$CHOICE" in
-                "repo")
+                "lemp")
 echo
 echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-cwarn "secure /tmp and /var/tmp"
+cinfo "Re-create and symlink  /var/tmp and /tmp"
 echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 echo
-echo -n "---> Would you like to secure /tmp and /var/tmp? [y/n][n]:" 
+echo -n "---> Re-create and symlink /tmp and /var/tmp? [y/n][n]:" 
 read secure_tmp
 if [ "$secure_tmp" == "y" ];then
         echo
-		cd
+		  cd
 			rm -rf /tmp
 			mkdir /tmp
 			mount -t tmpfs -o rw,noexec,nosuid tmpfs /tmp
 			chmod 1777 /tmp
-			echo "tmpfs   /tmp    tmpfs   rw,noexec,nosuid        0       0" >> /etc/fstab
+			echo "tmpfs		/tmp	tmpfs	rw,noexec,nosuid	0	0" >> /etc/fstab
 			rm -rf /var/tmp
 			ln -s /tmp /var/tmp
 			echo
-		cok "tmp SECURED OK"
+		    cok "tmp directory is now symlinked"
 fi
 echo
 echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-cok NOW BEGIN REPOSITORIES INSTALLATION
+cok "START THE INSTALLATION OF REPOSITORIES AND PACKAGES"
 echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 echo
 cecho "============================================================================="
 echo
-echo -n "---> Start EPEL repository installation? [y/n][n]:"
-read repoE_install
-if [ "$repoE_install" == "y" ];then
-        echo
-        cok "Running Installation of Extra Packages for Enterprise Linux"
-        echo
-			echo -n "     PROCESSING  "
-		quick_progress &
-		pid="$!"
-		rpm -Uvh http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm >/dev/null 2>&1
-		stop_progress "$pid"
-                rpm  --quiet -q epel-release
-                if [ "$?" = 0 ]
-                    then
-                    cok "INSTALLED OK"
-		else
-                    cwarn "ERROR"
+echo -n "---> Start EPEL and Repoforge repository installation? [y/n][n]:"
+read repo_epel_install
+if [ "$repo_epel_install" == "y" ];then
+          echo
+            cok "Installation of EPEL repository:"
+            echo
+            echo -n "     PROCESSING  "
+		    quick_progress &
+            pid="$!"
+            rpm --quiet -U http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm >/dev/null 2>&1
+            stop_progress "$pid"
+            rpm  --quiet -q epel-release
+      if [ "$?" = 0 ]
+        then
+          echo
+            cok "REPOSITORY HAS BEEN INSTALLED  -  OK"
+              else
+             echo
+            cwarn "REPOSITORY INSTALLATION ERROR"
 		exit
-                fi
-	else
-        cinfo "EPEL repository installation skipped. Next step"
+      fi
+            echo
+            cok "Installation of Repoforge repository:"
+            echo
+            echo -n "     PROCESSING  "
+            quick_progress &
+            pid="$!"
+            rpm --quiet -U http://pkgs.repoforge.org/rpmforge-release/rpmforge-release-0.5.3-1.el6.rf.x86_64.rpm >/dev/null 2>&1
+            stop_progress "$pid"
+            rpm  --quiet -q rpmforge-release
+      if [ "$?" = 0 ]
+        then
+          echo
+            cok "REPOSITORY HAS BEEN INSTALLED  -  OK"
+              else
+             echo
+            cwarn "REPOSITORY INSTALLATION ERROR"
+        exit
+      fi
+            echo
+            cok "Installation of additional packages:"
+            echo
+            echo -n "     PROCESSING  "
+            long_progress &
+            pid="$!"
+            yum -q -y install wget curl bc mcrypt sudo crontabs gcc vim mlocate unzip proftpd inotify-tools >/dev/null 2>&1
+            stop_progress "$pid"
+            echo
+            cok "ALL PACKAGES WERE INSTALLED  -  OK"
+            echo
+        else
+	      echo
+            cinfo "EPEL repository installation was skipped by the user. Next step"
+fi
+echo
+cecho "============================================================================="
+echo
+echo -n "---> Start Percona repository and Percona database installation? [y/n][n]:"
+read repo_percona_install
+if [ "$repo_percona_install" == "y" ];then
+          echo
+            cok "Installation of Percona repository:"
+            echo
+            echo -n "     PROCESSING  "
+            quick_progress &
+            pid="$!"
+            rpm --quiet -U http://www.percona.com/downloads/percona-release/percona-release-0.0-1.x86_64.rpm >/dev/null 2>&1
+            stop_progress "$pid"
+            rpm  --quiet -q percona-release
+      if [ "$?" = 0 ] # if repository installed then install package
+        then
+          echo
+            cok "REPOSITORY HAS BEEN INSTALLED  -  OK"
+              echo
+			  echo
+              cok "Installation of Percona 5.6 database:"
+              echo
+              echo -n "     PROCESSING  "
+              long_progress &
+              pid="$!"
+              yum -y -q install Percona-Server-client-56 Percona-Server-server-56  >/dev/null 2>&1
+              stop_progress "$pid"
+              rpm  --quiet -q Percona-Server-client-56 Percona-Server-server-56
+        if [ "$?" = 0 ] # if package installed then configure
+          then
+            echo
+              cok "DATABSE HAS BEEN INSTALLED  -  OK" 
+              echo
+              chkconfig mysql on
+              echo
+              cecho "Downloading my.cnf file from MagenX Github repository"
+              wget -qO /etc/my.cnf https://raw.githubusercontent.com/magenx/magento-mysql/master/my.cnf/my.cnf
+              echo
+                echo
+                 cecho "We need to correct your innodb_buffer_pool_size"
+                 IBPS=$(echo "0.5*$(awk '/MemTotal/ { print $2 / (1024*1024)}' /proc/meminfo | cut -d'.' -f1)" | bc | xargs printf "%1.0f")
+                 sed -i "s/innodb_buffer_pool_size = 4G/innodb_buffer_pool_size = ${IBPS}G/" /etc/my.cnf
+                 echo
+                 cinfo "Your innodb_buffer_pool_size = ${IBPS}G"
+                echo
+              echo
+              wget -qO /etc/mysqlreport.pl http://hackmysql.com/scripts/mysqlreport
+              wget -qO /etc/mysqltuner.pl https://raw.githubusercontent.com/major/MySQLTuner-perl/master/mysqltuner.pl
+			  echo
+              cecho "Please use these tools to check and finetune your database:"
+              cecho "perl /etc/mysqlreport.pl"
+              cecho "perl /etc/mysqltuner.pl"
+              echo
+                else
+               echo
+              cwarn "DATABASE INSTALLATION ERROR"
+          exit # if package is not installed then exit
+        fi
+          else
+            echo
+              cwarn "REPOSITORY INSTALLATION ERROR"
+        exit # if repository is not installed then exit
+      fi
+        else
+	      echo
+            cinfo "Percona repository installation was skipped by the user. Next step"
 fi
 echo
 cecho "============================================================================="
 echo
 echo -n "---> Start Nginx (mainline) Repository installation? [y/n][n]:"
-read repoC_install
-if [ "$repoC_install" == "y" ];then
-		echo
-        cok "Running Installation of Nginx (mainline) repository"
-		echo
-			cecho "Downloading Nginx GPG key"
-			wget -qO /etc/pki/rpm-gpg/nginx_signing.key  http://nginx.org/packages/keys/nginx_signing.key
-		echo
-			cecho "Creating Nginx (mainline) repository file"
-		echo
+read repo_nginx_install
+if [ "$repo_nginx_install" == "y" ];then
+          echo
+            cok "Installation of Nginx (mainline) repository:"
+            echo
+            cecho "Downloading Nginx GPG key"
+            wget -qO /etc/pki/rpm-gpg/nginx_signing.key  http://nginx.org/packages/keys/nginx_signing.key
+            echo
+            cecho "Creating Nginx (mainline) repository file"
+            echo
 cat >> /etc/yum.repos.d/nginx.repo <<END
 [nginx]
 name=nginx repo
@@ -285,285 +397,146 @@ enabled=1
 gpgkey=file:///etc/pki/rpm-gpg/nginx_signing.key
 gpgcheck=1
 END
-		echo
-		cok "INSTALLED OK"
-  else
-        cinfo "Nginx (mainline) repository installation skipped. Next step"
+            echo
+            cok "REPOSITORY HAS BEEN INSTALLED  -  OK"
+            echo
+            cok "Installation of NGINX package:"
+            echo
+            echo -n "     PROCESSING  "
+            start_progress &
+            pid="$!"
+            yum -y -q install nginx  >/dev/null 2>&1
+            stop_progress "$pid"
+            rpm  --quiet -q nginx
+      if [ "$?" = 0 ]
+        then
+          echo
+            cok "NGINX HAS BEEN INSTALLED  -  OK"
+            chkconfig nginx on
+            chkconfig httpd off	
+              else
+             echo
+            cwarn "NGINX INSTALLATION ERROR"
+        exit
+      fi
+        else
+          echo
+            cinfo "Nginx (mainline) repository installation was skipped by the user. Next step"
 fi
 echo
 cecho "============================================================================="
 echo
-echo -n "---> Start Les RPM de Remi repository installation? [y/n][n]:"
-read repoF_install
-if [ "$repoF_install" == "y" ];then
-		echo
-        cok "Running Installation of Les RPM de Remi"
-		echo
-			echo -n "     PROCESSING  "
-		quick_progress &
-		pid="$!"
-		rpm -Uvh http://rpms.famillecollet.com/enterprise/6/remi/x86_64/remi-release-6.5-1.el6.remi.noarch.rpm >/dev/null 2>&1
-		stop_progress "$pid"
-                rpm  --quiet -q remi-release
-                if [ "$?" = 0 ]
-                    then
-                    cok "INSTALLED OK"
-		else
-                    cwarn "ERROR"
-		exit
-                fi
-	echo
-  else
-        cinfo "Les RPM de Remi installation skipped. Next step"
+echo -n "---> Start the Remi repository and PHP 5.5 installation? [y/n][n]:"
+read repo_remi_install
+if [ "$repo_remi_install" == "y" ];then
+          echo
+            cok "Installation of Remi repository:"
+            echo
+            echo -n "     PROCESSING  "
+            quick_progress &
+            pid="$!"
+            rpm -Uvh http://rpms.famillecollet.com/enterprise/6/remi/x86_64/remi-release-6.5-1.el6.remi.noarch.rpm >/dev/null 2>&1
+            stop_progress "$pid"
+            rpm  --quiet -q remi-release
+      if [ "$?" = 0 ]
+        then
+          echo
+            cok "REPOSITORY HAS BEEN INSTALLED  -  OK"
+            echo
+            cok "Installation of PHP 5.5:"
+            echo
+            echo -n "     PROCESSING  "
+            long_progress &
+            pid="$!"
+            yum --enablerepo=remi,remi-php55 -y -q install php php-cli php-common php-fpm php-gd php-curl \
+			php-mbstring php-bcmath php-soap php-mcrypt php-mysql php-pdo php-xml php-pecl-memcache php-pecl-redis php-opcache php-pecl-geoip >/dev/null 2>&1
+            stop_progress "$pid"
+            rpm  --quiet -q php
+       if [ "$?" = 0 ]
+         then
+           echo
+             cok "PHP HAS BEEN INSTALLED  -  OK"
+             chkconfig php-fpm on
+             yum list installed | awk '/php.*x86_64/ {print "      ",$1}'
+                else
+               echo
+             cwarn "PHP INSTALLATION ERROR"
+         exit
+       fi
+         echo
+           echo
+            cok "Installation of Memcached and Redis packages:"
+            echo
+            echo -n "     PROCESSING  "
+            start_progress &
+            pid="$!"
+            yum --enablerepo=remi -y -q install memcached redis >/dev/null 2>&1
+            stop_progress "$pid"
+            rpm  --quiet -q memcached
+       if [ "$?" = 0 ]
+         then
+           echo
+             cok "MEMCACHED AND REDIS WERE INSTALLED"
+             chkconfig memcached on
+             chkconfig redis on
+                else
+               echo
+             cwarn "MEMCACHED AND REDIS INSTALLATION ERROR"
+         exit
+       fi
+         else
+           echo
+             cwarn "REPOSITORY INSTALLATION ERROR"
+        exit
+      fi  
+        else
+          echo
+            cinfo "The Remi repository installation was skipped by the user. Next step"
 fi
 echo
 cecho "============================================================================="
 echo
-echo -n "---> Start Repoforge repository installation? [y/n][n]:"
-read repoF_install
-if [ "$repoF_install" == "y" ];then
-		echo
-        cok "Running Installation of Repoforge"
-		echo
-			echo -n "     PROCESSING  "
-		quick_progress &
-		pid="$!"
-		rpm -Uvh http://pkgs.repoforge.org/rpmforge-release/rpmforge-release-0.5.3-1.el6.rf.x86_64.rpm >/dev/null 2>&1
-		stop_progress "$pid"
-                rpm  --quiet -q rpmforge-release
-                if [ "$?" = 0 ]
-                    then
-                    cok "INSTALLED OK"
-		else
-                    cwarn "ERROR"
-		exit
-                fi
-	echo
-  else
-        cinfo "Repoforge installation skipped. Next step"
-fi
-echo
-cecho "============================================================================="
-echo
-echo -n "---> Start Percona repository installation? [y/n][n]:"
-read repoP_install
-if [ "$repoP_install" == "y" ];then
-		echo
-        cok "Running Installation of Percona repository"
-		echo
-			echo -n "     PROCESSING  "
-		quick_progress &
-		pid="$!"
-		rpm -Uhv http://www.percona.com/downloads/percona-release/percona-release-0.0-1.x86_64.rpm >/dev/null 2>&1
-		stop_progress "$pid"
-                rpm  --quiet -q percona-release
-                if [ "$?" = 0 ]
-                    then
-                    cok "INSTALLED OK"
-		else
-                    cwarn "ERROR"
-		exit
-                fi
-	echo
-  else
-        cinfo "Percona repository installation skipped. Next step"
-fi
-echo
-echo
-cecho "============================================================================="
-echo -n "---> Start System Update? [y/n][n]:"
-read sys_update
-if [ "$sys_update" == "y" ];then
-        cok "RUNNING SYSTEM UPDATE"
-		echo
-			echo -n "     PROCESSING  "
-		long_progress &
-		pid="$!"
-		yum -y -q update >/dev/null 2>&1
-		stop_progress "$pid"
-		cok "UPDATED OK"
-		echo
-		cok "INSTALLING ADDITIONAL PACKAGES:"
-		echo
-		echo -n "     PROCESSING  "
-			long_progress &
-			pid="$!"
-			yum -q -y install wget curl bc mcrypt sudo crontabs gcc vim mlocate unzip proftpd inotify-tools >/dev/null 2>&1
-			stop_progress "$pid"
-		cok "INSTALLED OK"
-		echo
-  else
-        cinfo "System Update skipped. Next step"
-fi
-echo
-echo 
-echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-cok REPOSITORIES INSTALLATION FINISHED
-echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-echo
-echo
-pause "---> Press [Enter] key to show menu"
-printf "\033c"
-;;
-"packages")
-echo
-echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-cok NOW INSTALLING PHP, NGINX, PERCONA, VARNISH, MEMCACHED, REDIS, FAIL2BAN
-echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-echo
-echo
-cecho "============================================================================="
-echo
-echo -n "---> Start Percona 5.6 installation? [y/n][n]:"
-read percona_install
-if [ "$percona_install" == "y" ];then
-		echo
-        cok "Running Percona 5.6 Installation"
-		echo
-			echo -n "     PROCESSING  "
-		long_progress &
-		pid="$!"
-		yum -y -q install Percona-Server-client-56 Percona-Server-server-56  >/dev/null 2>&1
-		stop_progress "$pid"
-			rpm  --quiet -q Percona-Server-client-56 Percona-Server-server-56
-			if [ "$?" = 0 ]
-		then
-             cok "INSTALLED OK"
-		else
-             cwarn "ERROR"
-		exit
-		fi
-			echo
-			chkconfig mysql on
-		echo
-		cecho "Downloading my.cnf file from MagenX Github repository"
-		wget -O /etc/my.cnf  -q https://raw.githubusercontent.com/magenx/magento-mysql/master/my.cnf/my.cnf
-		echo
-		echo
-		cecho "We need to correct your innodb_buffer_pool_size"
-		IBPS=$(echo "0.5*$(awk '/MemTotal/ { print $2 / (1024*1024)}' /proc/meminfo | cut -d'.' -f1)" | bc | xargs printf "%1.0f")
-		sed -i "s/innodb_buffer_pool_size = 4G/innodb_buffer_pool_size = ${IBPS}G/" /etc/my.cnf
-		echo
-		cinfo "Your innodb_buffer_pool_size = ${IBPS}G"
-		echo
-		echo
-        wget -O /etc/mysqlreport.pl  -q  http://hackmysql.com/scripts/mysqlreport
-        wget -O /etc/mysqltuner.pl  -q  https://raw.githubusercontent.com/major/MySQLTuner-perl/master/mysqltuner.pl
-		cecho "Please use these tools to check and finetune your database:"
-		cecho "perl /etc/mysqlreport.pl"
-		cecho "perl /etc/mysqltuner.pl"
-  else
-        cinfo "Percona installation skipped. Next step"
-fi
-echo
-cecho "============================================================================="
-echo
-echo -n "---> Start PHP 5.5 installation? [y/n][n]:"
-read php_install
-if [ "$php_install" == "y" ];then
-		echo
-        cok "Running PHP 5.5 Installation"
-		echo
-			echo -n "     PROCESSING  "
-		long_progress &
-		pid="$!"
-		yum --enablerepo=remi,remi-php55 -y -q install php php-cli php-common php-fpm php-gd php-curl php-mbstring php-bcmath php-soap php-mcrypt php-mysql php-pdo php-xml php-pecl-memcache php-pecl-redis php-opcache php-pecl-geoip >/dev/null 2>&1
-		stop_progress "$pid"
-		rpm  --quiet -q php
-                if [ "$?" = 0 ]
-                 then
-                 cok "INSTALLED OK"
-		yum list installed | grep php | awk '{print "      ",$1}'
-		else
-        cwarn "ERROR"
-		exit
-     fi
-		echo
-		chkconfig php-fpm on
-   else
-        cinfo "PHP 5.5 installation skipped. Next step"
-fi
-echo
-cecho "============================================================================="
-echo
-echo -n "---> Start NGINX installation? [y/n][n]:"
-read nginx_install
-if [ "$nginx_install" == "y" ];then
-		echo
-        cok "Running NGINX Installation"
-		echo
-			echo -n "     PROCESSING  "
-		start_progress &
-		pid="$!"
-		yum -y -q install nginx  >/dev/null 2>&1
-		stop_progress "$pid"
-                rpm  --quiet -q nginx
-                if [ $? = 0 ]
-                    then
-                    cok "INSTALLED OK"
-		else
-                    cwarn "ERROR"
-		exit
-                fi
-	echo
-		chkconfig nginx on
-		chkconfig httpd off
-  else
-        cinfo "NGINX installation skipped. Next step"
-fi
-echo
-cecho "============================================================================="
-echo
-echo -n "---> Start Varnish 3 installation? [y/n][n]:"
+echo -n "---> Start Varnish repository and Varnish 3.x installation? [y/n][n]:"
 read varnish_install
 if [ "$varnish_install" == "y" ];then
-		echo
-        cok "Running Varnish 3 Installation"
-		echo
-			echo -n "     PROCESSING  "
-		quick_progress &
-		pid="$!"
-rpm -Uhv http://repo.varnish-cache.org/redhat/varnish-3.0/el6/x86_64/varnish/varnish-3.0.5-1.el6.x86_64.rpm http://repo.varnish-cache.org/redhat/varnish-3.0/el6/x86_64/varnish/varnish-libs-3.0.5-1.el6.x86_64.rpm	  >/dev/null 2>&1
-stop_progress "$pid"
-		rpm  --quiet -q varnish
-                if [ "$?" = 0 ]
-                    then
-                    cok "INSTALLED OK"
-		else
-                    cwarn "ERROR"
-		exit
-                fi
-	echo
-  else
-        cinfo "Varnish 3 installation skipped. Next step"
-fi
-echo
-cecho "============================================================================="
-echo
-echo -n "---> Start Memcached and Redis installation? [y/n][n]:"
-read memdred_install
-if [ "$memdred_install" == "y" ];then
-		echo
-        cok "Running Memcached and Redis Installation"
-		echo
-			echo -n "     PROCESSING  "
-		start_progress &
-		pid="$!"
-		yum --enablerepo=remi -y -q install memcached redis >/dev/null 2>&1
-		stop_progress "$pid"
-                rpm  --quiet -q memcached
-                if [ "$?" = 0 ]
-                    then
-                    cok "INSTALLED OK"
-		else
-                    cwarn "ERROR"
-		exit
-                fi
-	echo
-		chkconfig memcached on
-		chkconfig redis on
-  else
-        cinfo "Memcached and Redis installation skipped. Next step"
+          echo
+            cok "Installation of Varnish repository:"
+            echo
+            echo -n "     PROCESSING  "
+            quick_progress &
+            pid="$!"
+            rpm --quiet --nosignature -U https://repo.varnish-cache.org/redhat/varnish-3.0.el6.rpm
+            stop_progress "$pid"
+            rpm  --quiet -q varnish
+      if [ "$?" = 0 ]
+        then
+          echo
+            cok "REPOSITORY HAS BEEN INSTALLED  -  OK"
+			echo
+			cok "Installation of VARNISH package:"
+            echo
+            echo -n "     PROCESSING  "
+            start_progress &
+            pid="$!"
+            yum -y -q install varnish  >/dev/null 2>&1
+            stop_progress "$pid"
+            rpm  --quiet -q varnish
+      if [ "$?" = 0 ]
+        then
+          echo
+            cok "VARNISH HAS BEEN INSTALLED  -  OK"
+               else
+              echo
+            cwarn "VARNISH INSTALLATION ERROR"
+        exit
+      fi
+        else
+            cwarn "REPOSITORY INSTALLATION ERROR"
+        exit
+      fi
+        else
+          echo
+            cinfo "Varnish repository installation was skipped by the user. Next step"
 fi
 echo
 cecho "============================================================================="
@@ -571,25 +544,21 @@ echo
 echo -n "---> Start Fail2Ban installation? [y/n][n]:"
 read f2b_install
 if [ "$f2b_install" == "y" ];then
-		echo
-        cok "Running Fail2Ban Installation"
-		echo
-			echo -n "     PROCESSING  "
-		start_progress &
-		pid="$!"
-		yum -y -q install fail2ban  >/dev/null 2>&1
-		stop_progress "$pid"
-                rpm  --quiet -q fail2ban
-                if [ "$?" = 0 ]
-                    then
-                    cok "INSTALLED OK"
-		else
-                    cwarn "ERROR"
-		exit
-                fi
-		echo
-		chkconfig fail2ban on
-cok "Writing nginx 403 filter"
+          echo
+            cok "Installation of Fail2Ban package:"
+            echo
+            echo -n "     PROCESSING  "
+            start_progress &
+            pid="$!"
+            yum -y -q install fail2ban  >/dev/null 2>&1
+            stop_progress "$pid"
+            rpm  --quiet -q fail2ban
+      if [ "$?" = 0 ]
+        then
+          echo
+            cok "FAIL2BAN HAS BEEN INSTALLED  -  OK"
+			echo
+            cok "Writing nginx 403 filter"
 cat > /etc/fail2ban/filter.d/nginx-403.conf <<END
 [Definition]
 failregex = directory index of .* is forbidden, client: <HOST>
@@ -599,13 +568,15 @@ failregex = directory index of .* is forbidden, client: <HOST>
             ^<HOST> .*"GET .*444 .*
             ^<HOST> .*"GET .*wp-login.php.*404.*
 END
-cok "Writing nginx 403 action"
+          echo
+            cok "Writing nginx 403 action"
 cat > /etc/fail2ban/action.d/nginx-403.conf <<END
 [Definition]
 actionban = IP=<ip> && echo "deny $IP;" >> /etc/nginx/banlist/403.conf && service nginx reload
 actionunban = IP=<ip> && sed -i "/$IP/d" /etc/nginx/banlist/403.conf && service nginx reload
 END
-cok "Writing nginx 403 jail"
+          echo
+            cok "Writing nginx 403 jail"
 cat >> /etc/fail2ban/jail.conf <<END
 [nginx-403]
 enabled = true
@@ -614,25 +585,62 @@ filter = nginx-403
 action = nginx-403
 logpath = /var/log/nginx/error.log
 END
-cok "Creating banlist dir"
-mkdir -p /etc/nginx/banlist/
-touch /etc/nginx/banlist/403.conf
-cok "Please whitelist your ip addresses in /etc/fail2ban/jail.conf"
-cok "ok"
-  else
-        cinfo "Fail2Ban installation skipped. Next step"
+          echo
+            cok "Creating banlist directory"
+            mkdir -p /etc/nginx/banlist/
+            touch /etc/nginx/banlist/403.conf
+            echo
+            cok "Please whitelist your ip addresses in /etc/fail2ban/jail.conf"
+            chkconfig fail2ban on
+            else
+            cwarn "FAIL2BAN INSTALLATION ERROR"
+        exit
+      fi
+        else
+          echo
+            cinfo "Fail2Ban installation was skipped by the user. Next step"
 fi
 echo
 cecho "============================================================================="
 echo
-echo -n "---> Load optimized configs of apc, php, fpm, fastcgi, memcached, sysctl, varnish? [y/n][n]:"
+echo -n "---> Start the System Update? [y/n][n]:"
+read sys_update
+if [ "$sys_update" == "y" ];then
+          echo
+            cok "THE UPDATES ARE BEING INSTALLED"
+            echo
+            echo -n "     PROCESSING  "
+            long_progress &
+            pid="$!"
+            yum -y -q update >/dev/null 2>&1
+            stop_progress "$pid"
+            echo
+            cok "THE SYSTEM IS UP TO DATE  -  OK"
+          else
+         echo
+       cinfo "The System Update was skipped by the user. Next step"
+fi
+echo
+echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+cok "THE INSTALLATION OF REPOSITORIES AND PACKAGES IS COMPLETE"
+echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+echo
+echo
+cecho "NOW WE ARE GOING TO CONFIGURE EVERYTHING"
+echo
+pause "---> Press [Enter] key to proceed"
+echo
+echo -n "---> Load optimized configs of php, opcache, fpm, fastcgi, memcached, sysctl, varnish? [y/n][n]:"
 read load_configs
 if [ "$load_configs" == "y" ];then
 echo
 cecho "YOU HAVE TO CHECK THEM AFTER ANYWAY"
    cat > /etc/sysctl.conf <<END
 fs.file-max = 360000
+fs.inotify.max_user_watches=200000
+
 vm.swappiness = 10
+
 net.ipv4.ip_forward = 0
 net.ipv4.conf.default.rp_filter = 1
 net.ipv4.conf.default.accept_source_route = 0
@@ -743,7 +751,7 @@ echo
 echo "*		soft	nofile		60000" >> /etc/security/limits.conf
 echo "*		hard	nofile		100000" >> /etc/security/limits.conf
   else
-        cinfo "Not loading optimized configs. Next step"
+        cinfo "Configuration was skipped by the user. Next step"
 fi
 echo
 echo
@@ -752,13 +760,16 @@ cok FINISHED PACKAGES INSTALLATION
 echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 echo
 echo
-pause '------> Press [Enter] key to show menu'
+pause '------> Press [Enter] key to show the menu'
 printf "\033c"
 ;;
 "magento")
+###################################################################################
+#                                MAGENTO                                          #
+###################################################################################
 echo
 echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-cok NOW DOWNLOADING NEW MAGENTO
+cok "DOWNLOADING MAGENTO, TURPENTINE, PHPMYADMIN AND CONFIGURING NGINX"
 echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 echo
 FPM=$(find /etc/php-fpm.d/ -name 'www.conf')
@@ -768,11 +779,9 @@ read new_down
 if [ "$new_down" == "y" ];then
      read -e -p "---> Edit your installation folder full path: " -i "/var/www/html/myshop.com" MY_SHOP_PATH
         echo "  Magento will be downloaded to:" 
-		cok $MY_SHOP_PATH
+        cok $MY_SHOP_PATH
 		pause '------> Press [Enter] key to continue'
-		mkdir -p $MY_SHOP_PATH	
-		echo  
-		cd $MY_SHOP_PATH
+        mkdir -p $MY_SHOP_PATH && cd $_
 		echo -n "      DOWNLOADING MAGENTO  "
 			long_progress &
 			pid="$!"
@@ -787,7 +796,7 @@ echo
 echo
 echo "---> CREATING NGINX CONFIG FILE NOW"
 echo
-read -p "---> Enter your domain name: " MY_DOMAIN
+read -e -p "---> Enter your domain name (without www): " -i "myshop.com" MY_DOMAIN
 MY_CPU=$(grep -c processor /proc/cpuinfo)
 cok "NGINX CONFIG SET UP WITH:"
 cecho " DOMAIN: $MY_DOMAIN"  
@@ -798,9 +807,9 @@ then
 FAIL2BAN='include /etc/nginx/banlist/403.conf;'
 fi
 cat > /etc/nginx/nginx.conf <<END
-user  nginx;
-worker_processes  $MY_CPU; ## = CPU qty
-worker_rlimit_nofile 40000;
+user  $FPM_USER;
+worker_processes  $MY_CPU;
+worker_rlimit_nofile 100000;
 
 error_log   /var/log/nginx/error.log;
 #error_log  /var/log/nginx/error.log  notice;
@@ -854,16 +863,16 @@ http   {
 
     keepalive_timeout   10;
 
-	## Use when Varnish in front
+	## Set real ip address/network
 	#set_real_ip_from 127.0.0.1;
 	#real_ip_header X-Forwarded-For;
 
 	## Multi domain configuration
 	#map \$http_host \$storecode { 
-	   #www.domain1.com 1store_code; ## US main
-	   #www.domain2.net 2store_code; ## EU store
-	   #www.domain3.de 3store_code; ## German store
-	   #www.domain4.com 4store_code; ## different products
+	   #www.domain1.com 1store_code;
+	   #www.domain2.net 2store_code;
+	   #www.domain3.de 3store_code;
+	   #www.domain4.com 4store_code;
 	   #}
 	   
 server {
@@ -879,18 +888,18 @@ server {
 #}
 
 #server {
-#    listen 80;  ## change to 8080 with Varnish
-#    server_name example.com;
-#    return 301 \$scheme://www.example.com\$request_uri;
+#    listen 80;
+#    server_name $MY_DOMAIN;
+#    return 301 \$scheme://www.${MY_DOMAIN}\$request_uri;
 #}
 
 server {   
-    listen 80; ## change to 8080 with Varnish
+    listen 80;
     #listen 443 spdy ssl;
-    server_name $MY_DOMAIN; ## Domain is here
+    server_name www.${MY_DOMAIN};
     root $MY_SHOP_PATH;
 
-    access_log  /var/log/nginx/access_$MY_DOMAIN.log  main;
+    access_log  /var/log/nginx/access_${MY_DOMAIN}.log  main;
     
     ## Nginx will not add the port in the url when the request is redirected.
     #port_in_redirect off; 
@@ -965,7 +974,7 @@ server {
         rewrite / /index.php?\$args;
         }
  
-    location ~ \.php/ { ## Forward paths like /js/index.php/x.js to relevant handler
+    location ~ \.php/ {
         rewrite ^(.*\.php)/  \$1 last;
         }
 
@@ -975,7 +984,7 @@ server {
     location ~ \.php$ {
         add_header X-Config-By 'MagenX -= www.magenx.com =-';
 		add_header X-UA-Compatible 'IE=Edge,chrome=1';
-        add_header X-Time-Spent \$request_time;
+        add_header X-Time \$request_time;
         try_files \$uri \$uri/ =404;
         #try_files \$uri \$uri/ @handler;
         fastcgi_pass   127.0.0.1:9000;
@@ -992,51 +1001,39 @@ server {
 END
 echo
 echo
-mkdir -p ~/mascm/
-cat >> ~/mascm/.mascm_index <<END
-webshop	$MY_DOMAIN	$MY_SHOP_PATH
+mkdir -p /root/mascm/
+cat >> /root/mascm/.mascm_index <<END
+webshop	$MY_DOMAIN	$MY_SHOP_PATH	$FPM_USER
 END
 echo
 ###################################################################################
-#                   LOADING ALL THE POSSIBLE EXTENSIONS FROM HERE                 #
+#                   LOADING ALL THE EXTRA TOOLS FROM HERE                         #
 ###################################################################################
-echo
-cok "INSTALLING TURPENTINE VARNISH FPC INTO MAGENTO"
-pause '------> Press [Enter] key to continue'
-echo
-		cd $MY_SHOP_PATH
-		wget -qO- -O master.zip --no-check-certificate https://github.com/nexcess/magento-turpentine/archive/master.zip && unzip -qq master.zip && rm -rf master.zip
-		cp -rf magento-turpentine-master/app .
-		rm -rf magento-turpentine-master
-	cok "Installed TURPENTINE VARNISH FPC into System > Configuration"
-	cok "ok"
-echo
 echo
 cok "INSTALLING phpMyAdmin - advanced MySQL interface"
 pause '------> Press [Enter] key to continue'
 echo
 		cd $MY_SHOP_PATH
 		MYSQL_FILE=$(head -c 500 /dev/urandom | tr -dc 'a-zA-Z' | fold -w 7 | head -n 1)
-		mkdir -p $MYSQL_FILE
-		cd $MYSQL_FILE
+		mkdir -p $MYSQL_FILE && cd $_
 		wget -qO - http://sourceforge.net/projects/phpmyadmin/files/phpMyAdmin/4.2.5/phpMyAdmin-4.2.5-all-languages.tar.gz | tar -xzp --strip 1
 		echo
-	cok "phpMyAdmin installed to $MY_SHOP_PATH/$MYSQL_FILE/"
-	cok "ok"
+	cok "phpMyAdmin was installed to http://${MY_DOMAIN}/${MYSQL_FILE}"
 echo
 echo
-cok "INSTALLING OPCACHE interface"
+echo
+cok "INSTALLING OPCACHE GUinterface"
 pause '------> Press [Enter] key to continue'
 echo
 		cd $MY_SHOP_PATH
 		OPCACHE_FILE=$(head -c 500 /dev/urandom | tr -dc 'a-zA-Z' | fold -w 7 | head -n 1)
 		wget -qO ${OPCACHE_FILE}_opcache_gui.php https://raw.githubusercontent.com/amnuts/opcache-gui/master/index.php
 		echo
-	cok "OPCACHE interface installed to $MY_SHOP_PATH/${OPCACHE_FILE}_opcache_gui.php"
-	cok "ok"
+	cok "OPCACHE interface was installed to http://www.${MY_DOMAIN}/${OPCACHE_FILE}_opcache_gui.php"
 echo
 echo
-cok "INSTALLING magento /app/ folder monitor and opcache invalidation script"
+echo
+cok "INSTALLING Magento /app/ folder monitor and opcache invalidation script"
 pause '------> Press [Enter] key to continue'
 cat > /root/app_monitor.sh <<END
 #!/bin/bash
@@ -1049,14 +1046,13 @@ cat > /root/app_monitor.sh <<END
 done
 END
 echo
-	cok "Script installed to /root/app_monitor.sh"
-	cok "ok"
+	cok "Script was installed to /root/app_monitor.sh"
 echo
 echo
 	echo "/root/app_monitor.sh &" >> /etc/rc.local
 echo
 echo
-cok "NOW WE LOAD VARNISH CONFIGURATION"
+cok "VARNISH DAEMON CONFIGURATION FILE"
 echo -e '\nDAEMON_OPTS="-a :80 \
              -T localhost:6082 \
              -f '$MY_SHOP_PATH'/var/default.vcl \
@@ -1072,8 +1068,9 @@ echo -e '\nDAEMON_OPTS="-a :80 \
              -s malloc,2G"' >> /etc/sysconfig/varnish
 
 VSECRET=$(cat /etc/varnish/secret)
-echo 'this is Varnish secret key -->  '$VSECRET'  <-- copy it'
-cecho "Varnish settings loaded ... \033[01;32m  ok"
+echo 'Varnish secret key -->  '$VSECRET'  <-- copy it'
+echo
+cecho "Varnish settings were loaded \033[01;32m  ok"
 echo
 pause '------> Press [Enter] key to reset permissions and create a cronjob'
 echo
@@ -1082,20 +1079,15 @@ cecho "RESETTING FILE PERMISSIONS ..."
 		find . -type d -exec chmod 775 {} \;
 		chmod 777 -R var media
 		chown -R $FPM_USER:$FPM_USER $MY_SHOP_PATH
-	cok "ok"
+    echo
 	echo
-	cok "Writing Magento cron.sh into crontab"
+	cok "Now we need to add cron.sh to crontab"
 	chmod +x $MY_SHOP_PATH/cron.sh
-#write out current crontab
 	crontab -l > magecron
-	cok "thats ok"
-#echo new cron into cron file
 	echo "* * * * * /bin/sh $MY_SHOP_PATH/cron.sh" >> magecron
-#install new cron file
 	crontab magecron
 	rm magecron
 	crontab -l
-	cok "ok"
 echo
 echo
 service php-fpm start
@@ -1105,7 +1097,7 @@ service redis start
 echo
 echo
 echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-cok GET READY FOR DATABASE CONFIGURATION
+cok "CONFIGURATION IS COMPLETE"
 echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 echo
 pause '------> Press [Enter] key to show menu'
@@ -1164,8 +1156,8 @@ EOMYSQL
 echo
 cok "MAGENTO DATABASE \033[01;31m $MAGE_DB_NAME \033[01;32mAND USER \033[01;31m $MAGE_DB_USER_NAME \033[01;32m CREATED, PASSWORD IS \033[01;31m $MAGE_DB_PASS"
 echo
-mkdir -p ~/mascm/
-cat >> ~/mascm/.mascm_index <<END
+mkdir -p /root/mascm/
+cat >> /root/mascm/.mascm_index <<END
 database	$MAGE_DB_HOST	$MAGE_DB_NAME	$MAGE_DB_USER_NAME	$MAGE_DB_PASS
 END
 echo
@@ -1173,7 +1165,7 @@ echo "Finita"
 echo
 echo
 echo
-pause '---> Press [Enter] key to show menu'
+pause '---> Press [Enter] key to show the menu'
 ;;
 ###################################################################################
 #                                MAGENTO INSTALLATION                             #
@@ -1183,11 +1175,12 @@ printf "\033c"
 cecho "============================================================================="
 echo
 echo "---> ENTER INSTALLATION INFORMATION"
-DB_HOST=$(cat ~/mascm/.mascm_index | grep database | awk '{print $2}')
-DB_NAME=$(cat ~/mascm/.mascm_index | grep database | awk '{print $3}')
-DB_USER_NAME=$(cat ~/mascm/.mascm_index | grep database | awk '{print $4}')
-DB_PASS=$(cat ~/mascm/.mascm_index | grep database | awk '{print $5}')
-DOMAIN=$(cat ~/mascm/.mascm_index | grep webshop | awk '{print $2}')
+awk '/database/ { print $2 }' /root/mascm/.mascm_index
+DB_HOST=$(awk '/database/ { print $2 }' /root/mascm/.mascm_index)
+DB_NAME=$(awk '/database/ { print $3 }' /root/mascm/.mascm_index)
+DB_USER_NAME=$(awk '/database/ { print $4 }' /root/mascm/.mascm_index)
+DB_PASS=$(awk '/database/ { print $5 }' /root/mascm/.mascm_index)
+DOMAIN=$(awk '/webshop/ { print $2 }' /root/mascm/.mascm_index)
 echo
 cecho "Database information"
 read -e -p "---> Enter your database host: " -i "$DB_HOST"  MAGE_DB_HOST
@@ -1212,8 +1205,8 @@ echo
 cecho "============================================================================="
 echo
 cok "NOW INSTALLING MAGENTO WITHOUT SAMPLE DATA"
-SHOP_PATH=$(cat ~/mascm/.mascm_index | grep webshop | awk '{print $3}')
-cd $SHOP_PATH
+MY_SHOP_PATH=$(awk '/webshop/ { print $3 }' /root/mascm/.mascm_index)
+cd $MY_SHOP_PATH
     chmod +x mage
     ./mage mage-setup .
 
@@ -1270,7 +1263,7 @@ cecho "-= FINAL MAINTENANCE AND CLEANUP =-"
 echo
 echo "---> CHANGING YOUR LOCAL.XML FILE WITH MEMCACHE SESSIONS AND REDIS CACHE BACKENDS"
 echo
-sed -i '/<session_save>/d' $SHOP_PATH/app/etc/local.xml
+sed -i '/<session_save>/d' $MY_SHOP_PATH/app/etc/local.xml
 sed -i '/<global>/ a\
 <session_save><![CDATA[memcache]]></session_save> \
 <session_save_path><![CDATA[tcp://127.0.0.1:11211?persistent=1&weight=2&timeout=10&retry_interval=10]]></session_save_path> \
@@ -1293,20 +1286,160 @@ sed -i '/<global>/ a\
             <compress_threshold>204800</compress_threshold> \
             <compression_lib>gzip</compression_lib> \
         </backend_options> \
-        </cache>' $SHOP_PATH/app/etc/local.xml
+        </cache>' $MY_SHOP_PATH/app/etc/local.xml
 echo
 echo "---> CLEANING UP INDEXES LOCKS AND RUNNING REINDEXALL"	
 echo
-rm -rf 	$SHOP_PATH/var/locks/*
-php $SHOP_PATH/shell/indexer.php --reindexall
+rm -rf 	$MY_SHOP_PATH/var/locks/*
+php $MY_SHOP_PATH/shell/indexer.php --reindexall
 echo
 chmod +x /root/app_monitor.sh
 /root/app_monitor.sh &
 echo
+echo "---> TRUNCATE LOGS WEEKLY ADD TO CRONTAB"
+cat > /root/truncate_logs.sh <<END
+#!/bin/bash
+TABLES="log_url log_url_info log_visitor log_visitor_info"
+for table in \$TABLES
+do
+  echo "Truncating \$t table from $DB_NAME database"
+  mysql -u $DB_USER_NAME -p$DB_PASS -h $DB_HOST $DB_NAME -e "TRUNCATE TABLE \${table};"
+done
+END
+chmod +x /root/truncate_logs.sh
+cok "WRITING DATA TO CRON"
+	crontab -l > magecron
+	echo "0 6 * * 1 sh /root/truncate_logs.sh" >> magecron
+	crontab magecron
+	rm magecron
+	crontab -l
+	echo
+	cecho "Edit crontab if you need different settings"
+	echo
 echo
-cok "NOW LOGIN TO YOUR BACKEND AND CHECK EVERYTHING"
+###################################################################################
+#                   LOADING ALL THE EXTRA EXTENSIONS FROM HERE                    #
+###################################################################################
+echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+cok "YOU CAN INSTALL SOME ADDITIONAL EXTENSIONS DIRECTLY FROM MAGENTO CONNECT"
+echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 echo
-pause '---> Press [Enter] key to show menu'
+echo
+pause '------> Press [Enter] key to continue'
+cd $MY_SHOP_PATH && chmod +x mage
+echo
+echo -n "---> Would you like to install Turpentine Varnish FPC? [y/n][n]:"
+read turpentine
+if [ "$turpentine" == "y" ];
+  then
+    echo
+      cok "INSTALATION OF TURPENTINE VARNISH FULL PAGE CACHE"
+       echo
+       ./mage install http://connect20.magentocommerce.com/community  Nexcessnet_Turpentine >/dev/null 2>&1
+       cok "TURPENTINE VARNISH FPC HAS BEEN INSTALLED"
+      echo
+    else
+      echo
+        cinfo "TURPENTINE VARNISH FPC installation was skipped by the user. Next step"
+      fi
+echo
+echo
+echo -n "---> Would you like to install Lesti FPC? [y/n][n]:"
+read lesti
+if [ "$lesti" == "y" ];
+  then
+    echo
+      cok "INSTALLATION OF LESTI FULL PAGE CACHE"
+       echo
+       cd $MY_SHOP_PATH
+       wget -qO- -O master.zip --no-check-certificate https://github.com/GordonLesti/Lesti_Fpc/archive/master.zip && unzip -qq master.zip && rm -rf master.zip
+       cp -rf Lesti_Fpc-master/app .
+       rm -rf Lesti_Fpc-master
+       cok "LESTI FPC HAS BEEN INSTALLED"
+      echo
+    else
+      echo
+        cinfo "LESTI FPC installation was skipped by the user. Next step"
+      fi
+echo
+echo
+echo -n "---> Would you like to install Enhanced Admin Grids (+ Editor)? [y/n][n]:"
+read eag
+if [ "$eag" == "y" ];
+  then
+    echo
+      cok "INSTALLATION OF ENHANCED ADMIN GRIDS"
+       echo
+       cd $MY_SHOP_PATH
+       ./mage install http://connect20.magentocommerce.com/community  BL_CustomGrid
+       echo
+       cok "ENHANCED ADMIN GRIDS HAS BEEN INSTALLED"
+      echo
+    else
+      echo
+        cinfo "ENHANCED ADMIN GRIDS installation was skipped by the user. Next step"
+      fi
+echo
+echo
+echo -n "---> Would you like to install Magento WordPress Integration? [y/n][n]:"
+read mwpi
+if [ "$mwpi" == "y" ];
+  then
+    echo
+      cok "INSTALLATION OF MAGENTO WORDPRESS INTEGRATION"
+       echo
+       cd $MY_SHOP_PATH
+       ./mage install http://connect20.magentocommerce.com/community  Fishpig_Wordpress_Integration
+       echo
+       cok "MAGENTO WORDPRESS INTEGRATION HAS BEEN INSTALLED"
+      echo
+    else
+      echo
+        cinfo "MAGENTO WORDPRESS INTEGRATION installation was skipped by the user. Next step"
+      fi
+echo
+echo
+echo -n "---> Would you like to install One Page Checkout (IWD Extensions)? [y/n][n]:"
+read mopciwd
+if [ "$mopciwd" == "y" ];
+  then
+    echo
+      cok "INSTALLATION OF ONE PAGE CHECKOUT (IWD EXTENSIONS)"
+       echo
+       cd $MY_SHOP_PATH
+       ./mage install http://connect20.magentocommerce.com/community 1213
+       echo
+       cok "ONE PAGE CHECKOUT (IWD EXTENSIONS) HAS BEEN INSTALLED"
+      echo
+    else
+      echo
+        cinfo "ONE PAGE CHECKOUT (IWD EXTENSIONS) installation was skipped by the user. Next step"
+      fi
+echo
+echo
+echo -n "---> Would you like to install EU Cookie Law Compliance? [y/n][n]:"
+read euclc
+if [ "$euclc" == "y" ];
+  then
+    echo
+      cok "INSTALLATION OF EU Cookie Law Compliance"
+       echo
+       cd $MY_SHOP_PATH
+       ./mage install http://connect20.magentocommerce.com/community  Vhaldecode_CookieLaw
+       echo
+       cok "EU Cookie Law Compliance HAS BEEN INSTALLED"
+      echo
+    else
+      echo
+        cinfo "EU Cookie Law Compliance installation was skipped by the user. Next step"
+      fi
+echo
+echo
+    cok "NOW LOGIN TO YOUR BACKEND AND CHECK EVERYTHING"
+    echo
+  echo
+echo
+pause '---> Press [Enter] key to show the menu'
 ;;
 ###################################################################################
 #                               BACKUP YOUR MAGENTO FILES                         #
@@ -1321,17 +1454,18 @@ cecho "Go to http://aws.amazon.com/s3/ , click on the Sign Up button."
 echo
 echo -n "---> Install AWS Command Line Interface? [y/n][n]:"
 	read S3_backup
-	if [ "$S3_backup" == "y" ];then
+if [ "$S3_backup" == "y" ];then
+      echo
 		yum -y -q install python-setuptools
         easy_install pip
         pip install --upgrade awscli
-	echo
-	echo
+	    echo
+	    echo
 		cecho "Prepare your Access and Secret Key"
-	echo
-	sleep 2
-		cecho "Configuring AWS Command Line Interface now"
-	echo
+	    echo
+	    sleep 2
+		cecho "Configure AWS Command Line Interface now"
+	    echo
 		aws configure
 fi
 echo
@@ -1343,11 +1477,11 @@ echo -n "---> Upload backup files and database and add to cron? [y/n][n]: "
 echo
 read s3_now
 	if [ "$s3_now" == "y" ];then
-	DB_HOST=$(cat ~/mascm/.mascm_index | grep database | awk '{print $2}')
-	DB_NAME=$(cat ~/mascm/.mascm_index | grep database | awk '{print $3}')
-	DB_USER_NAME=$(cat ~/mascm/.mascm_index | grep database | awk '{print $4}')
-	DB_PASS=$(cat ~/mascm/.mascm_index | grep database | awk '{print $5}')
-	SHOP_PATH=$(cat ~/mascm/.mascm_index | grep webshop | awk '{print $3}')
+	DB_HOST=$(awk '/database/ { print $2 }' /root/mascm/.mascm_index)
+    DB_NAME=$(awk '/database/ { print $3 }' /root/mascm/.mascm_index)
+    DB_USER_NAME=$(awk '/database/ { print $4 }' /root/mascm/.mascm_index)
+    DB_PASS=$(awk '/database/ { print $5 }' /root/mascm/.mascm_index)
+    SHOP_PATH=$(awk '/webshop/ { print $3 }' /root/mascm/.mascm_index)
 	echo
 		read -p "---> Confirm your S3 bucket name for backup: " S3_BUCKET
 		read -e -p "---> Confirm your local temporary folder: " -i "/home"  SAVE_FOLDER
@@ -1374,14 +1508,10 @@ echo "Uploading database dump..."
 aws s3 mv $SAVE_FOLDER/db_*.tar.gz  s3://$S3_BUCKET/
 echo "Backup uploaded."
 END
-	
 	cok "WRITING DATA TO CRON"
-	#write out current crontab
 	crontab -l > magecron
-	#echo new cron into cron file
 	echo "0 0 * * 0 sh /root/S3_AB_FILES_CRON.sh" >> magecron
 	echo "0 5 * * * sh /root/S3_AB_DB_CRON.sh" >> magecron
-	#install new cron file
 	crontab magecron
 	rm magecron
 	crontab -l
@@ -1400,11 +1530,12 @@ pause '---> Press [Enter] key to show menu'
 cecho =============================================================================
 echo
 cecho "NOW WE PROTECT YOUR SERVER"
-cok "replacing the root user with a new user"
+echo
+cok "Replacing the root user with a new user"
 echo
 echo -n "---> Generate a password for the new user? [y/n][n]:"
-read new_rpass_gen
-if [ "$new_rpass_gen" == "y" ];then
+read new_rupass_gen
+if [ "$new_rupass_gen" == "y" ];then
         NEW_ROOT_PASSGEN=$(head -c 500 /dev/urandom | tr -dc 'a-zA-Z0-9~!@#$%^&' | fold -w 15 | head -n 1)
                 cecho "Password: \033[01;31m $NEW_ROOT_PASSGEN"
                 cok "!REMEMBER IT AND KEEP IT SAFE!"
@@ -1414,31 +1545,35 @@ echo
 echo -n "---> Create your new user? [y/n][n]:"
 read new_root_user
 if [ "$new_root_user" == "y" ];then
+       echo
         read -p "---> Enter the new user name: " NEW_ROOT_NAME
-		echo "$NEW_ROOT_NAME   ALL=(ALL)       ALL" >> /etc/sudoers
-		adduser $NEW_ROOT_NAME
+		echo "$NEW_ROOT_NAME	ALL=(ALL)		ALL" >> /etc/sudoers
+		SHOP_PATH=$(awk '/webshop/ { print $3 }' /root/mascm/.mascm_index)
+		FPM_USER=$(awk '/webshop/ { print $4 }' /root/mascm/.mascm_index)
+		useradd $NEW_ROOT_NAME -g $FPM_USER -d $SHOP_PATH -s /bin/bash
 	    passwd $NEW_ROOT_NAME
         fi
 echo
-echo -n "---> Change ssh setting snow? [y/n][n]:"
+echo -n "---> Change ssh settings snow? [y/n][n]:"
 read new_ssh_set
 if [ "$new_ssh_set" == "y" ];then
+       echo
 		cp /etc/ssh/sshd_config /etc/ssh/sshd_config.BACK
         read -p "---> Enter a new ssh port(9500-65000) : " NEW_SSH_PORT
-		sed -i "s/#Port 22/Port $NEW_SSH_PORT/g" /etc/ssh/sshd_config
-		sed -i 's/#PermitRootLogin no/PermitRootLogin no/g' /etc/ssh/sshd_config
-		sed -i 's/#PermitRootLogin yes/PermitRootLogin no/g' /etc/ssh/sshd_config
-if [ -f /etc/fail2ban/jail.conf ]
-then
-    cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.conf.BACK
-    sed -i "s/port=ssh/port=$NEW_SSH_PORT/" /etc/fail2ban/jail.conf
-	cok "fail2ban jail has been changed"
-fi
-		cok "ssh port has been changed ok"
-		cok "Root login DISABLED"
-		service sshd restart
-		netstat -tulnp | grep sshd
-        fi
+        sed -i "s/#Port 22/Port $NEW_SSH_PORT/g" /etc/ssh/sshd_config
+        sed -i 's/.*PermitRootLogin.*/PermitRootLogin no/g' /etc/ssh/sshd_config
+   if [ -f /etc/fail2ban/jail.conf ]
+     then
+        cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.conf.BACK
+        sed -i "s/port=ssh/port=$NEW_SSH_PORT/" /etc/fail2ban/jail.conf
+        cok "fail2ban jail has been changed"
+   fi
+     echo
+        cok "SSH PORT HAS BEEN UPDATED  -  OK"
+        cok "ROOT LOGIN  -  DISABLED"
+        service sshd restart
+        netstat -tulnp | grep sshd
+   fi
 echo
 echo
 cwarn "!IMPORTANT: OPEN NEW SSH SESSION AND TEST YOUR ACCOUNT!"
@@ -1446,27 +1581,60 @@ echo
 echo -n "---> Have you logged in? [y/n][n]:"
 read new_ssh_test
 if [ "$new_ssh_test" == "y" ];then
-    if [ -f /etc/fail2ban/jail.conf ]
-then
-    service fail2ban restart
+   if [ -f /etc/fail2ban/jail.conf ]
+     then
+        service fail2ban restart
+   fi
+      echo
+        cok "REMEMBER YOUR PORT: ${NEW_SSH_PORT}, LOGIN: ${NEW_ROOT_NAME} AND PASSWORD ${NEW_ROOT_PASSGEN}"
+      else
+        mv /etc/ssh/sshd_config.BACK /etc/ssh/sshd_config
+        cwarn "Writing your sshd_config back ... \033[01;32m ok"
+        service sshd restart
+   if [ -f /etc/fail2ban/jail.conf ]
+     then
+        mv /etc/fail2ban/jail.conf.BACK /etc/fail2ban/jail.conf
+        service fail2ban restart
+   fi
+     echo
+        cok "SSH PORT HAS BEEN UPDATED  -  OK"
+        cok "ROOT LOGIN  -  ENABLED"
+        netstat -tulnp | grep sshd
 fi
-	cok "REMEMBER YOUR PORT: $NEW_SSH_PORT, LOGIN: $NEW_ROOT_NAME AND PASSWORD $NEW_ROOT_PASSGEN"
-	else
-	mv /etc/ssh/sshd_config.BACK /etc/ssh/sshd_config
-	cwarn "Writing your sshd_config back ... \033[01;32m ok"
-	service sshd restart
-	    if [ -f /etc/fail2ban/jail.conf ]
-then
-    mv /etc/fail2ban/jail.conf.BACK /etc/fail2ban/jail.conf
-    service fail2ban restart
-fi
-	cok "ssh port changed ok"
-    cok "Root login ENABLED"
-	netstat -tulnp | grep sshd
-    fi
 echo
 echo
 pause '---> Press [Enter] key to show menu'
+;;
+###################################################################################
+#                          INSTALLING PROFTPD SERVER                              #
+###################################################################################
+"proftpd")
+cecho "============================================================================="
+echo
+echo -n "---> Do you want to configure ProFTPd server now? [y/n][n]:"
+read install_proftpd
+if [ "$install_proftpd" == "y" ];then
+          echo
+            echo
+            cok "Downloading ProFTPd latest ${PROFTPD_VER} archive"
+            echo
+            read -e -p "---> Enter your servers external ip: " -i "9521"  PROFTPD_PORT
+			read -e -p "---> Enter your servers external ip: " -i "54.234.56.89"  PROFTPD_MASC_IP
+			#read -e -p "---> Enter your GeoIP country code: " -i "(ES|IE)"  PROFTPD_GEO_CODE
+			read -e -p "---> Enter your whitelist client ip: " -i "54.234.56.89 54.234.56.0/24"  PROFTPD_CLIENT_IP
+			echo
+            sed -i "s/server_sftp_port/${PROFTPD_PORT}/" /etc/proftpd.conf 
+			sed -i "s/server_ip_address/${PROFTPD_MASC_IP}/" /etc/proftpd.conf 
+			#sed -i "s/geoip_country_code/${PROFTPD_GEO_CODE}/" /etc/proftpd.conf
+			sed -i "s/client_ip_address/${PROFTPD_CLIENT_IP}/" /etc/proftpd.conf
+			echo
+            echo			
+fi
+echo
+echo
+pause '---> Press [Enter] key to show the menu'
+echo
+echo
 ;;
 ###################################################################################
 #                          INSTALLING CSF FIREWALL                                #
@@ -1474,14 +1642,13 @@ pause '---> Press [Enter] key to show menu'
 "firewall")
 cecho "============================================================================="
 echo
-echo -n "---> Do you want to install CSF firewall? [y/n][n]:"
+echo -n "---> Would you like to install CSF firewall? [y/n][n]:"
 read csf_test
 if [ "$csf_test" == "y" ];then
-# INSTALLING CSF FIREWALL
 echo
 	cok "DOWNLOADING CSF FIREWALL"
-		cd
-		echo
+         echo
+           cd
 			echo -n "     PROCESSING  "
             quick_progress &
             pid="$!"
@@ -1489,34 +1656,34 @@ echo
 			stop_progress "$pid"
 				echo
 			cd csf
-				cok "NEXT, TEST WHETHER YOU HAVE THE REQUIRED IPTABLES MODULES"
+				cok "NEXT, TEST IF YOU HAVE THE REQUIRED IPTABLES MODULES"
 				echo
 				if perl csftest.pl | grep "FATAL" ; then 
 				perl csftest.pl 
 				echo
-				pause '---> Press [Enter] key to show menu'
-					exit
-			  else  
-			 perl csftest.pl
-			 echo
-			 pause '---> Press [Enter] key to continue'
-			 echo
-				cok "Installing perl modules"
-				echo
-				echo -n "     PROCESSING  "
-				start_progress &
-				pid="$!"
-				yum -q -y install perl-libwww-perl perl-Time-HiRes >/dev/null 2>&1
-				stop_progress "$pid"
-                rpm  --quiet -q perl-libwww-perl perl-Time-HiRes
-                if [ "$?" = 0 ]
-                    then
-                    cok "INSTALLED OK"
-					else
-                    cwarn "ERROR"
-					exit
-                fi
-				echo
+                pause '---> Press [Enter] key to show menu'
+                exit
+			else  
+                 perl csftest.pl
+                 echo
+                 pause '---> Press [Enter] key to continue'
+                 echo
+                 cok "Installing perl modules:"
+                 echo
+                 echo -n "     PROCESSING  "
+                 start_progress &
+                 pid="$!"
+                 yum -q -y install perl-libwww-perl perl-Time-HiRes >/dev/null 2>&1
+                 stop_progress "$pid"
+                 rpm  --quiet -q perl-libwww-perl perl-Time-HiRes
+           if [ "$?" = 0 ]
+             then
+                 cok "PERL MODULES WERE INSTALLED  -  OK"
+                 else
+                 cwarn "ERROR"
+             exit
+           fi
+             echo
 				cok "Running CSF installation"
 				echo
 				echo -n "     PROCESSING  "
@@ -1524,12 +1691,14 @@ echo
 				pid="$!"
 				sh install.sh >/dev/null 2>&1
 				stop_progress "$pid"
-				cok "INSTALLED OK"
+                echo
+				cok "CSF FIREWALL HAS BEEN INSTALLED OK"
 				echo
-	if [ -f /etc/fail2ban/jail.conf ]
-	then
-	cecho "Edit /etc/fail2ban/jail.conf [ssh-iptables] to 'enabled  = false', then restart fail2ban"
-	fi
+	      if [ -f /etc/fail2ban/jail.conf ]
+            then
+               echo
+                cecho "Edit /etc/fail2ban/jail.conf [ssh-iptables] to 'enabled  = false', then restart fail2ban"
+	      fi
 	fi
 fi
 echo
