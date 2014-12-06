@@ -316,7 +316,7 @@ if [ "${repo_epel_install}" == "y" ];then
             echo -n "     PROCESSING  "
             long_progress &
             pid="$!"
-            yum -q -y install wget curl bc mcrypt sudo crontabs gcc vim mlocate unzip proftpd inotify-tools >/dev/null 2>&1
+            yum -q -y install wget curl bc mcrypt sudo crontabs gcc vim mlocate unzip proftpd inotify-tools --exclude=exim >/dev/null 2>&1
             stop_progress "$pid"
             echo
             GREENTXT "ALL PACKAGES WERE INSTALLED  -  OK"
