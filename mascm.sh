@@ -774,7 +774,7 @@ echo
 echo
 mkdir -p /root/mascm/
 cat >> /root/mascm/.mascm_index <<END
-webshop $MY_DOMAIN      $MY_SHOP_PATH   $FPM_USER
+webshop ${MY_DOMAIN}      ${MY_SHOP_PATH}   ${FPM_USER}
 END
 echo
 ###################################################################################
@@ -787,7 +787,7 @@ echo
                 cd ${MY_SHOP_PATH}
                 MYSQL_FILE=$(head -c 500 /dev/urandom | tr -dc 'a-zA-Z' | fold -w 7 | head -n 1)
                 mkdir -p ${MYSQL_FILE} && cd $_
-                wget -qO - http://sourceforge.net/projects/phpmyadmin/files/phpMyAdmin/4.2.5/phpMyAdmin-4.2.5-all-languages.tar.gz | tar -xzp --strip 1
+                wget -qO - http://sourceforge.net/projects/phpmyadmin/files/phpMyAdmin/4.3.0/phpMyAdmin-4.3.0-all-languages.tar.gz | tar -xzp --strip 1
                 echo
         GREENTXT "phpMyAdmin was installed to http://${MY_DOMAIN}/${MYSQL_FILE}"
 echo
@@ -809,7 +809,7 @@ pause '------> Press [Enter] key to continue'
 cat > /root/app_monitor.sh <<END
 #!/bin/bash
 ## monitor app folder and log modified files
-/usr/bin/inotifywait -e modify \
+/usr/bin/inotifywait -e modify,move \
     -mrq --timefmt %a-%b-%d-%T --format '%w%f %T' ${MY_SHOP_PATH}/app | while read line; do
     echo "\$line " >> /var/log/app_monitor.log
     FILE=$(echo $line | cut -d' ' -f1 | sed 's/\/\./\//g')
@@ -860,7 +860,7 @@ WHITETXT "RESETTING FILE PERMISSIONS ..."
         GREENTXT "Now we need to add cron.sh to crontab"
         chmod +x ${MY_SHOP_PATH}/cron.sh
         crontab -l > magecron
-        echo "* * * * * /bin/sh ${MY_SHOP_PATH}/cron.sh" >> magecron
+        echo "* * * * * /bin/bash ${MY_SHOP_PATH}/cron.sh" >> magecron
         crontab magecron
         rm magecron
         crontab -l
@@ -897,7 +897,7 @@ WHITETXT "CREATING MAGENTO DATABASE AND DATABASE USER"
 echo
 echo -n "---> Generate MySQL ROOT strong password? [y/n][n]:"
 read mysql_rpass_gen
-if [ "$mysql_rpass_gen" == "y" ];then
+if [ "${mysql_rpass_gen}" == "y" ];then
    echo
        MYSQL_ROOT_PASSGEN=$(head -c 500 /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 15 | head -n 1)
        WHITETXT "MySQL ROOT password: ${REDBG} ${MYSQL_ROOT_PASSGEN} "
@@ -906,7 +906,7 @@ if [ "$mysql_rpass_gen" == "y" ];then
 fi
 echo -n "---> Start Mysql Secure Installation? [y/n][n]:"
 read mysql_secure
-if [ "$mysql_secure" == "y" ];then
+if [ "${mysql_secure}" == "y" ];then
                 mysql_secure_installation
         fi
 echo
@@ -917,7 +917,7 @@ read -p "---> Enter Magento database user : " MAGE_DB_USER_NAME
 echo
 echo -n "---> Generate MySQL USER strong password? [y/n][n]:"
 read mysql_upass_gen
-if [ "$mysql_upass_gen" == "y" ];then
+if [ "${mysql_upass_gen}" == "y" ];then
         MYSQL_USER_PASSGEN=$(head -c 500 /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 15 | head -n 1)
         WHITETXT "MySQL USER password: ${RED} ${MYSQL_USER_PASSGEN} "
         fi
@@ -959,9 +959,9 @@ DOMAIN=$(awk '/webshop/ { print $2 }' /root/mascm/.mascm_index)
 echo
 WHITETXT "Database information"
 read -e -p "---> Enter your database host: " -i "${DB_HOST}"  MAGE_DB_HOST
-read -e -p "---> Enter your database name: " -i "$DB_NAME"  MAGE_DB_NAME
-read -e -p "---> Enter your database user: " -i "$DB_USER_NAME"  MAGE_DB_USER_NAME
-read -e -p "---> Enter your database password: " -i "$DB_PASS"  MAGE_DB_PASS
+read -e -p "---> Enter your database name: " -i "${DB_NAME}"  MAGE_DB_NAME
+read -e -p "---> Enter your database user: " -i "${DB_USER_NAME}"  MAGE_DB_USER_NAME
+read -e -p "---> Enter your database password: " -i "${DB_PASS}"  MAGE_DB_PASS
 echo
 WHITETXT "Administrator and domain"
 read -e -p "---> Enter your First Name: " -i "Name"  MAGE_ADMIN_FNAME
@@ -969,8 +969,8 @@ read -e -p "---> Enter your Last Name: " -i "Lastname"  MAGE_ADMIN_LNAME
 read -e -p "---> Enter your email: " -i "admin@domain.com"  MAGE_ADMIN_EMAIL
 read -e -p "---> Enter your admins login name: " -i "admin"  MAGE_ADMIN_LOGIN
 MAGE_ADMIN_PASSGEN=$(head -c 500 /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 15 | head -n 1)
-read -e -p "---> Use generated admin password: " -i "$MAGE_ADMIN_PASSGEN"  MAGE_ADMIN_PASS
-read -e -p "---> Enter your shop url: " -i "http://$DOMAIN/"  MAGE_SITE_URL
+read -e -p "---> Use generated admin password: " -i "${MAGE_ADMIN_PASSGEN}"  MAGE_ADMIN_PASS
+read -e -p "---> Enter your shop url: " -i "http://${DOMAIN}/"  MAGE_SITE_URL
 read -e -p "---> Enter your locale: " -i "en_GB"  MAGE_LOCALE
 read -e -p "---> Enter your timezone: " -i "Europe/Budapest"  MAGE_TIMEZONE
 read -e -p "---> Enter your currency: " -i "EUR"  MAGE_CURRENCY
@@ -985,24 +985,24 @@ cd ${MY_SHOP_PATH}
 
 php -f install.php -- \
 --license_agreement_accepted "yes" \
---locale "$MAGE_LOCALE" \
---timezone "$MAGE_TIMEZONE" \
---default_currency "$MAGE_CURRENCY" \
---db_host "$MAGE_DB_HOST" \
---db_name "$MAGE_DB_NAME" \
---db_user "$MAGE_DB_USER_NAME" \
---db_pass "$MAGE_DB_PASS" \
---url "$MAGE_SITE_URL" \
+--locale "${MAGE_LOCALE}" \
+--timezone "${MAGE_TIMEZONE}" \
+--default_currency "${MAGE_CURRENCY}" \
+--db_host "${MAGE_DB_HOST}" \
+--db_name "${MAGE_DB_NAME}" \
+--db_user "${MAGE_DB_USER_NAME}" \
+--db_pass "${MAGE_DB_PASS}" \
+--url "${MAGE_SITE_URL}" \
 --use_rewrites "yes" \
 --use_secure "no" \
 --secure_base_url "" \
 --skip_url_validation "yes" \
 --use_secure_admin "no" \
---admin_firstname "$MAGE_ADMIN_FNAME" \
---admin_lastname "$MAGE_ADMIN_LNAME" \
---admin_email "$MAGE_ADMIN_EMAIL" \
---admin_username "$MAGE_ADMIN_LOGIN" \
---admin_password "$MAGE_ADMIN_PASS"
+--admin_firstname "${MAGE_ADMIN_FNAME}" \
+--admin_lastname "${MAGE_ADMIN_LNAME}" \
+--admin_email "${MAGE_ADMIN_EMAIL}" \
+--admin_username "${MAGE_ADMIN_LOGIN}" \
+--admin_password "${MAGE_ADMIN_PASS}"
 
 GREENTXT "ok"
     echo
@@ -1013,20 +1013,20 @@ GREENTXT "ok"
     WHITETXT "============================================================================="
     WHITETXT " MAGENTO FRONTEND AND BACKEND LINKS"
     echo
-    echo "      Store: $MAGE_SITE_URL"
+    echo "      Store: ${MAGE_SITE_URL}"
     echo
     WHITETXT "============================================================================="
     WHITETXT " MAGENTO ADMIN ACCOUNT"
     echo
-    echo "      Username: $MAGE_ADMIN_LOGIN"
-    echo "      Password: $MAGE_ADMIN_PASS"
+    echo "      Username: ${MAGE_ADMIN_LOGIN}"
+    echo "      Password: ${MAGE_ADMIN_PASS}"
     echo
     WHITETXT "============================================================================="
     WHITETXT " MAGENTO DATABASE INFO"
     echo
-    echo "      Database: $MAGE_DB_NAME"
-    echo "      Username: $MAGE_DB_USER_NAME"
-    echo "      Password: $MAGE_DB_PASS"
+    echo "      Database: ${MAGE_DB_NAME}"
+    echo "      Username: ${MAGE_DB_USER_NAME}"
+    echo "      Password: ${MAGE_DB_PASS}"
     echo
     WHITETXT "============================================================================="
         echo
@@ -1048,7 +1048,7 @@ sed -i '/<global>/ a\
             <server>127.0.0.1</server> \
             <port>6379</port> \
             <persistent><![CDATA[db0]]></persistent> \
-            <database>0</database> \
+            <database>1</database> \
             <password></password> \
             <force_standalone>0</force_standalone> \
             <connect_retries>1</connect_retries> \
@@ -1073,16 +1073,16 @@ echo "---> TRUNCATE LOGS WEEKLY ADD TO CRONTAB"
 cat > /root/truncate_logs.sh <<END
 #!/bin/bash
 TABLES="log_url log_url_info log_visitor log_visitor_info"
-for table in \$TABLES
+for table in \${TABLES}
 do
-  echo "Truncating \$t table from $DB_NAME database"
-  mysql -u $DB_USER_NAME -p$DB_PASS -h $DB_HOST $DB_NAME -e "TRUNCATE TABLE \${table};"
+  echo "Truncating \$table from ${DB_NAME} database"
+  mysql -u ${DB_USER_NAME} -p${DB_PASS} -h ${DB_HOST} ${DB_NAME} -e "TRUNCATE TABLE \${table};"
 done
 END
 chmod +x /root/truncate_logs.sh
 GREENTXT "WRITING DATA TO CRON"
         crontab -l > magecron
-        echo "0 6 * * 1 sh /root/truncate_logs.sh" >> magecron
+        echo "0 6 * * 1 /bin/bash /root/truncate_logs.sh" >> magecron
         crontab magecron
         rm magecron
         crontab -l
@@ -1103,7 +1103,7 @@ cd ${MY_SHOP_PATH} && chmod +x mage
 echo
 echo -n "---> Would you like to install Turpentine Varnish FPC? [y/n][n]:"
 read turpentine
-if [ "$turpentine" == "y" ];
+if [ "${turpentine}" == "y" ];
   then
     echo
       GREENTXT "INSTALATION OF TURPENTINE VARNISH FULL PAGE CACHE"
@@ -1119,7 +1119,7 @@ echo
 echo
 echo -n "---> Would you like to install Lesti FPC? [y/n][n]:"
 read lesti
-if [ "$lesti" == "y" ];
+if [ "${lesti}" == "y" ];
   then
     echo
       GREENTXT "INSTALLATION OF LESTI FULL PAGE CACHE"
@@ -1138,7 +1138,7 @@ echo
 echo
 echo -n "---> Would you like to install Enhanced Admin Grids (+ Editor)? [y/n][n]:"
 read eag
-if [ "$eag" == "y" ];
+if [ "${eag}" == "y" ];
   then
     echo
       GREENTXT "INSTALLATION OF ENHANCED ADMIN GRIDS"
@@ -1156,7 +1156,7 @@ echo
 echo
 echo -n "---> Would you like to install Magento WordPress Integration? [y/n][n]:"
 read mwpi
-if [ "$mwpi" == "y" ];
+if [ "${mwpi}" == "y" ];
   then
     echo
       GREENTXT "INSTALLATION OF MAGENTO WORDPRESS INTEGRATION"
@@ -1174,7 +1174,7 @@ echo
 echo
 echo -n "---> Would you like to install One Page Checkout (IWD Extensions)? [y/n][n]:"
 read mopciwd
-if [ "$mopciwd" == "y" ];
+if [ "${mopciwd}" == "y" ];
   then
     echo
       GREENTXT "INSTALLATION OF ONE PAGE CHECKOUT (IWD EXTENSIONS)"
@@ -1192,7 +1192,7 @@ echo
 echo
 echo -n "---> Would you like to install EU Cookie Law Compliance? [y/n][n]:"
 read euclc
-if [ "$euclc" == "y" ];
+if [ "${euclc}" == "y" ];
   then
     echo
       GREENTXT "INSTALLATION OF EU Cookie Law Compliance"
@@ -1226,7 +1226,7 @@ GREENTXT "Replacing the root user with a new user"
 echo
 echo -n "---> Generate a password for the new user? [y/n][n]:"
 read new_rupass_gen
-if [ "$new_rupass_gen" == "y" ];then
+if [ "${new_rupass_gen}" == "y" ];then
    echo
       NEW_ROOT_PASSGEN=$(head -c 500 /dev/urandom | tr -dc 'a-zA-Z0-9~!@#$%^&' | fold -w 15 | head -n 1)
       WHITETXT "Password: ${RED} ${NEW_ROOT_PASSGEN}"
@@ -1236,10 +1236,10 @@ fi
 echo
 echo -n "---> Create your new user? [y/n][n]:"
 read new_root_user
-if [ "$new_root_user" == "y" ];then
+if [ "${new_root_user}" == "y" ];then
      echo
         read -p "---> Enter the new user name: " NEW_ROOT_NAME
-        echo "${NEW_ROOT_NAME}    ALL=(ALL)               ALL" >> /etc/sudoers
+        echo "${NEW_ROOT_NAME}	ALL=(ALL	ALL" >> /etc/sudoers
         SHOP_PATH=$(awk '/webshop/ { print $3 }' /root/mascm/.mascm_index)
         FPM_USER=$(awk '/webshop/ { print $4 }' /root/mascm/.mascm_index)
         useradd -G ${FPM_USER} -d ${SHOP_PATH} -s /bin/bash ${NEW_ROOT_NAME}
@@ -1249,19 +1249,12 @@ fi
 echo
 echo -n "---> Change ssh settings snow? [y/n][n]:"
 read new_ssh_set
-if [ "$new_ssh_set" == "y" ];then
+if [ "${new_ssh_set}" == "y" ];then
    echo
       cp /etc/ssh/sshd_config /etc/ssh/sshd_config.BACK
       read -p "---> Enter a new ssh port(9500-65000) : " NEW_SSH_PORT
-      sed -i "s/#Port 22/Port $NEW_SSH_PORT/g" /etc/ssh/sshd_config
+      sed -i "s/#Port 22/Port ${NEW_SSH_PORT}/g" /etc/ssh/sshd_config
       sed -i 's/.*PermitRootLogin.*/PermitRootLogin no/g' /etc/ssh/sshd_config
-  if [ -f /etc/fail2ban/jail.conf ]
-     then
-        cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.conf.BACK
-        sed -i "s/port=ssh/port=$NEW_SSH_PORT/" /etc/fail2ban/jail.conf
-        GREENTXT "fail2ban jail has been changed"
-     echo
-   fi
      echo
         GREENTXT "SSH PORT HAS BEEN UPDATED  -  OK"
         GREENTXT "ROOT LOGIN  -  DISABLED"
@@ -1275,23 +1268,14 @@ REDTXT "!IMPORTANT: OPEN NEW SSH SESSION AND TEST YOUR ACCOUNT!"
 echo
 echo -n "---> Have you logged in? [y/n][n]:"
 read new_ssh_test
-if [ "$new_ssh_test" == "y" ];then
-   if [ -f /etc/fail2ban/jail.conf ]
-     then
-        service fail2ban restart
-   fi
+if [ "${new_ssh_test}" == "y" ];then
       echo
         GREENTXT "REMEMBER YOUR PORT: ${NEW_SSH_PORT}, LOGIN: ${NEW_ROOT_NAME} AND PASSWORD ${NEW_ROOT_PASSGEN}"
-      else
+        else
         mv /etc/ssh/sshd_config.BACK /etc/ssh/sshd_config
         REDTXT "Writing your sshd_config back ... \033[01;32m ok"
         service sshd restart
-   if [ -f /etc/fail2ban/jail.conf ]
-     then
-        mv /etc/fail2ban/jail.conf.BACK /etc/fail2ban/jail.conf
-        service fail2ban restart
-   fi
-     echo
+        echo
         GREENTXT "SSH PORT HAS BEEN UPDATED  -  OK"
         GREENTXT "ROOT LOGIN  -  ENABLED"
         netstat -tulnp | grep sshd
@@ -1308,7 +1292,7 @@ WHITETXT "======================================================================
 echo
 echo -n "---> Would you like to install CSF firewall? [y/n][n]:"
 read csf_test
-if [ "$csf_test" == "y" ];then
+if [ "${csf_test}" == "y" ];then
            echo
                GREENTXT "DOWNLOADING CSF FIREWALL"
                echo
@@ -1358,11 +1342,6 @@ if [ "$csf_test" == "y" ];then
                echo
                GREENTXT "CSF FIREWALL HAS BEEN INSTALLED OK"
                echo
-         if [ -f /etc/fail2ban/jail.conf ]
-           then
-             echo
-             WHITETXT "Edit /etc/fail2ban/jail.conf [ssh-iptables] to 'enabled  = false', then restart fail2ban"
-         fi
     fi
 fi
 echo
@@ -1370,7 +1349,7 @@ echo
 pause '---> Press [Enter] key to show menu'
 ;;
 "exit")
-REDTXT "------> Hasta la vista, baby..."
+REDTXT "------> EXIT"
 exit
 ;;
 ###################################################################################
