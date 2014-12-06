@@ -6,9 +6,10 @@
 #       All rights reserved.                                         #
 #====================================================================#
 SELF=$(basename $0)
-MASCM_VER="5.3.1.9"
+MASCM_VER="6.5.1.9"
+mage_latest_ver="1.9.1.0"
 
-# The base md5sum location to cotrol license
+# The base md5sum location to cotrol licence
 #MASCM_BASE=http://www.magenx.com/mascm
 
 # Simple colors
@@ -122,13 +123,13 @@ if [[ ${EUID} -ne 0 ]]; then
   GREENTXT "PASS: ROOT!"
 fi
 
-# do we have CentOS 7?
-if grep "CentOS Linux release 7" /etc/redhat-release  > /dev/null 2>&1; then
-  GREENTXT "PASS: CENTOS RELEASE 7"
+# do we have CentOS 6?
+if grep "CentOS Linux release 6" /etc/redhat-release  > /dev/null 2>&1; then
+  GREENTXT "PASS: CENTOS RELEASE 6"
   else
   echo
   REDTXT "ERROR: UNABLE TO DETERMINE DISTRIBUTION TYPE."
-  YELLOWTXT "------> THIS CONFIGURATION FOR CENTOS 7."
+  YELLOWTXT "------> THIS CONFIGURATION FOR CENTOS 6."
   echo
   exit 1
 fi
@@ -152,7 +153,6 @@ if [ "${TOTALMEM}" -gt "3000000" ]; then
   else
   echo
   REDTXT "WARNING: YOU HAVE LESS THAN 3GB OF RAM"
-  YELLOWTXT "this is not good for import/export and full reindex"
 fi
 
 # some selinux, sir?
@@ -203,7 +203,7 @@ if grep -q "yes" /root/mascm/.terms >/dev/null 2>&1 ; then
    echo
     echo -n "---> Do you agree to these terms?  [y/n][y]:"
     read terms_agree
-  if [ "$terms_agree" == "y" ];then
+  if [ "${terms_agree}" == "y" ];then
     echo "yes" > /root/mascm/.terms
 	  else
         REDTXT "Going out. EXIT"
@@ -229,8 +229,6 @@ printf "\033c"
         echo
         BLUETXT ":::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
         echo
-        WHITETXT "-> Configure ProFTPd server             :  ${YELLOW}\t\t\tproftpd"
-        WHITETXT "-> Configure system backup              :  ${YELLOW}\t\t\tbackup"
         WHITETXT "-> Change root user and ssh port        :  ${YELLOW}\t\tprotect"
         WHITETXT "-> Install CSF firewall                 :  ${YELLOW}\t\t\tfirewall"
         echo
@@ -275,12 +273,12 @@ WHITETXT "======================================================================
 echo
 echo -n "---> Start EPEL and Repoforge repository installation? [y/n][n]:"
 read repo_epel_install
-if [ "$repo_epel_install" == "y" ];then
+if [ "${repo_epel_install}" == "y" ];then
           echo
             GREENTXT "Installation of EPEL repository:"
             echo
             echo -n "     PROCESSING  "
-		    quick_progress &
+            quick_progress &
             pid="$!"
             rpm --quiet -U http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm >/dev/null 2>&1
             stop_progress "$pid"
@@ -289,10 +287,10 @@ if [ "$repo_epel_install" == "y" ];then
         then
           echo
             GREENTXT "REPOSITORY HAS BEEN INSTALLED  -  OK"
-              else
+             else
              echo
             REDTXT "REPOSITORY INSTALLATION ERROR"
-		exit
+          exit
       fi
             echo
             GREENTXT "Installation of Repoforge repository:"
@@ -307,7 +305,7 @@ if [ "$repo_epel_install" == "y" ];then
         then
           echo
             GREENTXT "REPOSITORY HAS BEEN INSTALLED  -  OK"
-              else
+             else
              echo
             REDTXT "REPOSITORY INSTALLATION ERROR"
         exit
@@ -332,7 +330,7 @@ WHITETXT "======================================================================
 echo
 echo -n "---> Start Percona repository and Percona database installation? [y/n][n]:"
 read repo_percona_install
-if [ "$repo_percona_install" == "y" ];then
+if [ "${repo_percona_install}" == "y" ];then
           echo
             GREENTXT "Installation of Percona repository:"
             echo
@@ -398,7 +396,7 @@ WHITETXT "======================================================================
 echo
 echo -n "---> Start Nginx (mainline) Repository installation? [y/n][n]:"
 read repo_nginx_install
-if [ "$repo_nginx_install" == "y" ];then
+if [ "${repo_nginx_install}" == "y" ];then
           echo
             GREENTXT "Installation of Nginx (mainline) repository:"
             echo
@@ -446,7 +444,7 @@ WHITETXT "======================================================================
 echo
 echo -n "---> Start the Remi repository and PHP 5.5 installation? [y/n][n]:"
 read repo_remi_install
-if [ "$repo_remi_install" == "y" ];then
+if [ "${repo_remi_install}" == "y" ];then
           echo
             GREENTXT "Installation of Remi repository:"
             echo
@@ -516,7 +514,7 @@ WHITETXT "======================================================================
 echo
 echo -n "---> Start Varnish repository and Varnish 3.x installation? [y/n][n]:"
 read varnish_install
-if [ "$varnish_install" == "y" ];then
+if [ "${varnish_install}" == "y" ];then
           echo
             GREENTXT "Installation of Varnish repository:"
             echo
@@ -559,71 +557,9 @@ fi
 echo
 WHITETXT "============================================================================="
 echo
-echo -n "---> Start Fail2Ban installation? [y/n][n]:"
-read f2b_install
-if [ "$f2b_install" == "y" ];then
-          echo
-            GREENTXT "Installation of Fail2Ban package:"
-            echo
-            echo -n "     PROCESSING  "
-            start_progress &
-            pid="$!"
-            yum -y -q install fail2ban  >/dev/null 2>&1
-            stop_progress "$pid"
-            rpm  --quiet -q fail2ban
-      if [ "$?" = 0 ]
-        then
-          echo
-            GREENTXT "FAIL2BAN HAS BEEN INSTALLED  -  OK"
-                        echo
-            GREENTXT "Writing nginx 403 filter"
-cat > /etc/fail2ban/filter.d/nginx-403.conf <<END
-[Definition]
-failregex = directory index of .* is forbidden, client: <HOST>
-            ^<HOST> .*"GET \/w00tw00t\.at\.ISC\.SANS\.DFind\:\).*".*
-            ^<HOST> .*"GET .*phppath/php.*" 444 .*
-            ^<HOST> .*"POST .*444 .*
-            ^<HOST> .*"GET .*444 .*
-            ^<HOST> .*"GET .*wp-login.php.*404.*
-END
-          echo
-            GREENTXT "Writing nginx 403 action"
-cat > /etc/fail2ban/action.d/nginx-403.conf <<END
-[Definition]
-actionban = IP=<ip> && echo "deny $IP;" >> /etc/nginx/banlist/403.conf && service nginx reload
-actionunban = IP=<ip> && sed -i "/$IP/d" /etc/nginx/banlist/403.conf && service nginx reload
-END
-          echo
-            GREENTXT "Writing nginx 403 jail"
-cat >> /etc/fail2ban/jail.conf <<END
-[nginx-403]
-enabled = true
-port = http,https
-filter = nginx-403
-action = nginx-403
-logpath = /var/log/nginx/error.log
-END
-          echo
-            GREENTXT "Creating banlist directory"
-            mkdir -p /etc/nginx/banlist/
-            touch /etc/nginx/banlist/403.conf
-            echo
-            GREENTXT "Please whitelist your ip addresses in /etc/fail2ban/jail.conf"
-            chkconfig fail2ban on
-            else
-            REDTXT "FAIL2BAN INSTALLATION ERROR"
-        exit
-      fi
-        else
-          echo
-            YELLOWTXT "Fail2Ban installation was skipped by the user. Next step"
-fi
-echo
-WHITETXT "============================================================================="
-echo
 echo -n "---> Start the System Update? [y/n][n]:"
 read sys_update
-if [ "$sys_update" == "y" ];then
+if [ "${sys_update}" == "y" ];then
           echo
             GREENTXT "THE UPDATES ARE BEING INSTALLED"
             echo
@@ -650,12 +586,12 @@ pause "---> Press [Enter] key to proceed"
 echo
 echo -n "---> Load optimized configs of php, opcache, fpm, fastcgi, memcached, sysctl, varnish? [y/n][n]:"
 read load_configs
-if [ "$load_configs" == "y" ];then
+if [ "${load_configs}" == "y" ];then
 echo
 WHITETXT "YOU HAVE TO CHECK THEM AFTER ANYWAY"
-   cat > /etc/sysctl.conf <<END
-fs.file-max = 360000
-fs.inotify.max_user_watches=200000
+cat > /etc/sysctl.conf <<END
+fs.file-max = 700000
+fs.inotify.max_user_watches=500000
 
 vm.swappiness = 10
 
@@ -710,7 +646,7 @@ opcache.enable = 1
 opcache.enable_cli = 1
 opcache.memory_consumption = 256
 opcache.interned_strings_buffer = 4
-opcache.max_accelerated_files = 10000
+opcache.max_accelerated_files = 50000
 opcache.max_wasted_percentage = 5
 opcache.use_cwd = 1
 opcache.validate_timestamps = 0
@@ -744,7 +680,7 @@ sed -i 's/^\(post_max_size = \)[0-9]*M/\132M/' /etc/php.ini
 sed -i 's/^\(upload_max_filesize = \)[0-9]*M/\132M/' /etc/php.ini
 sed -i 's/expose_php = On/expose_php = Off/' /etc/php.ini
 sed -i 's/;realpath_cache_size = 16k/realpath_cache_size = 512k/' /etc/php.ini
-sed -i 's/;realpath_cache_ttl = 120/realpath_cache_ttl = 84600/' /etc/php.ini
+sed -i 's/;realpath_cache_ttl = 120/realpath_cache_ttl = 86400/' /etc/php.ini
 sed -i 's/short_open_tag = Off/short_open_tag = On/' /etc/php.ini
 sed -i 's/; max_input_vars = 1000/max_input_vars = 50000/' /etc/php.ini
 sed -i 's/mysql.allow_persistent = On/mysql.allow_persistent = Off/' /etc/php.ini
@@ -752,7 +688,7 @@ sed -i 's/mysqli.allow_persistent = On/mysqli.allow_persistent = Off/' /etc/php.
 sed -i 's/;date.timezone =/date.timezone = UTC/' /etc/php.ini
 sed -i 's/pm = dynamic/pm = ondemand/' /etc/php-fpm.d/www.conf
 sed -i 's/;pm.max_requests = 500/pm.max_requests = 10000/' /etc/php-fpm.d/www.conf
-sed -i 's/pm.max_children = 50/pm.max_children = 500/' /etc/php-fpm.d/www.conf
+sed -i 's/pm.max_children = 50/pm.max_children = 1000/' /etc/php-fpm.d/www.conf
 
 WHITETXT "php.ini loaded ... \033[01;32m  ok"
 cat > /etc/sysconfig/memcached <<END
@@ -766,8 +702,8 @@ WHITETXT "memcached config loaded ... \033[01;32m  ok"
 echo -e '\nfastcgi_read_timeout 7200;\nfastcgi_send_timeout 7200;\nfastcgi_connect_timeout 65;\n' >> /etc/nginx/fastcgi_params
 WHITETXT "fastcgi_params loaded ... \033[01;32m  ok"
 echo
-echo "*         soft    nofile          60000" >> /etc/security/limits.conf
-echo "*         hard    nofile          100000" >> /etc/security/limits.conf
+echo "*         soft    nofile          100000" >> /etc/security/limits.conf
+echo "*         hard    nofile          500000" >> /etc/security/limits.conf
   else
         YELLOWTXT "Configuration was skipped by the user. Next step"
 fi
@@ -792,231 +728,48 @@ echo "--------------------------------------------------------------------------
 echo
 FPM=$(find /etc/php-fpm.d/ -name 'www.conf')
 FPM_USER=$(grep "user" $FPM | grep "=" | awk '{print $3}')
-echo -n "---> Download latest Magento version (1.9.0.1) ? [y/n][n]:"
+echo -n "---> Download latest Magento version (${mage_latest_ver}) ? [y/n][n]:"
 read new_down
-if [ "$new_down" == "y" ];then
+if [ "${new_down}" == "y" ];then
      read -e -p "---> Edit your installation folder full path: " -i "/var/www/html/myshop.com" MY_SHOP_PATH
         echo "  Magento will be downloaded to:"
         GREENTXT ${MY_SHOP_PATH}
-                pause '------> Press [Enter] key to continue'
+        pause '------> Press [Enter] key to continue'
         mkdir -p ${MY_SHOP_PATH} && cd $_
-                echo -n "      DOWNLOADING MAGENTO  "
-                        long_progress &
-                        pid="$!"
-                        wget -qO - http://www.magentocommerce.com/downloads/assets/1.9.0.1/magento-1.9.0.1.tar.gz | tar -xzp --strip 1
-                        stop_progress "$pid"
-                echo
-                echo
+        echo -n "      DOWNLOADING MAGENTO  "
+        long_progress &
+        pid="$!"
+        wget -qO - http://www.magentocommerce.com/downloads/assets/${mage_latest_ver}/magento-${mage_latest_ver}.tar.gz | tar -xzp --strip 1
+        stop_progress "$pid"
+        echo
+     echo
 WHITETXT "============================================================================="
 GREENTXT "      == MAGENTO DOWNLOADED AND READY FOR INSTALLATION =="
 WHITETXT "============================================================================="
 echo
 echo
-echo "---> CREATING NGINX CONFIG FILE NOW"
+echo "---> CREATING NGINX CONFIGURATION FILES NOW"
 echo
-read -e -p "---> Enter your domain name (without www): " -i "myshop.com" MY_DOMAIN
-MY_CPU=$(grep -c processor /proc/cpuinfo)
-GREENTXT "NGINX CONFIG SET UP WITH:"
-WHITETXT " DOMAIN: $MY_DOMAIN"
-WHITETXT " ROOT: $MY_SHOP_PATH"
-WHITETXT " CPU: $MY_CPU"
-if [ -f /etc/fail2ban/jail.conf ]
-then
-FAIL2BAN='include /etc/nginx/banlist/403.conf;'
-fi
-cat > /etc/nginx/nginx.conf <<END
-user  $FPM_USER;
-worker_processes  $MY_CPU;
-worker_rlimit_nofile 100000;
+read -e -p "---> Enter your domain name (without www.): " -i "myshop.com" MY_DOMAIN
 
-error_log   /var/log/nginx/error.log;
-#error_log  /var/log/nginx/error.log  notice;
-#error_log  /var/log/nginx/error.log  info;
+wget https://raw.githubusercontent.com/magenx/nginx-config/master/magento/port.conf
+wget -O /etc/nginx/fastcgi_params https://raw.githubusercontent.com/magenx/nginx-config/master/magento/fastcgi_params
+wget -O /etc/nginx/nginx.conf https://raw.githubusercontent.com/magenx/nginx-config/master/magento/nginx.conf
 
-pid        /var/run/nginx.pid;
+mkdir -p /etc/nginx/www && cd $_
+wget https://raw.githubusercontent.com/magenx/nginx-config/master/magento/www/default.conf
+wget https://raw.githubusercontent.com/magenx/nginx-config/master/magento/www/magento.conf
+sed -i 's/example.com/${MY_DOMAIN}/g' /etc/nginx/www/magento.conf
+sed -i 's,root /var/www/html,root ${MY_SHOP_PATH},g' /etc/nginx/www/magento.conf
 
-events {
-    worker_connections  1024;
-    multi_accept on;
-    use epoll;
-       }
-
-http   {
-    index index.html index.php; ## Allow a static html file to be shown first
-    include       /etc/nginx/mime.types;
-    default_type  application/octet-stream;
-
-#    geoip_country  /usr/share/GeoIP/GeoIP.dat; ## the country IP database
-    log_format  main  '\$remote_addr - \$remote_user [\$time_local] "\$request" \$status \$body_bytes_sent "\$http_referer" "\$http_user_agent"';
-
-    #log_format error403  '\$remote_addr - \$remote_user [\$time_local] '
-    #                 '\$status "\$request"  "\$http_x_forwarded_for"';
-
-    server_tokens       off;
-    sendfile            on;
-    tcp_nopush          on;
-    tcp_nodelay         on;
-
-        $FAIL2BAN
-
-    ## Gzipping is an easy way to reduce page weight
-    gzip                on;
-    gzip_vary           on;
-    gzip_proxied        any;
-    gzip_types          text/css application/x-javascript;
-    gzip_buffers        16 8k;
-    gzip_comp_level     6;
-    gzip_min_length     800;
-
-    open_file_cache max=10000 inactive=8h;
-    open_file_cache_valid 1h;
-    open_file_cache_min_uses 2;
-    open_file_cache_errors off;
-
-    #ssl_session_cache         shared:SSL:15m;
-    #ssl_session_timeout       15m;
-        #ssl_protocols             SSLv3 TLSv1 TLSv1.1 TLSv1.2;
-    #ssl_ciphers               "EECDH+ECDSA+AESGCM EECDH+aRSA+AESGCM EECDH+ECDSA+SHA384 EECDH+ECDSA+SHA256 EECDH+aRSA+SHA384 EECDH+aRSA+SHA256 EECDH+aRSA+RC4 EECDH EDH+aRSA RC4 !aNULL !eNULL !LOW !3DES !MD5 !EXP !PSK !SRP !DSS !RC4";
-    #ssl_prefer_server_ciphers on;
-
-    keepalive_timeout   10;
-
-        ## Set real ip address/network
-        #set_real_ip_from 127.0.0.1;
-        #real_ip_header X-Forwarded-For;
-
-        ## Multi domain configuration
-        #map \$http_host \$storecode {
-           #www.domain1.com 1store_code;
-           #www.domain2.net 2store_code;
-           #www.domain3.de 3store_code;
-           #www.domain4.com 4store_code;
-           #}
-
-server {
-    listen 80;
-    return 444;
-}
-
-#server {
-#     listen 443;
-#     ssl_certificate     /etc/ssl/certs/server.crt;
-#     ssl_certificate_key /etc/ssl/certs/server.key;
-#     return 444;
-#}
-
-#server {
-#    listen 80;
-#    server_name $MY_DOMAIN;
-#    return 301 \$scheme://www.${MY_DOMAIN}\$request_uri;
-#}
-
-server {
-    listen 80;
-    #listen 443 spdy ssl;
-    server_name www.${MY_DOMAIN};
-    root $MY_SHOP_PATH;
-
-    access_log  /var/log/nginx/access_${MY_DOMAIN}.log  main;
-
-    ## Nginx will not add the port in the url when the request is redirected.
-    #port_in_redirect off;
-
-    ####################################################################################
-    ## SSL CONFIGURATION
-
-       #ssl_certificate     /etc/ssl/certs/server.crt;
-       #ssl_certificate_key /etc/ssl/certs/server.key;
-
-    ####################################################################################
-
-    ## Server maintenance block. insert dev ip 1.2.3.4 static address www.whatismyip.com
-    #if (\$remote_addr !~ "^(1.2.3.4|1.2.3.4)$") {
-        #return 503;
-        #}
-
-    #error_page 503 @maintenance;
-    #location @maintenance {
-        #rewrite ^(.*)$ /error_page/503.html break;
-        #internal;
-        #access_log off;
-        #log_not_found off;
-        #}
-
-    ####################################################################################
-
-    ## 403 error log/page
-    #error_page 403 /403.html;
-    #location = /403.html {
-        #root /var/www/html/error_page;
-        #internal;
-        #access_log   /var/log/nginx/403.log  error403;
-        #}
-
-    ####################################################################################
-
-    ## Main Magento location
-    location / {
-        try_files \$uri \$uri/ @handler;
-                expires max;
-        }
-
-    ####################################################################################
-
-    ## These locations would be hidden by .htaccess normally, protected
-    location ~ (/(app/|includes/|/pkginfo/|var/|errors/local.xml)|/\.) {
-        deny all;
-        #internal;
-        }
-
-    ####################################################################################
-
-    ## Protecting /admin/ and /downloader/  1.2.3.4 = static ip (www.whatismyip.com)
-    #location /downloader/  {
-        #allow 1.2.3.4;
-        #allow 1.2.3.4;
-        #deny all;
-        #rewrite ^/downloader/(.*)$ /downloader/index.php$1;
-        #}
-    #location /admin  {
-        #allow 1.2.3.4;
-        #allow 1.2.3.4;
-        #deny all;
-        #rewrite / /@handler;
-        #}
-
-    ####################################################################################
-
-    ## Main Magento location
-    location @handler {
-        rewrite / /index.php?\$args;
-        }
-
-    location ~ \.php/ {
-        rewrite ^(.*\.php)/  \$1 last;
-        }
-
-    ####################################################################################
-
-    ## Execute PHP scripts
-    location ~ \.php$ {
-        add_header X-Config-By 'MagenX -= www.magenx.com =-';
-                add_header X-UA-Compatible 'IE=Edge,chrome=1';
-        add_header X-Time \$request_time;
-        try_files \$uri \$uri/ =404;
-        #try_files \$uri \$uri/ @handler;
-        fastcgi_pass   127.0.0.1:9000;
-        fastcgi_param  SCRIPT_FILENAME  \$document_root\$fastcgi_script_name;
-        ## Store code with multi domain
-        #fastcgi_param  MAGE_RUN_CODE \$storecode;
-        ## Default Store code
-        fastcgi_param  MAGE_RUN_CODE default;
-        fastcgi_param  MAGE_RUN_TYPE store; ## or website;
-        include        fastcgi_params; ## See /etc/nginx/fastcgi_params
-        }
-    }
-}
-END
+cd /etc/nginx/conf.d/ && rm -rf *
+wget https://raw.githubusercontent.com/magenx/nginx-config/master/magento/conf.d/error_page.conf
+wget https://raw.githubusercontent.com/magenx/nginx-config/master/magento/conf.d/extra_protect.conf
+wget https://raw.githubusercontent.com/magenx/nginx-config/master/magento/conf.d/headers.conf
+wget https://raw.githubusercontent.com/magenx/nginx-config/master/magento/conf.d/limit_req.conf
+wget https://raw.githubusercontent.com/magenx/nginx-config/master/magento/conf.d/maintenance.conf
+wget https://raw.githubusercontent.com/magenx/nginx-config/master/magento/conf.d/multishop.conf
+wget https://raw.githubusercontent.com/magenx/nginx-config/master/magento/conf.d/spider.conf
 echo
 echo
 mkdir -p /root/mascm/
@@ -1459,89 +1212,6 @@ echo
     echo
   echo
 echo
-pause '---> Press [Enter] key to show the menu'
-;;
-###################################################################################
-#                               BACKUP YOUR MAGENTO FILES                         #
-###################################################################################
-"backup")
-echo
-WHITETXT "============================================================================="
-echo
-WHITETXT "BACKUP YOUR MAGENTO FILES TO AMAZON S3"
-WHITETXT "AWS Free Tier includes 5GB storage, 20K Get Requests, and 2K Put Requests."
-WHITETXT "Go to http://aws.amazon.com/s3/ , click on the Sign Up button."
-echo
-echo -n "---> Install AWS Command Line Interface? [y/n][n]:"
-read S3_backup
-if [ "$S3_backup" == "y" ];then
-    echo
-       yum -y -q install python-setuptools
-       easy_install pip
-       pip install --upgrade awscli
-       echo
-       echo
-       WHITETXT "Prepare your Access and Secret Key"
-       echo
-       sleep 2
-       WHITETXT "Configure AWS Command Line Interface now"
-       echo
-       aws configure
-	echo
-fi
-echo
-echo
-WHITETXT "============================================================================="
-echo
-# Creating cron to S3
-echo -n "---> Upload backup files and database and add to cron? [y/n][n]: "
-echo
-read s3_now
-if [ "$s3_now" == "y" ];then
-    DB_HOST=$(awk '/database/ { print $2 }' /root/mascm/.mascm_index)
-    DB_NAME=$(awk '/database/ { print $3 }' /root/mascm/.mascm_index)
-    DB_USER_NAME=$(awk '/database/ { print $4 }' /root/mascm/.mascm_index)
-    DB_PASS=$(awk '/database/ { print $5 }' /root/mascm/.mascm_index)
-    SHOP_PATH=$(awk '/webshop/ { print $3 }' /root/mascm/.mascm_index)
-    echo
-    read -p "---> Confirm your S3 bucket name for backup: " S3_BUCKET
-    read -e -p "---> Confirm your local temporary folder: " -i "/home"  SAVE_FOLDER
-    echo
-    WHITETXT "CREATING CRON DATA TO USE AUTO-BACKUP TO S3"
-    WHITETXT "Magento files cron backup"
-cat > /root/S3_AB_FILES_CRON.sh <<END
-#!/bin/bash
-echo "Compressing the backup."
-tar -cvpzf  $SAVE_FOLDER/shop_\$(date +%a-%d-%m-%Y-%S).tar.gz  $SHOP_PATH
-echo "Site backup compressed."
-echo "Uploading the new site backup..."
-aws s3 mv $SAVE_FOLDER/shop_*.tar.gz  s3://$S3_BUCKET/
-echo "Backup uploaded."
-GREENTXT "All done."
-END
-
-WHITETXT "Magento database cron backup..."
-cat > /root/S3_AB_DB_CRON.sh <<END
-#!/bin/bash
-echo "Compressing the backup."
-mysqldump -u $DB_USER_NAME -p$DB_PASS --single-transaction $DB_NAME | gzip > $SAVE_FOLDER/db_\$(date +%a-%d-%m-%Y-%S).sql.gz
-echo "Uploading database dump..."
-aws s3 mv $SAVE_FOLDER/db_*.tar.gz  s3://$S3_BUCKET/
-echo "Backup uploaded."
-END
-        GREENTXT "WRITING DATA TO CRON"
-        crontab -l > magecron
-        echo "0 0 * * 0 sh /root/S3_AB_FILES_CRON.sh" >> magecron
-        echo "0 5 * * * sh /root/S3_AB_DB_CRON.sh" >> magecron
-        crontab magecron
-        rm magecron
-        crontab -l
-        echo
-        WHITETXT "Edit crontab if you need different settings"
-        echo
-     fi
-echo
-echo
 pause '---> Press [Enter] key to show menu'
 ;;
 ###################################################################################
@@ -1629,35 +1299,6 @@ fi
 echo
 echo
 pause '---> Press [Enter] key to show menu'
-;;
-###################################################################################
-#                          INSTALLING PROFTPD SERVER                              #
-###################################################################################
-"proftpd")
-WHITETXT "============================================================================="
-echo
-echo -n "---> Do you want to configure ProFTPd server now? [y/n][n]:"
-read install_proftpd
-if [ "$install_proftpd" == "y" ];then
-        echo
-            echo
-            GREENTXT "Downloading ProFTPd latest ${PROFTPD_VER} archive"
-            echo
-            read -e -p "---> Enter your servers external ip: " -i "9521"  PROFTPD_PORT
-            read -e -p "---> Enter your servers external ip: " -i "54.234.56.89"  PROFTPD_MASC_IP
-            read -e -p "---> Enter your whitelist client ip: " -i "54.234.56.89 54.234.56.0/24"  PROFTPD_CLIENT_IP
-            echo
-            sed -i "s/server_sftp_port/${PROFTPD_PORT}/" /etc/proftpd.conf
-            sed -i "s/server_ip_address/${PROFTPD_MASC_IP}/" /etc/proftpd.conf
-            sed -i "s/client_ip_address/${PROFTPD_CLIENT_IP}/" /etc/proftpd.conf
-            echo
-        echo
-fi
-echo
-echo
-pause '---> Press [Enter] key to show the menu'
-echo
-echo
 ;;
 ###################################################################################
 #                          INSTALLING CSF FIREWALL                                #
