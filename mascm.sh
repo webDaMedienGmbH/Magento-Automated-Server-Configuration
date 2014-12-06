@@ -683,6 +683,7 @@ sed -i 's/;realpath_cache_size = 16k/realpath_cache_size = 512k/' /etc/php.ini
 sed -i 's/;realpath_cache_ttl = 120/realpath_cache_ttl = 86400/' /etc/php.ini
 sed -i 's/short_open_tag = Off/short_open_tag = On/' /etc/php.ini
 sed -i 's/; max_input_vars = 1000/max_input_vars = 50000/' /etc/php.ini
+sed -i 's/session.gc_maxlifetime = 1440/session.gc_maxlifetime = 86400/' /etc/php.ini
 sed -i 's/mysql.allow_persistent = On/mysql.allow_persistent = Off/' /etc/php.ini
 sed -i 's/mysqli.allow_persistent = On/mysqli.allow_persistent = Off/' /etc/php.ini
 sed -i 's/;date.timezone =/date.timezone = UTC/' /etc/php.ini
@@ -785,15 +786,18 @@ GREENTXT "INSTALLING phpMyAdmin - advanced MySQL interface"
 pause '------> Press [Enter] key to continue'
 echo
                 cd ${MY_SHOP_PATH}
-                MYSQL_FILE=$(head -c 500 /dev/urandom | tr -dc 'a-zA-Z' | fold -w 7 | head -n 1)
+                MYSQL_FILE=$(head -c 500 /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 7 | head -n 1)
+                BLOWFISHCODE=$(head -c 500 /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
                 mkdir -p ${MYSQL_FILE} && cd $_
                 wget -qO - http://sourceforge.net/projects/phpmyadmin/files/phpMyAdmin/4.3.0/phpMyAdmin-4.3.0-all-languages.tar.gz | tar -xzp --strip 1
+                mv config.sample.inc.php config.inc.php
+                sed -i 's/a8b7c6d/${BLOWFISHCODE}/' ./config.inc.php
                 echo
         GREENTXT "phpMyAdmin was installed to http://${MY_DOMAIN}/${MYSQL_FILE}"
 echo
 echo
 echo
-GREENTXT "INSTALLING OPCACHE GUinterface"
+GREENTXT "INSTALLING OPCACHE GUI"
 pause '------> Press [Enter] key to continue'
 echo
                 cd ${MY_SHOP_PATH}
@@ -812,7 +816,7 @@ cat > /root/app_monitor.sh <<END
 /usr/bin/inotifywait -e modify,move \
     -mrq --timefmt %a-%b-%d-%T --format '%w%f %T' ${MY_SHOP_PATH}/app | while read line; do
     echo "\$line " >> /var/log/app_monitor.log
-    FILE=$(echo $line | cut -d' ' -f1 | sed 's/\/\./\//g')
+    FILE=$(echo ${line} | cut -d' ' -f1 | sed -e 's/\/\./\//g' | cut -f1-2 -d'.')
     TARGETEXT="(php|phtml)"
     EXTENSION="${FILE##*.}"
   if [[ "\$EXTENSION" =~ \$TARGETEXT ]];
