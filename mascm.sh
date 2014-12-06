@@ -753,24 +753,24 @@ echo "---> CREATING NGINX CONFIGURATION FILES NOW"
 echo
 read -e -p "---> Enter your domain name (without www.): " -i "myshop.com" MY_DOMAIN
 
-wget https://raw.githubusercontent.com/magenx/nginx-config/master/magento/port.conf
+wget -q https://raw.githubusercontent.com/magenx/nginx-config/master/magento/port.conf
 wget -O /etc/nginx/fastcgi_params https://raw.githubusercontent.com/magenx/nginx-config/master/magento/fastcgi_params
 wget -O /etc/nginx/nginx.conf https://raw.githubusercontent.com/magenx/nginx-config/master/magento/nginx.conf
 
 mkdir -p /etc/nginx/www && cd $_
-wget https://raw.githubusercontent.com/magenx/nginx-config/master/magento/www/default.conf
-wget https://raw.githubusercontent.com/magenx/nginx-config/master/magento/www/magento.conf
+wget -q https://raw.githubusercontent.com/magenx/nginx-config/master/magento/www/default.conf
+wget -q https://raw.githubusercontent.com/magenx/nginx-config/master/magento/www/magento.conf
 sed -i 's/example.com/${MY_DOMAIN}/g' /etc/nginx/www/magento.conf
 sed -i 's,root /var/www/html,root ${MY_SHOP_PATH},g' /etc/nginx/www/magento.conf
 
 cd /etc/nginx/conf.d/ && rm -rf *
-wget https://raw.githubusercontent.com/magenx/nginx-config/master/magento/conf.d/error_page.conf
-wget https://raw.githubusercontent.com/magenx/nginx-config/master/magento/conf.d/extra_protect.conf
-wget https://raw.githubusercontent.com/magenx/nginx-config/master/magento/conf.d/headers.conf
-wget https://raw.githubusercontent.com/magenx/nginx-config/master/magento/conf.d/limit_req.conf
-wget https://raw.githubusercontent.com/magenx/nginx-config/master/magento/conf.d/maintenance.conf
-wget https://raw.githubusercontent.com/magenx/nginx-config/master/magento/conf.d/multishop.conf
-wget https://raw.githubusercontent.com/magenx/nginx-config/master/magento/conf.d/spider.conf
+wget -q https://raw.githubusercontent.com/magenx/nginx-config/master/magento/conf.d/error_page.conf
+wget -q https://raw.githubusercontent.com/magenx/nginx-config/master/magento/conf.d/extra_protect.conf
+wget -q https://raw.githubusercontent.com/magenx/nginx-config/master/magento/conf.d/headers.conf
+wget -q https://raw.githubusercontent.com/magenx/nginx-config/master/magento/conf.d/limit_req.conf
+wget -q https://raw.githubusercontent.com/magenx/nginx-config/master/magento/conf.d/maintenance.conf
+wget -q https://raw.githubusercontent.com/magenx/nginx-config/master/magento/conf.d/multishop.conf
+wget -q https://raw.githubusercontent.com/magenx/nginx-config/master/magento/conf.d/spider.conf
 echo
 echo
 mkdir -p /root/mascm/
