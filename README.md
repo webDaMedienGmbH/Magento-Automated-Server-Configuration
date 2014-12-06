@@ -3,7 +3,7 @@
 MASC-M<sup>™</sup>
 ======
 
----->> Magento **1.9.0.1**
+---->> Magento **1.9.1.0**
 
 #### MagenX - Automated Server Configuration for Magento
 Get a fully configured server with Magento in just 15 minutes.
@@ -21,10 +21,10 @@ Get a fully configured server with Magento in just 15 minutes.
 *Memcached .latest*<br/>
 *Redis .latest*<br/>
 *Varnish 3 .latest*<br/>
-*Magento 1.9.0.1 .latest*<br/>
+*Magento 1.9.1.0 .latest*<br/>
 
 **Additional**:<br/>
-*phpMyAdmin 4.2.5 - advanced database management*<br/>
+*phpMyAdmin 4.3.0 - advanced database management*<br/>
 *mysqltuner.pl - database tuning script*<br/>
 *mysqlreport.pl - Make easy-to-read MySQL status reports*<br/>
 *MagenX default my.cnf for Percona*<br/>
@@ -32,12 +32,12 @@ Get a fully configured server with Magento in just 15 minutes.
 **Configuration**:<br/>
 *Optimizes php.ini, fastcgi_params, memcached, sysctl*<br/>
 *php-fpm = ondemand*<br/>
-*MagenX nginx config for your domain*<br/>
-*Generates Mysql root and user passwords*<br/>
-*runs mysql_secure_installation*<br/>
-*Creates database*<br/>
-*Installs Magento*<br/>
-*chown and chmod files*<br/>
+*Nginx config for your domain*<br/>
+*Mysql root and user passwords*<br/>
+*mysql_secure_installation*<br/>
+*Create database*<br/>
+*Install Magento*<br/>
+*Permissions*<br/>
 *Magento cron*<br/>
 *opcache invalidation*<br/>
 *Magento Redis Cache backend*<br/>
@@ -45,9 +45,7 @@ Get a fully configured server with Magento in just 15 minutes.
 *Creates new sudo user*<br/>
 *PermitRootLogin no*<br/>
 *Changes SSH default port*<br/>
-*Fail2ban filters for nginx*<br/>
-*Test for CSF firewall*<br/>
-*Automated backup to S3 with crontab*<br/>
+*CSF firewall*<br/>
 *Turpentine Varnish FPC*<br/>
 
 
