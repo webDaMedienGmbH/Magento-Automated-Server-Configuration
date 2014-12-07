@@ -8,8 +8,6 @@ SELF=$(basename $0)
 MASCM_VER="6.5.1.9"
 mage_latest_ver="1.9.1.0"
 
-
-
 # Simple colors
 RED="\e[31;40m"
 GREEN="\e[32;40m"
@@ -94,16 +92,16 @@ clear
 ###################################################################################
 echo
 echo
-
-KEY_OWNER="4f09fdcf5c89e32c6f712ecf90632615"
-MASCM_BASE="http://www.magenx.com/mascm"
-
 # Check licence key
+# MASCM_BASE="http://www.magenx.com/mascm"
+# read -p "---> Paste your licence key and press enter: " KEY_OWNER
+# echo
 #  KEY_OUT=$(curl ${MASCM_BASE}/ver 2>&1 | grep ${KEY_OWNER} | awk '{print $2}')
 #  KEY_IN=$(echo ${HOSTNAME} | md5sum | awk '{print $1}')
-#  if [[ "${KEY_OUT}" == "${KEY_IN}" ]]; then
+#if [[ "${KEY_OUT}" == "${KEY_IN}" ]]; then
 #    GREENTXT "PASS: INTEGRITY CHECK FOR '${SELF}' ON '${HOSTNAME}' OK"
 # elif [[ "${KEY_OUT}" != "${KEY_IN}" ]]; then
+#    echo
 #    REDTXT "ERROR: INTEGRITY CHECK FAILED! MD5 MISMATCH!"
 #    REDTXT "YOU CAN NOT RUN THIS SCRIPT WITHOUT A LICENCE KEY"
 #    echo "Local md5:  ${KEY_IN}"
