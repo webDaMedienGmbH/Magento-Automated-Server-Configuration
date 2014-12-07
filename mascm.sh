@@ -1,5 +1,4 @@
 #!/bin/bash
-#KEY_OWNER=4f09fdcf5c89e32c6f712ecf90632615
 #====================================================================#
 #  MagenX - Automated Server Configuration for Magento               #
 #    Copyright (C) 2014 admin@magenx.com                             #
@@ -9,8 +8,7 @@ SELF=$(basename $0)
 MASCM_VER="6.5.1.9"
 mage_latest_ver="1.9.1.0"
 
-# The base md5sum location to cotrol licence
-#MASCM_BASE=http://www.magenx.com/mascm
+
 
 # Simple colors
 RED="\e[31;40m"
@@ -96,16 +94,20 @@ clear
 ###################################################################################
 echo
 echo
+
+KEY_OWNER="4f09fdcf5c89e32c6f712ecf90632615"
+MASCM_BASE="http://www.magenx.com/mascm"
+
 # Check licence key
-#  KEY_OUT=$(curl $MASCM_BASE/ver 2>&1 | grep $KEY_OWNER | awk '{print $2}')
-#  KEY_IN=$(echo $HOSTNAME | md5sum | awk '{print $1}')
-#  if [[ "$KEY_OUT" == "$KEY_IN" ]]; then
-#    GREENTXT "PASS: INTEGRITY CHECK FOR '$SELF' ON '$HOSTNAME' OK"
-# elif [[ "$KEY_OUT" != "$KEY_IN" ]]; then
+#  KEY_OUT=$(curl ${MASCM_BASE}/ver 2>&1 | grep ${KEY_OWNER} | awk '{print $2}')
+#  KEY_IN=$(echo ${HOSTNAME} | md5sum | awk '{print $1}')
+#  if [[ "${KEY_OUT}" == "${KEY_IN}" ]]; then
+#    GREENTXT "PASS: INTEGRITY CHECK FOR '${SELF}' ON '${HOSTNAME}' OK"
+# elif [[ "${KEY_OUT}" != "${KEY_IN}" ]]; then
 #    REDTXT "ERROR: INTEGRITY CHECK FAILED! MD5 MISMATCH!"
 #    REDTXT "YOU CAN NOT RUN THIS SCRIPT WITHOUT A LICENCE KEY"
-#    echo "Local md5:  $KEY_IN"
-#    echo "Remote md5: $KEY_OUT"
+#    echo "Local md5:  ${KEY_IN}"
+#    echo "Remote md5: ${KEY_OUT}"
 #    echo
 #    echo "-----> NOTE: PLEASE REPORT IT TO: admin@magenx.com"
 #       echo
