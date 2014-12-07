@@ -221,7 +221,7 @@ fi
 showMenu () {
 printf "\033c"
     echo
-		echo
+      echo
         echo -e "${DGREYBG}${BOLD}  Magento Server Configuration v.${MASCM_VER}  ${RESET}"
         BLUETXT ":::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
         echo
