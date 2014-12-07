@@ -6,7 +6,10 @@
 #====================================================================#
 SELF=$(basename $0)
 MASCM_VER="6.5.1.9"
-mage_latest_ver="1.9.1.0"
+
+# Software versions 
+MAGENTO_VER="1.9.1.0"
+PHPMYADMIN_VER="4.3.0"
 
 # Simple colors
 RED="\e[31;40m"
@@ -729,7 +732,7 @@ echo "--------------------------------------------------------------------------
 echo
 FPM=$(find /etc/php-fpm.d/ -name 'www.conf')
 FPM_USER=$(grep "user" $FPM | grep "=" | awk '{print $3}')
-echo -n "---> Download latest Magento version (${mage_latest_ver}) ? [y/n][n]:"
+echo -n "---> Download latest Magento version (${MAGENTO_VER}) ? [y/n][n]:"
 read new_down
 if [ "${new_down}" == "y" ];then
      read -e -p "---> Edit your installation folder full path: " -i "/var/www/html/myshop.com" MY_SHOP_PATH
@@ -740,7 +743,7 @@ if [ "${new_down}" == "y" ];then
         echo -n "      DOWNLOADING MAGENTO  "
         long_progress &
         pid="$!"
-        wget -qO - http://www.magentocommerce.com/downloads/assets/${mage_latest_ver}/magento-${mage_latest_ver}.tar.gz | tar -xzp --strip 1
+        wget -qO - http://www.magentocommerce.com/downloads/assets/${MAGENTO_VER}/magento-${MAGENTO_VER}.tar.gz | tar -xzp --strip 1
         stop_progress "$pid"
         echo
      echo
@@ -789,7 +792,7 @@ echo
                 MYSQL_FILE=$(head -c 500 /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 7 | head -n 1)
                 BLOWFISHCODE=$(head -c 500 /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
                 mkdir -p ${MYSQL_FILE} && cd $_
-                wget -qO - http://sourceforge.net/projects/phpmyadmin/files/phpMyAdmin/4.3.0/phpMyAdmin-4.3.0-all-languages.tar.gz | tar -xzp --strip 1
+                wget -qO - http://sourceforge.net/projects/phpmyadmin/files/phpMyAdmin/${PHPMYADMIN_VER}/phpMyAdmin-${PHPMYADMIN_VER}-all-languages.tar.gz | tar -xzp --strip 1
                 mv config.sample.inc.php config.inc.php
                 sed -i 's/a8b7c6d/${BLOWFISHCODE}/' ./config.inc.php
                 echo
@@ -846,9 +849,8 @@ echo -e '\nDAEMON_OPTS="-a :80 \
              -p session_linger=100 \
              -S /etc/varnish/secret \
              -s malloc,2G"' >> /etc/sysconfig/varnish
-
-VSECRET=$(cat /etc/varnish/secret)
-echo 'Varnish secret key -->  '${VSECRET}'  <-- copy it'
+echo
+echo 'Varnish secret key -->'$(cat /etc/varnish/secret)'<-- copy it'
 echo
 WHITETXT "Varnish settings were loaded \033[01;32m  ok"
 echo
@@ -1015,11 +1017,6 @@ GREENTXT "ok"
     GREENTXT "INSTALLED THE LATEST STABLE VERSION OF MAGENTO WITHOUT SAMPLE DATA"
     echo
     WHITETXT "============================================================================="
-    WHITETXT " MAGENTO FRONTEND AND BACKEND LINKS"
-    echo
-    echo "      Store: ${MAGE_SITE_URL}"
-    echo
-    WHITETXT "============================================================================="
     WHITETXT " MAGENTO ADMIN ACCOUNT"
     echo
     echo "      Username: ${MAGE_ADMIN_LOGIN}"
@@ -1033,7 +1030,7 @@ GREENTXT "ok"
     echo "      Password: ${MAGE_DB_PASS}"
     echo
     WHITETXT "============================================================================="
-        echo
+ echo
 echo
 echo
 WHITETXT "-= FINAL MAINTENANCE AND CLEANUP =-"
@@ -1065,7 +1062,7 @@ sed -i '/<global>/ a\
         </backend_options> \
         </cache>' ${MY_SHOP_PATH}/app/etc/local.xml
 echo
-echo "---> CLEANING UP INDEXES LOCKS AND RUNNING REINDEXALL"
+echo "---> CLEANING UP INDEXES LOCKS AND RUNNING RE-INDEX ALL"
 echo
 rm -rf  ${MY_SHOP_PATH}/var/locks/*
 php ${MY_SHOP_PATH}/shell/indexer.php --reindexall
@@ -1073,7 +1070,7 @@ echo
 chmod +x /root/app_monitor.sh
 /root/app_monitor.sh &
 echo
-echo "---> TRUNCATE LOGS WEEKLY ADD TO CRONTAB"
+echo "---> TRUNCATE LOGS WEEKLY AS CRONJOB"
 cat > /root/truncate_logs.sh <<END
 #!/bin/bash
 TABLES="log_url log_url_info log_visitor log_visitor_info"
@@ -1140,7 +1137,7 @@ if [ "${lesti}" == "y" ];
       fi
 echo
 echo
-echo -n "---> Would you like to install Enhanced Admin Grids (+ Editor)? [y/n][n]:"
+echo -n "---> Would you like to install Enhanced Admin Grids 1.0.0 (+ Editor)? [y/n][n]:"
 read eag
 if [ "${eag}" == "y" ];
   then
@@ -1148,7 +1145,9 @@ if [ "${eag}" == "y" ];
       GREENTXT "INSTALLATION OF ENHANCED ADMIN GRIDS"
        echo
        cd ${MY_SHOP_PATH}
-       ./mage install http://connect20.magentocommerce.com/community  BL_CustomGrid
+       wget -qO- -O master.zip --no-check-certificate https://github.com/mage-eag/mage-enhanced-admin-grids/archive/1.0.0-wip.zip && unzip -qq master.zip && rm -rf master.zip
+       cp -rf mage-enhanced-admin-grids*/* .
+       rm -rf mage-enhanced-admin-grids*
        echo
        GREENTXT "ENHANCED ADMIN GRIDS HAS BEEN INSTALLED"
       echo
@@ -1173,24 +1172,6 @@ if [ "${mwpi}" == "y" ];
     else
       echo
         YELLOWTXT "MAGENTO WORDPRESS INTEGRATION installation was skipped by the user. Next step"
-      fi
-echo
-echo
-echo -n "---> Would you like to install One Page Checkout (IWD Extensions)? [y/n][n]:"
-read mopciwd
-if [ "${mopciwd}" == "y" ];
-  then
-    echo
-      GREENTXT "INSTALLATION OF ONE PAGE CHECKOUT (IWD EXTENSIONS)"
-       echo
-       cd ${MY_SHOP_PATH}
-       ./mage install http://connect20.magentocommerce.com/community 1213
-       echo
-       GREENTXT "ONE PAGE CHECKOUT (IWD EXTENSIONS) HAS BEEN INSTALLED"
-      echo
-    else
-      echo
-        YELLOWTXT "ONE PAGE CHECKOUT (IWD EXTENSIONS) installation was skipped by the user. Next step"
       fi
 echo
 echo
