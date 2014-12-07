@@ -818,9 +818,9 @@ cat > /root/app_monitor.sh <<END
 /usr/bin/inotifywait -e modify,move \
     -mrq --timefmt %a-%b-%d-%T --format '%w%f %T' ${MY_SHOP_PATH}/app | while read line; do
     echo "\$line " >> /var/log/app_monitor.log
-    FILE=$(echo ${line} | cut -d' ' -f1 | sed -e 's/\/\./\//g' | cut -f1-2 -d'.')
+    FILE=\$(echo \${line} | cut -d' ' -f1 | sed -e 's/\/\./\//g' | cut -f1-2 -d'.')
     TARGETEXT="(php|phtml)"
-    EXTENSION="${FILE##*.}"
+    EXTENSION="\${FILE##*.}"
   if [[ "\$EXTENSION" =~ \$TARGETEXT ]];
     then
     curl --silent "http://${MY_DOMAIN}/${OPCACHE_FILE}_opcache_gui.php?page=invalidate&file=\${FILE}" >/dev/null 2>&1
