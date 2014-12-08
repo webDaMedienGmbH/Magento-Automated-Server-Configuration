@@ -340,7 +340,7 @@ if [ "${repo_percona_install}" == "y" ];then
             echo -n "     PROCESSING  "
             quick_progress &
             pid="$!"
-            rpm --quiet -U http://www.percona.com/downloads/percona-release/percona-release-0.0-1.x86_64.rpm >/dev/null 2>&1
+            rpm --quiet -U http://www.percona.com/redir/downloads/percona-release/redhat/latest/percona-release-0.1-3.noarch.rpm >/dev/null 2>&1
             stop_progress "$pid"
             rpm  --quiet -q percona-release
       if [ "$?" = 0 ] # if repository installed then install package
