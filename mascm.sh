@@ -757,8 +757,8 @@ echo
 read -e -p "---> Enter your domain name (without www.): " -i "myshop.com" MY_DOMAIN
 
 wget -q https://raw.githubusercontent.com/magenx/nginx-config/master/magento/port.conf
-wget -O /etc/nginx/fastcgi_params https://raw.githubusercontent.com/magenx/nginx-config/master/magento/fastcgi_params
-wget -O /etc/nginx/nginx.conf https://raw.githubusercontent.com/magenx/nginx-config/master/magento/nginx.conf
+wget -qO /etc/nginx/fastcgi_params https://raw.githubusercontent.com/magenx/nginx-config/master/magento/fastcgi_params
+wget -qO /etc/nginx/nginx.conf https://raw.githubusercontent.com/magenx/nginx-config/master/magento/nginx.conf
 
 mkdir -p /etc/nginx/www && cd $_
 wget -q https://raw.githubusercontent.com/magenx/nginx-config/master/magento/www/default.conf
