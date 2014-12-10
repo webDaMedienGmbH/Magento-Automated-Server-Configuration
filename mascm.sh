@@ -817,7 +817,9 @@ cat > /root/app_monitor.sh <<END
 #!/bin/bash
 ## monitor app folder and log modified files
 /usr/bin/inotifywait -e modify,move \
-    -mrq --timefmt %a-%b-%d-%T --format '%w%f %T' ${MY_SHOP_PATH}/app | while read line; do
+    -mrq --timefmt %a-%b-%d-%T --format '%w%f %T' \
+    --excludei '/(feeds?|cache|log|session|report|locks|media|skin|tmp)/|\.(xml|html?|css|js|gif|jpe?g|png|ico|te?mp|txt|csv|swp|sql|t?gz|zip|svn?g|git|log|ini)~?' \
+    ${MY_SHOP_PATH}/app | while read line; do
     echo "\$line " >> /var/log/app_monitor.log
     FILE=\$(echo \${line} | cut -d' ' -f1 | sed -e 's/\/\./\//g' | cut -f1-2 -d'.')
     TARGETEXT="(php|phtml)"
