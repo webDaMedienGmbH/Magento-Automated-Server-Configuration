@@ -788,26 +788,26 @@ echo
 GREENTXT "INSTALLING phpMyAdmin - advanced MySQL interface"
 pause '------> Press [Enter] key to continue'
 echo
-                cd ${MY_SHOP_PATH}
-                MYSQL_FILE=$(head -c 500 /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 7 | head -n 1)
-                BLOWFISHCODE=$(head -c 500 /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
-                mkdir -p ${MYSQL_FILE} && cd $_
-                wget -qO - http://sourceforge.net/projects/phpmyadmin/files/phpMyAdmin/${PHPMYADMIN_VER}/phpMyAdmin-${PHPMYADMIN_VER}-all-languages.tar.gz | tar -xzp --strip 1
-                mv config.sample.inc.php config.inc.php
-                sed -i 's/a8b7c6d/${BLOWFISHCODE}/' ./config.inc.php
-                echo
-        GREENTXT "phpMyAdmin was installed to http://${MY_DOMAIN}/${MYSQL_FILE}"
+     cd ${MY_SHOP_PATH}
+     MYSQL_FILE=$(head -c 500 /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 7 | head -n 1)
+     BLOWFISHCODE=$(head -c 500 /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
+     mkdir -p ${MYSQL_FILE} && cd $_
+     wget -qO - http://sourceforge.net/projects/phpmyadmin/files/phpMyAdmin/${PHPMYADMIN_VER}/phpMyAdmin-${PHPMYADMIN_VER}-all-languages.tar.gz | tar -xzp --strip 1
+     mv config.sample.inc.php config.inc.php
+     sed -i 's/a8b7c6d/${BLOWFISHCODE}/' ./config.inc.php
+     echo
+     GREENTXT "phpMyAdmin was installed to http://${MY_DOMAIN}/${MYSQL_FILE}"
 echo
 echo
 echo
 GREENTXT "INSTALLING OPCACHE GUI"
 pause '------> Press [Enter] key to continue'
 echo
-                cd ${MY_SHOP_PATH}
-                OPCACHE_FILE=$(head -c 500 /dev/urandom | tr -dc 'a-zA-Z' | fold -w 7 | head -n 1)
-                wget -qO ${OPCACHE_FILE}_opcache_gui.php https://raw.githubusercontent.com/amnuts/opcache-gui/master/index.php
-                echo
-        GREENTXT "OPCACHE interface was installed to http://www.${MY_DOMAIN}/${OPCACHE_FILE}_opcache_gui.php"
+    cd ${MY_SHOP_PATH}
+    OPCACHE_FILE=$(head -c 500 /dev/urandom | tr -dc 'a-zA-Z' | fold -w 7 | head -n 1)
+    wget -qO ${OPCACHE_FILE}_opcache_gui.php https://raw.githubusercontent.com/amnuts/opcache-gui/master/index.php
+    echo
+    GREENTXT "OPCACHE interface was installed to http://www.${MY_DOMAIN}/${OPCACHE_FILE}_opcache_gui.php"
 echo
 echo
 echo
@@ -831,10 +831,10 @@ cat > /root/app_monitor.sh <<END
 done
 END
 echo
-        GREENTXT "Script was installed to /root/app_monitor.sh"
+    GREENTXT "Script was installed to /root/app_monitor.sh"
 echo
 echo
-        echo "/root/app_monitor.sh &" >> /etc/rc.local
+    echo "/root/app_monitor.sh &" >> /etc/rc.local
 echo
 echo
 GREENTXT "VARNISH DAEMON CONFIGURATION FILE"
@@ -915,8 +915,8 @@ fi
 echo -n "---> Start Mysql Secure Installation? [y/n][n]:"
 read mysql_secure
 if [ "${mysql_secure}" == "y" ];then
-                mysql_secure_installation
-        fi
+   mysql_secure_installation
+fi
 echo
 read -p "---> Enter MySQL ROOT password : " MYSQL_ROOT_PASS
 read -p "---> Enter Magento database host : " MAGE_DB_HOST
@@ -926,9 +926,9 @@ echo
 echo -n "---> Generate MySQL USER strong password? [y/n][n]:"
 read mysql_upass_gen
 if [ "${mysql_upass_gen}" == "y" ];then
-        MYSQL_USER_PASSGEN=$(head -c 500 /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 15 | head -n 1)
-        WHITETXT "MySQL USER password: ${RED} ${MYSQL_USER_PASSGEN} "
-        fi
+   MYSQL_USER_PASSGEN=$(head -c 500 /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 15 | head -n 1)
+   WHITETXT "MySQL USER password: ${RED} ${MYSQL_USER_PASSGEN} "
+fi
 echo
 read -p "---> Enter MySQL USER password : " MAGE_DB_PASS
 mysql -u root -p${MYSQL_ROOT_PASS} <<EOMYSQL
@@ -988,8 +988,8 @@ echo
 GREENTXT "NOW INSTALLING MAGENTO WITHOUT SAMPLE DATA"
 MY_SHOP_PATH=$(awk '/webshop/ { print $3 }' /root/mascm/.mascm_index)
 cd ${MY_SHOP_PATH}
-    chmod +x mage
-    ./mage mage-setup .
+chmod +x mage
+./mage mage-setup .
 
 php -f install.php -- \
 --license_agreement_accepted "yes" \
@@ -1093,107 +1093,6 @@ GREENTXT "WRITING DATA TO CRON"
         WHITETXT "Edit crontab if you need different settings"
         echo
 echo
-###################################################################################
-#                   LOADING ALL THE EXTRA EXTENSIONS FROM HERE                    #
-###################################################################################
-echo "-------------------------------------------------------------------------------------"
-BLUEBG "| YOU CAN INSTALL SOME ADDITIONAL EXTENSIONS DIRECTLY FROM MAGENTO CONNECT |"
-echo "-------------------------------------------------------------------------------------"
-echo
-echo
-pause '------> Press [Enter] key to continue'
-cd ${MY_SHOP_PATH} && chmod +x mage
-echo
-echo -n "---> Would you like to install Turpentine Varnish FPC? [y/n][n]:"
-read turpentine
-if [ "${turpentine}" == "y" ];
-  then
-    echo
-      GREENTXT "INSTALATION OF TURPENTINE VARNISH FULL PAGE CACHE"
-       echo
-       ./mage install http://connect20.magentocommerce.com/community  Nexcessnet_Turpentine >/dev/null 2>&1
-       GREENTXT "TURPENTINE VARNISH FPC HAS BEEN INSTALLED"
-      echo
-    else
-      echo
-        YELLOWTXT "TURPENTINE VARNISH FPC installation was skipped by the user. Next step"
-      fi
-echo
-echo
-echo -n "---> Would you like to install Lesti FPC? [y/n][n]:"
-read lesti
-if [ "${lesti}" == "y" ];
-  then
-    echo
-      GREENTXT "INSTALLATION OF LESTI FULL PAGE CACHE"
-       echo
-       cd ${MY_SHOP_PATH}
-       wget -qO- -O master.zip --no-check-certificate https://github.com/GordonLesti/Lesti_Fpc/archive/master.zip && unzip -qq master.zip && rm -rf master.zip
-       cp -rf Lesti_Fpc-master/app .
-       rm -rf Lesti_Fpc-master
-       GREENTXT "LESTI FPC HAS BEEN INSTALLED"
-      echo
-    else
-      echo
-        YELLOWTXT "LESTI FPC installation was skipped by the user. Next step"
-      fi
-echo
-echo
-echo -n "---> Would you like to install Enhanced Admin Grids 1.0.0 (+ Editor)? [y/n][n]:"
-read eag
-if [ "${eag}" == "y" ];
-  then
-    echo
-      GREENTXT "INSTALLATION OF ENHANCED ADMIN GRIDS"
-       echo
-       cd ${MY_SHOP_PATH}
-       wget -qO- -O master.zip --no-check-certificate https://github.com/mage-eag/mage-enhanced-admin-grids/archive/1.0.0-wip.zip && unzip -qq master.zip && rm -rf master.zip
-       cp -rf mage-enhanced-admin-grids*/* .
-       rm -rf mage-enhanced-admin-grids*
-       echo
-       GREENTXT "ENHANCED ADMIN GRIDS HAS BEEN INSTALLED"
-      echo
-    else
-      echo
-        YELLOWTXT "ENHANCED ADMIN GRIDS installation was skipped by the user. Next step"
-      fi
-echo
-echo
-echo -n "---> Would you like to install Magento WordPress Integration? [y/n][n]:"
-read mwpi
-if [ "${mwpi}" == "y" ];
-  then
-    echo
-      GREENTXT "INSTALLATION OF MAGENTO WORDPRESS INTEGRATION"
-       echo
-       cd ${MY_SHOP_PATH}
-       ./mage install http://connect20.magentocommerce.com/community  Fishpig_Wordpress_Integration
-       echo
-       GREENTXT "MAGENTO WORDPRESS INTEGRATION HAS BEEN INSTALLED"
-      echo
-    else
-      echo
-        YELLOWTXT "MAGENTO WORDPRESS INTEGRATION installation was skipped by the user. Next step"
-      fi
-echo
-echo
-echo -n "---> Would you like to install EU Cookie Law Compliance? [y/n][n]:"
-read euclc
-if [ "${euclc}" == "y" ];
-  then
-    echo
-      GREENTXT "INSTALLATION OF EU Cookie Law Compliance"
-       echo
-       cd ${MY_SHOP_PATH}
-       ./mage install http://connect20.magentocommerce.com/community  Vhaldecode_CookieLaw
-       echo
-       GREENTXT "EU Cookie Law Compliance HAS BEEN INSTALLED"
-      echo
-    else
-      echo
-        YELLOWTXT "EU Cookie Law Compliance installation was skipped by the user. Next step"
-      fi
-echo
 echo
     GREENTXT "NOW LOGIN TO YOUR BACKEND AND CHECK EVERYTHING"
     echo
@@ -1226,7 +1125,7 @@ read new_root_user
 if [ "${new_root_user}" == "y" ];then
      echo
         read -p "---> Enter the new user name: " NEW_ROOT_NAME
-        echo "${NEW_ROOT_NAME}	ALL=(ALL	ALL" >> /etc/sudoers
+        echo "${NEW_ROOT_NAME}	ALL=(ALL)	ALL" >> /etc/sudoers
         SHOP_PATH=$(awk '/webshop/ { print $3 }' /root/mascm/.mascm_index)
         FPM_USER=$(awk '/webshop/ { print $4 }' /root/mascm/.mascm_index)
         useradd -G ${FPM_USER} -d ${SHOP_PATH} -s /bin/bash ${NEW_ROOT_NAME}
