@@ -207,7 +207,7 @@ if grep -q "yes" /root/mascm/.terms >/dev/null 2>&1 ; then
     echo -n "---> Do you agree to these terms?  [y/n][y]:"
     read terms_agree
   if [ "${terms_agree}" == "y" ];then
-    echo "yes" > /root/mascm/.terms
+    mkdir /root/mascm/ && echo "yes" > /root/mascm/.terms
 	  else
         REDTXT "Going out. EXIT"
         echo
@@ -432,7 +432,6 @@ END
           echo
             GREENTXT "NGINX HAS BEEN INSTALLED  -  OK"
             chkconfig nginx on
-            chkconfig httpd off
               else
              echo
             REDTXT "NGINX INSTALLATION ERROR"
@@ -476,6 +475,7 @@ if [ "${repo_remi_install}" == "y" ];then
            echo
              GREENTXT "PHP HAS BEEN INSTALLED  -  OK"
              chkconfig php-fpm on
+             chkconfig httpd off
              yum list installed | awk '/php.*x86_64/ {print "      ",$1}'
                 else
                echo
@@ -526,7 +526,7 @@ if [ "${varnish_install}" == "y" ];then
             pid="$!"
             rpm --quiet --nosignature -U https://repo.varnish-cache.org/redhat/varnish-3.0.el6.rpm
             stop_progress "$pid"
-            rpm  --quiet -q varnish
+            rpm  --quiet -q varnish-release
       if [ "$?" = 0 ]
         then
           echo
