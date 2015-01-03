@@ -127,7 +127,7 @@ if [[ ${EUID} -ne 0 ]]; then
 fi
 
 # do we have CentOS 6?
-if grep "CentOS Linux release 6" /etc/redhat-release  > /dev/null 2>&1; then
+if grep "CentOS.*6" /etc/redhat-release  > /dev/null 2>&1; then
   GREENTXT "PASS: CENTOS RELEASE 6"
   else
   echo
