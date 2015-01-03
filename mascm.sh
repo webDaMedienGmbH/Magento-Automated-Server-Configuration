@@ -908,7 +908,7 @@ read mysql_rpass_gen
 if [ "${mysql_rpass_gen}" == "y" ];then
    echo
        MYSQL_ROOT_PASSGEN=$(head -c 500 /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 15 | head -n 1)
-       WHITETXT "MySQL ROOT password: ${REDBG} ${MYSQL_ROOT_PASSGEN} "
+       WHITETXT "MySQL ROOT password: ${REDBG}${MYSQL_ROOT_PASSGEN}"
        GREENTXT "!REMEMBER IT AND KEEP IT SAFE!"
    echo
 fi
@@ -927,7 +927,7 @@ echo -n "---> Generate MySQL USER strong password? [y/n][n]:"
 read mysql_upass_gen
 if [ "${mysql_upass_gen}" == "y" ];then
    MYSQL_USER_PASSGEN=$(head -c 500 /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 15 | head -n 1)
-   WHITETXT "MySQL USER password: ${RED} ${MYSQL_USER_PASSGEN} "
+   WHITETXT "MySQL USER password: ${REDBG}${MYSQL_USER_PASSGEN}"
 fi
 echo
 read -p "---> Enter MySQL USER password : " MAGE_DB_PASS
