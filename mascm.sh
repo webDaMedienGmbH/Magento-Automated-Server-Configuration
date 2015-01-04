@@ -284,6 +284,7 @@ if [ "${sys_update}" == "y" ];then
             echo
             GREENTXT "THE SYSTEM IS UP TO DATE  -  OK"
             GREENTXT "PLEASE REBOOT YOUR SERVER"
+            exit 0
           else
          echo
        YELLOWTXT "The System Update was skipped by the user. Next step"
