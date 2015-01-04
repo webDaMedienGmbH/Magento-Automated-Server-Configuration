@@ -283,7 +283,6 @@ if [ "${sys_update}" == "y" ];then
             stop_progress "$pid"
             echo
             GREENTXT "THE SYSTEM IS UP TO DATE  -  OK"
-            GREENTXT "PLEASE REBOOT YOUR SERVER"
             exit 0
           else
          echo
@@ -391,6 +390,7 @@ if [ "${repo_percona_install}" == "y" ];then
               echo
                 echo
                  WHITETXT "We need to correct your innodb_buffer_pool_size"
+                 rpm -qa | grep -qw bc || yum -y install bc
                  IBPS=$(echo "0.5*$(awk '/MemTotal/ { print $2 / (1024*1024)}' /proc/meminfo | cut -d'.' -f1)" | bc | xargs printf "%1.0f")
                  sed -i "s/innodb_buffer_pool_size = 4G/innodb_buffer_pool_size = ${IBPS}G/" /etc/my.cnf
                  echo
