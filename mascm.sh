@@ -342,7 +342,16 @@ if [ "${repo_epel_install}" == "y" ];then
             yum -q -y install wget curl bc mcrypt sudo crontabs gcc vim mlocate unzip proftpd inotify-tools --exclude=exim >/dev/null 2>&1
             stop_progress "$pid"
             echo
-            GREENTXT "ALL PACKAGES WERE INSTALLED  -  OK"
+           rpm  --quiet -q wget
+           if [ "$?" = 0 ]
+        then
+          echo
+            GREENTXT "ALL PACKAGES WERE INSTALLED OK"
+             else
+             echo
+            yum install wget
+        exit
+      fi
             echo
         else
 	      echo
