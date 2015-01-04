@@ -9,7 +9,7 @@ MASCM_VER="6.5.1.9"
 
 # Software versions 
 MAGENTO_VER="1.9.1.0"
-PHPMYADMIN_VER="4.3.0"
+PHPMYADMIN_VER="4.3.4"
 
 # Simple colors
 RED="\e[31;40m"
@@ -266,6 +266,27 @@ if [ "${secure_tmp}" == "y" ];then
 			ln -s /tmp /var/tmp
 			echo
 		    GREENTXT "tmp directory is now symlinked"
+fi
+echo
+WHITETXT "============================================================================="
+echo
+echo -n "---> Start the System Update? [y/n][n]:"
+read sys_update
+if [ "${sys_update}" == "y" ];then
+          echo
+            GREENTXT "THE UPDATES ARE BEING INSTALLED"
+            echo
+            echo -n "     PROCESSING  "
+            long_progress &
+            pid="$!"
+            yum -y -q update >/dev/null 2>&1
+            stop_progress "$pid"
+            echo
+            GREENTXT "THE SYSTEM IS UP TO DATE  -  OK"
+            GREENTXT "PLEASE REBOOT YOUR SERVER"
+          else
+         echo
+       YELLOWTXT "The System Update was skipped by the user. Next step"
 fi
 echo
 echo "-------------------------------------------------------------------------------------"
@@ -556,26 +577,6 @@ if [ "${varnish_install}" == "y" ];then
         else
           echo
             YELLOWTXT "Varnish repository installation was skipped by the user. Next step"
-fi
-echo
-WHITETXT "============================================================================="
-echo
-echo -n "---> Start the System Update? [y/n][n]:"
-read sys_update
-if [ "${sys_update}" == "y" ];then
-          echo
-            GREENTXT "THE UPDATES ARE BEING INSTALLED"
-            echo
-            echo -n "     PROCESSING  "
-            long_progress &
-            pid="$!"
-            yum -y -q update >/dev/null 2>&1
-            stop_progress "$pid"
-            echo
-            GREENTXT "THE SYSTEM IS UP TO DATE  -  OK"
-          else
-         echo
-       YELLOWTXT "The System Update was skipped by the user. Next step"
 fi
 echo
 echo "-------------------------------------------------------------------------------------"
