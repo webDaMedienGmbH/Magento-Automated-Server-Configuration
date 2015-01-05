@@ -5,7 +5,7 @@
 #       All rights reserved.                                         #
 #====================================================================#
 SELF=$(basename $0)
-MASCM_VER="6.5.1.9"
+MASCM_VER="6.6.1.9"
 
 # Software versions 
 MAGENTO_VER="1.9.1.0"
@@ -222,7 +222,7 @@ showMenu () {
 printf "\033c"
     echo
       echo
-        echo -e "${DGREYBG}${BOLD}  Magento Server Configuration v.${MASCM_VER}  ${RESET}"
+        echo -e "${DGREYBG}${BOLD}  MAGENTO SERVER CONFIGURATION v.${MASCM_VER}  ${RESET}"
         BLUETXT ":::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
         echo
         WHITETXT "-> Install repository and LEMP packages :  ${YELLOW}\tlemp"
