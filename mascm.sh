@@ -159,7 +159,7 @@ if [ "${TOTALMEM}" -gt "3000000" ]; then
 fi
 
 # some selinux, sir?
-SELINUX=$(awk '/^SELINUX=/'  /etc/selinux/config)
+SELINUX=$(sestatus | awk {'print $3'})
 if [ "${SELINUX}" != "SELINUX=disabled" ]; then
   echo
   REDTXT "ERROR: SELINUX IS ENABLED"
