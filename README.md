@@ -24,9 +24,8 @@ Get a fully configured server with Magento in just 15 minutes.
 *Magento 1.9.1.0 .latest*<br/>
 
 **Additional**:<br/>
-*phpMyAdmin 4.3.0 - advanced database management*<br/>
+*phpMyAdmin 4.3.4 - advanced database management*<br/>
 *mysqltuner.pl - database tuning script*<br/>
-*mysqlreport.pl - Make easy-to-read MySQL status reports*<br/>
 *MagenX default my.cnf for Percona*<br/>
 
 **Configuration**:<br/>
@@ -48,9 +47,4 @@ Get a fully configured server with Magento in just 15 minutes.
 *CSF firewall*<br/>
 *Turpentine Varnish FPC*<br/>
 
-
-**TODO**:<br/>
-
-*Auto-Install Magento extensions -*<br/>
-*your selected extension*<br/>
  
