@@ -6,12 +6,12 @@ MASC-M<sup>™</sup>
 ---->> Magento **1.9.1.0**
 
 #### MagenX - Automated Server Configuration for Magento
-Get a fully configured server with Magento in just 15 minutes.
+Get a fully pre-configured server with Magento and LEMP stack in just 15 minutes.
 
 **System requirements**:<br/>
 *Dedicated server / VPS*<br/>
 *CentOS 6 x64 minimal*<br/>
-*Bash*<br/>
+*4Gb RAM*<br/>
 
 **Installs**:<br/>
 *All selected repositories*<br/>
@@ -24,7 +24,7 @@ Get a fully configured server with Magento in just 15 minutes.
 *Magento 1.9.1.0 .latest*<br/>
 
 **Additional**:<br/>
-*phpMyAdmin 4.3.4 - advanced database management*<br/>
+*phpMyAdmin 4.3.latest - advanced database management*<br/>
 *mysqltuner.pl - database tuning script*<br/>
 *MagenX default my.cnf for Percona*<br/>
 
