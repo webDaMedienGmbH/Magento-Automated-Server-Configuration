@@ -984,13 +984,15 @@ echo
 WHITETXT "Administrator and domain"
 read -e -p "---> Enter your First Name: " -i "Name"  MAGE_ADMIN_FNAME
 read -e -p "---> Enter your Last Name: " -i "Lastname"  MAGE_ADMIN_LNAME
-read -e -p "---> Enter your email: " -i "admin@domain.com"  MAGE_ADMIN_EMAIL
+read -e -p "---> Enter your email: " -i "admin@${DOMAIN}"  MAGE_ADMIN_EMAIL
 read -e -p "---> Enter your admins login name: " -i "admin"  MAGE_ADMIN_LOGIN
-MAGE_ADMIN_PASSGEN=$(head -c 500 /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 15 | head -n 1)
-read -e -p "---> Use generated admin password: " -i "${MAGE_ADMIN_PASSGEN}"  MAGE_ADMIN_PASS
-read -e -p "---> Enter your shop url: " -i "http://${DOMAIN}/"  MAGE_SITE_URL
+MAGE_ADMIN_PASSGEN=$(head -c 500 /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 9 | head -n 1)
+read -e -p "---> Use generated admin password: " -i "${RANDOM}${MAGE_ADMIN_PASSGEN}"  MAGE_ADMIN_PASS
+read -e -p "---> Enter your shop url: " -i "http://www.${DOMAIN}/"  MAGE_SITE_URL
+echo
+WHITETXT "Locale settings"
 read -e -p "---> Enter your locale: " -i "en_GB"  MAGE_LOCALE
-read -e -p "---> Enter your timezone: " -i "Europe/Budapest"  MAGE_TIMEZONE
+read -e -p "---> Enter your timezone: " -i "Europe/Paris"  MAGE_TIMEZONE
 read -e -p "---> Enter your currency: " -i "EUR"  MAGE_CURRENCY
 echo
 WHITETXT "============================================================================="
@@ -1047,7 +1049,7 @@ echo
 echo
 WHITETXT "-= FINAL MAINTENANCE AND CLEANUP =-"
 echo
-echo "---> CHANGING YOUR LOCAL.XML FILE WITH MEMCACHE SESSIONS AND REDIS CACHE BACKENDS"
+echo "---> CHANGING YOUR local.xml FILE WITH MEMCACHE SESSIONS AND REDIS CACHE BACKENDS"
 echo
 sed -i '/<session_save>/d' ${MY_SHOP_PATH}/app/etc/local.xml
 sed -i '/<global>/ a\
@@ -1060,7 +1062,7 @@ sed -i '/<global>/ a\
           <auto_refresh_fast_cache>1</auto_refresh_fast_cache> \
             <server>127.0.0.1</server> \
             <port>6379</port> \
-            <persistent><![CDATA[db0]]></persistent> \
+            <persistent><![CDATA[db1]]></persistent> \
             <database>1</database> \
             <password></password> \
             <force_standalone>0</force_standalone> \
