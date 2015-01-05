@@ -152,7 +152,7 @@ fi
 # check if memory is enough
 TOTALMEM=$(awk '/MemTotal/ { print $2 }' /proc/meminfo)
 if [ "${TOTALMEM}" -gt "3000000" ]; then
-  GREENTXT "PASS: YOU HAVE ${WHITE}${TOTALMEM}${GREEN} kB OF RAM"
+  GREENTXT "PASS: YOU HAVE ${WHITE}${TOTALMEM}${RESET} kB OF RAM"
   else
   echo
   REDTXT "WARNING: YOU HAVE LESS THAN 3GB OF RAM"
