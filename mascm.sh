@@ -152,17 +152,17 @@ fi
 # check if memory is enough
 TOTALMEM=$(awk '/MemTotal/ { print $2 }' /proc/meminfo)
 if [ "${TOTALMEM}" -gt "3000000" ]; then
-  GREENTXT "PASS: YOU HAVE ${WHITE}${TOTALMEM}${RESET} kB OF RAM"
+  GREENTXT "PASS: YOU HAVE ${TOTALMEM} Kb OF RAM"
   else
   echo
-  REDTXT "WARNING: YOU HAVE LESS THAN 3GB OF RAM"
+  REDTXT "WARNING: YOU HAVE LESS THAN 3Gb OF RAM"
 fi
 
 # some selinux, sir?
 SELINUX=$(sestatus | awk {'print $3'})
 if [ "${SELINUX}" != "disabled" ]; then
   echo
-  REDTXT "ERROR: SELINUX IS ENABLED"
+  REDTXT "ERROR: SELINUX IS NOT DISABLED"
   YELLOWTXT "------> PLEASE CHECK YOUR SELINUX SETTINGS"
   echo
   exit 1
