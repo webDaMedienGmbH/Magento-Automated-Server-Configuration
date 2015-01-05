@@ -349,7 +349,7 @@ if [ "${repo_epel_install}" == "y" ];then
             GREENTXT "ALL PACKAGES WERE INSTALLED OK"
              else
              echo
-            yum install wget
+            yum -q -y install wget >/dev/null 2>&1
         exit
       fi
             echo
@@ -398,7 +398,7 @@ if [ "${repo_percona_install}" == "y" ];then
               echo
                 echo
                  WHITETXT "We need to correct your innodb_buffer_pool_size"
-                 rpm -qa | grep -qw bc || yum -y install bc
+                 rpm -qa | grep -qw bc || yum -q -y install bc >/dev/null 2>&1
                  IBPS=$(echo "0.5*$(awk '/MemTotal/ { print $2 / (1024*1024)}' /proc/meminfo | cut -d'.' -f1)" | bc | xargs printf "%1.0f")
                  sed -i "s/innodb_buffer_pool_size = 4G/innodb_buffer_pool_size = ${IBPS}G/" /etc/my.cnf
                  echo
