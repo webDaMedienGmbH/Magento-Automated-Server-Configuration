@@ -16,7 +16,7 @@ Get a fully pre-configured server with Magento and LEMP stack in just 15 minutes
 **Installs**:<br/>
 *All selected repositories*<br/>
 *Percona 5.6 .latest*<br/>
-*PHP 5.5 .latest (with -opcache, php-redis, -memcache)*<br/>
+*PHP 5.5 .latest (with php: -opcache, -redis, -memcache, -igbinary)*<br/>
 *Nginx .latest (mainline)*<br/>
 *Memcached .latest*<br/>
 *Redis .latest*<br/>
