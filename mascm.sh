@@ -160,7 +160,7 @@ fi
 
 # some selinux, sir?
 SELINUX=$(sestatus | awk {'print $3'})
-if [ "${SELINUX}" != "SELINUX=disabled" ]; then
+if [ "${SELINUX}" != "disabled" ]; then
   echo
   REDTXT "ERROR: SELINUX IS ENABLED"
   YELLOWTXT "------> PLEASE CHECK YOUR SELINUX SETTINGS"
