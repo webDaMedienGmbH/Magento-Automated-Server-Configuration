@@ -281,8 +281,8 @@ if grep -q "yes" /root/mascm/.sysupdate >/dev/null 2>&1 ; then
 UPDATES=$(yum check-update | grep updates | wc -l)
 KERNEL=$(yum check-update | grep ^kernel | wc -l)
 if [ "${UPDATES}" -gt 20 ] || [ "${KERNEL}" -gt 0 ] ; then 
-	echo "---> UPDATES PKGS: ${UPDATES}"; 
-	echo "---> NEW KERNEL PKGS: ${KERNEL}"; 
+	echo "---> UPDATES PKGS: ${UPDATES}"
+	echo "---> NEW KERNEL PKGS: ${KERNEL}"
 echo
 echo -n "---> Start the System Update? [y/n][n]:"
 read sys_update
