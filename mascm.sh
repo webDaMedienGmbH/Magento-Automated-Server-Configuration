@@ -248,6 +248,9 @@ do
         case "${CHOICE}" in
                 "lemp")
 echo
+if grep -q "yes" /root/mascm/.tmp >/dev/null 2>&1 ; then
+echo
+else
 echo "-------------------------------------------------------------------------------------"
 BLUEBG "| Re-create and symlink  /var/tmp and /tmp |"
 echo "-------------------------------------------------------------------------------------"
@@ -266,6 +269,8 @@ if [ "${secure_tmp}" == "y" ];then
 			ln -s /tmp /var/tmp
 			echo
 		    GREENTXT "tmp directory is now symlinked"
+		    echo "yes" > /root/mascm/.tmp
+	fi
 fi
 echo
 WHITETXT "============================================================================="
