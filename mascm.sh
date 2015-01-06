@@ -243,11 +243,14 @@ printf "\033c"
 }
 while [ 1 ]
 do
-        showMenu
-        read CHOICE
-        case "${CHOICE}" in
-                "lemp")
+  showMenu
+  read CHOICE
+  case "${CHOICE}" in
+"lemp")
 echo
+if grep -q "yes" /root/mascm/.tmp >/dev/null 2>&1 ; then
+  echo
+  else
 echo "-------------------------------------------------------------------------------------"
 BLUEBG "| Re-create and symlink  /var/tmp and /tmp |"
 echo "-------------------------------------------------------------------------------------"
@@ -256,19 +259,30 @@ echo -n "---> Re-create and symlink /tmp and /var/tmp? [y/n][n]:"
 read secure_tmp
 if [ "${secure_tmp}" == "y" ];then
         echo
-		  cd
-			rm -rf /tmp
-			mkdir /tmp
-			mount -t tmpfs -o rw,noexec,nosuid tmpfs /tmp
-			chmod 1777 /tmp
-			echo "tmpfs		/tmp	tmpfs	rw,noexec,nosuid	0	0" >> /etc/fstab
-			rm -rf /var/tmp
-			ln -s /tmp /var/tmp
-			echo
-		    GREENTXT "tmp directory is now symlinked"
+	cd
+	rm -rf /tmp
+	mkdir /tmp
+	mount -t tmpfs -o rw,noexec,nosuid tmpfs /tmp
+	chmod 1777 /tmp
+	echo "tmpfs		/tmp	tmpfs	rw,noexec,nosuid	0	0" >> /etc/fstab
+	rm -rf /var/tmp
+	ln -s /tmp /var/tmp
+	echo
+	GREENTXT "tmp directory is now symlinked"
+	echo "yes" > /root/mascm/.tmp
+   fi
 fi
 echo
 WHITETXT "============================================================================="
+echo
+if grep -q "yes" /root/mascm/.sysupdate >/dev/null 2>&1 ; then
+   echo
+   else
+UPDATES=$(yum check-update | grep updates | wc -l)
+KERNEL=$(yum check-update | grep ^kernel | wc -l)
+if [ "${UPDATES}" -gt 20 ] || [ "${KERNEL}" -gt 0 ] ; then 
+	echo "---> UPDATES PKGS: ${UPDATES}"; 
+	echo "---> NEW KERNEL PKGS: ${KERNEL}"; 
 echo
 echo -n "---> Start the System Update? [y/n][n]:"
 read sys_update
@@ -283,9 +297,14 @@ if [ "${sys_update}" == "y" ];then
             stop_progress "$pid"
             echo
             GREENTXT "THE SYSTEM IS UP TO DATE  -  OK"
+            echo "yes" > /root/mascm/.sysupdate
+    if [ "${KERNEL}" -gt 0 ] ; then 
+    echo "PLEASE REBOOT THE SERVER NOW"
+    fi
           else
          echo
        YELLOWTXT "The System Update was skipped by the user. Next step"
+    fi
 fi
 echo
 echo "-------------------------------------------------------------------------------------"
