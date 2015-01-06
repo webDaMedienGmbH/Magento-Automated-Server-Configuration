@@ -5,7 +5,7 @@
 #       All rights reserved.                                         #
 #====================================================================#
 SELF=$(basename $0)
-MASCM_VER="6.6.1.9"
+MASCM_VER="6.6.2"
 
 # Software versions 
 MAGENTO_VER="1.9.1.0"
@@ -282,8 +282,8 @@ else
 UPDATES=$(yum check-update | grep updates | wc -l)
 KERNEL=$(yum check-update | grep ^kernel | wc -l)
 if [ "${UPDATES}" -gt 20 ] || [ "${KERNEL}" -gt 0 ]; then
-	YELLOWTXT "---> UPDATES PKGS: ${UPDATES}"
-	YELLOWTXT "---> NEW KERNEL PKGS: ${KERNEL}"
+echo  "${YELLOW}---> UPDATES PKGS: ${UPDATES}${RESET}"
+echo  "${YELLOW}---> NEW KERNEL PKGS: ${KERNEL}${RESET}"
 fi
 echo
 echo -n "---> Start the System Update now? [y/n][n]:"
