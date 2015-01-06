@@ -275,18 +275,19 @@ echo
 WHITETXT "============================================================================="
 echo
 fi
+echo
 if grep -q "yes" /root/mascm/.sysupdate >/dev/null 2>&1 ; then
 echo
 else
 UPDATES=$(yum check-update | grep updates | wc -l)
 KERNEL=$(yum check-update | grep ^kernel | wc -l)
 if [ "${UPDATES}" -gt 20 ] || [ "${KERNEL}" -gt 0 ] ; then 
-echo "---> UPDATES PKGS: ${UPDATES}"
-echo "---> NEW KERNEL PKGS: ${KERNEL}"
+YELLOWTXT "---> UPDATES PKGS: ${UPDATES}"
+YELLOWTXT "---> NEW KERNEL PKGS: ${KERNEL}"
 echo
-echo -n "---> Start the System Update? [y/n][n]:"
+echo -n "---> Start the System Update now? [y/n][n]:"
 read sys_update
-if [ "${sys_update}" == "y" ];then
+if [ "${sys_update}" == "y" ]; then
           echo
             GREENTXT "THE UPDATES ARE BEING INSTALLED"
             echo
@@ -298,7 +299,7 @@ if [ "${sys_update}" == "y" ];then
             echo
             GREENTXT "THE SYSTEM IS UP TO DATE  -  OK"
             echo "yes" > /root/mascm/.sysupdate
-	    REDTEXT "PLEASE REBOOT THE SERVER NOW"
+	    REDTXT "PLEASE REBOOT THE SERVER NOW"
           else
          echo
        YELLOWTXT "The System Update was skipped by the user. Next step"
