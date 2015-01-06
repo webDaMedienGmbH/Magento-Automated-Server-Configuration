@@ -259,18 +259,18 @@ echo -n "---> Re-create and symlink /tmp and /var/tmp? [y/n][n]:"
 read secure_tmp
 if [ "${secure_tmp}" == "y" ];then
         echo
-		  cd
-			rm -rf /tmp
-			mkdir /tmp
-			mount -t tmpfs -o rw,noexec,nosuid tmpfs /tmp
-			chmod 1777 /tmp
-			echo "tmpfs		/tmp	tmpfs	rw,noexec,nosuid	0	0" >> /etc/fstab
-			rm -rf /var/tmp
-			ln -s /tmp /var/tmp
-			echo
-		    GREENTXT "tmp directory is now symlinked"
-		    echo "yes" > /root/mascm/.tmp
-	fi
+	cd
+	rm -rf /tmp
+	mkdir /tmp
+	mount -t tmpfs -o rw,noexec,nosuid tmpfs /tmp
+	chmod 1777 /tmp
+	echo "tmpfs		/tmp	tmpfs	rw,noexec,nosuid	0	0" >> /etc/fstab
+	rm -rf /var/tmp
+	ln -s /tmp /var/tmp
+	echo
+	GREENTXT "tmp directory is now symlinked"
+	echo "yes" > /root/mascm/.tmp
+fi
 echo
 WHITETXT "============================================================================="
 echo
@@ -281,7 +281,7 @@ echo
 else
 UPDATES=$(yum check-update | grep updates | wc -l)
 KERNEL=$(yum check-update | grep ^kernel | wc -l)
-if [ "${UPDATES}" -gt 20 ] || [ "${KERNEL}" -gt 0 ] ; then 
+#if [ "${UPDATES}" -gt 20 ] || [ "${KERNEL}" -gt 0 ]; then
 YELLOWTXT "---> UPDATES PKGS: ${UPDATES}"
 YELLOWTXT "---> NEW KERNEL PKGS: ${KERNEL}"
 echo
@@ -303,7 +303,7 @@ if [ "${sys_update}" == "y" ]; then
           else
          echo
        YELLOWTXT "The System Update was skipped by the user. Next step"
-   fi
+#   fi
 fi
 echo
 echo "-------------------------------------------------------------------------------------"
