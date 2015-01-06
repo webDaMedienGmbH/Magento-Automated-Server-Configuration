@@ -243,14 +243,11 @@ printf "\033c"
 }
 while [ 1 ]
 do
-  showMenu
-  read CHOICE
-  case "${CHOICE}" in
-"lemp")
+        showMenu
+        read CHOICE
+        case "${CHOICE}" in
+                "lemp")
 echo
-#if grep -q "yes" /root/mascm/.tmp >/dev/null 2>&1 ; then
-  echo
-  #else
 echo "-------------------------------------------------------------------------------------"
 BLUEBG "| Re-create and symlink  /var/tmp and /tmp |"
 echo "-------------------------------------------------------------------------------------"
@@ -259,30 +256,19 @@ echo -n "---> Re-create and symlink /tmp and /var/tmp? [y/n][n]:"
 read secure_tmp
 if [ "${secure_tmp}" == "y" ];then
         echo
-	cd
-	rm -rf /tmp
-	mkdir /tmp
-	mount -t tmpfs -o rw,noexec,nosuid tmpfs /tmp
-	chmod 1777 /tmp
-	echo "tmpfs		/tmp	tmpfs	rw,noexec,nosuid	0	0" >> /etc/fstab
-	rm -rf /var/tmp
-	ln -s /tmp /var/tmp
-	echo
-	GREENTXT "tmp directory is now symlinked"
-	echo "yes" > /root/mascm/.tmp
-   fi
-#fi
+		  cd
+			rm -rf /tmp
+			mkdir /tmp
+			mount -t tmpfs -o rw,noexec,nosuid tmpfs /tmp
+			chmod 1777 /tmp
+			echo "tmpfs		/tmp	tmpfs	rw,noexec,nosuid	0	0" >> /etc/fstab
+			rm -rf /var/tmp
+			ln -s /tmp /var/tmp
+			echo
+		    GREENTXT "tmp directory is now symlinked"
+fi
 echo
 WHITETXT "============================================================================="
-echo
-#if grep -q "yes" /root/mascm/.sysupdate >/dev/null 2>&1 ; then
-   echo
-#   else
-#UPDATES=$(yum check-update | grep updates | wc -l)
-#KERNEL=$(yum check-update | grep ^kernel | wc -l)
-#if [ "${UPDATES}" -gt 20 ] || [ "${KERNEL}" -gt 0 ] ; then 
-#	echo "---> UPDATES PKGS: ${UPDATES}"
-#	echo "---> NEW KERNEL PKGS: ${KERNEL}"
 echo
 echo -n "---> Start the System Update? [y/n][n]:"
 read sys_update
@@ -297,14 +283,9 @@ if [ "${sys_update}" == "y" ];then
             stop_progress "$pid"
             echo
             GREENTXT "THE SYSTEM IS UP TO DATE  -  OK"
-            echo "yes" > /root/mascm/.sysupdate
-  #  if [ "${KERNEL}" -gt 0 ] ; then 
-  #  echo "PLEASE REBOOT THE SERVER NOW"
-  #  fi
           else
          echo
        YELLOWTXT "The System Update was skipped by the user. Next step"
- #   fi
 fi
 echo
 echo "-------------------------------------------------------------------------------------"
@@ -624,41 +605,32 @@ WHITETXT "YOU HAVE TO CHECK THEM AFTER ANYWAY"
 cat > /etc/sysctl.conf <<END
 fs.file-max = 700000
 fs.inotify.max_user_watches=500000
-
 vm.swappiness = 10
-
 net.ipv4.ip_forward = 0
 net.ipv4.conf.default.rp_filter = 1
 net.ipv4.conf.default.accept_source_route = 0
-
 kernel.sysrq = 0
 kernel.core_uses_pid = 1
-
 kernel.msgmnb = 65536
 kernel.msgmax = 65536
 kernel.shmmax = 68719476736
 kernel.shmall = 4294967296
-
 net.ipv4.tcp_tw_recycle = 1
 net.ipv4.tcp_tw_reuse = 1
 net.ipv4.tcp_mem = 8388608 8388608 8388608
 net.ipv4.tcp_rmem = 4096 87380 8388608
 net.ipv4.tcp_wmem = 4096 65536 8388608
-
 net.ipv4.ip_local_port_range = 1024 65535
 net.ipv4.tcp_fin_timeout = 15
 net.ipv4.tcp_keepalive_time = 15
-
 net.ipv4.tcp_max_orphans = 262144
 net.ipv4.tcp_max_syn_backlog = 262144
 net.ipv4.tcp_max_tw_buckets = 400000
-
 net.ipv4.tcp_syncookies = 1
 net.ipv4.tcp_synack_retries = 2
 net.ipv4.tcp_syn_retries = 2
 net.ipv4.tcp_sack = 1
 net.ipv4.route.flush = 1
-
 net.core.rmem_max = 16777216
 net.core.wmem_max = 16777216
 net.core.rmem_default = 8388608
@@ -673,7 +645,6 @@ WHITETXT "sysctl.conf loaded ... \033[01;32m  ok"
 cat > /etc/php.d/opcache.ini <<END
 ; Enable Zend OPcache extension
 zend_extension=opcache.so
-
 opcache.enable = 1
 opcache.enable_cli = 1
 opcache.memory_consumption = 256
