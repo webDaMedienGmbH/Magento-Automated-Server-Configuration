@@ -271,10 +271,10 @@ if [ "${secure_tmp}" == "y" ];then
 		    GREENTXT "tmp directory is now symlinked"
 		    echo "yes" > /root/mascm/.tmp
 	fi
-fi
 echo
 WHITETXT "============================================================================="
 echo
+fi
 echo -n "---> Start the System Update? [y/n][n]:"
 read sys_update
 if [ "${sys_update}" == "y" ];then
