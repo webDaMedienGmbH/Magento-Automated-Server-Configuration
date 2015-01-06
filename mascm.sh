@@ -284,8 +284,8 @@ KERNEL=$(yum check-update | grep ^kernel | wc -l)
 if [ "${UPDATES}" -gt 20 ] || [ "${KERNEL}" -gt 0 ]; then
 echo "CHECK UPDATES"
 echo
-echo -e "${YELLOW}---> UPDATES PKGS: ${UPDATES}${RESET}"
-echo -e "${YELLOW}---> NEW KERNEL PKGS: ${KERNEL}${RESET}"
+echo  '${YELLOW}---> UPDATES PKGS: ${UPDATES}${RESET}'
+echo  '${YELLOW}---> NEW KERNEL PKGS: ${KERNEL}${RESET}'
 fi
 echo
 echo -n "---> Start the System Update now? [y/n][n]:"
