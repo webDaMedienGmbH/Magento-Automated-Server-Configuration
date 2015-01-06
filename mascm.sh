@@ -281,9 +281,10 @@ echo
 else
 UPDATES=$(yum check-update | grep updates | wc -l)
 KERNEL=$(yum check-update | grep ^kernel | wc -l)
-#if [ "${UPDATES}" -gt 20 ] || [ "${KERNEL}" -gt 0 ]; then
-YELLOWTXT "---> UPDATES PKGS: ${UPDATES}"
-YELLOWTXT "---> NEW KERNEL PKGS: ${KERNEL}"
+if [ "${UPDATES}" -gt 20 ] || [ "${KERNEL}" -gt 0 ]; then
+	YELLOWTXT "---> UPDATES PKGS: ${UPDATES}"
+	YELLOWTXT "---> NEW KERNEL PKGS: ${KERNEL}"
+fi
 echo
 echo -n "---> Start the System Update now? [y/n][n]:"
 read sys_update
@@ -303,7 +304,7 @@ if [ "${sys_update}" == "y" ]; then
           else
          echo
        YELLOWTXT "The System Update was skipped by the user. Next step"
-#   fi
+   fi
 fi
 echo
 echo "-------------------------------------------------------------------------------------"
