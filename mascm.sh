@@ -341,30 +341,13 @@ if [ "${repo_epel_install}" == "y" ];then
           exit
       fi
             echo
-            GREENTXT "Installation of Repoforge repository:"
-            echo
-            echo -n "     PROCESSING  "
-            quick_progress &
-            pid="$!"
-            rpm --quiet -U http://pkgs.repoforge.org/rpmforge-release/rpmforge-release-0.5.3-1.el6.rf.x86_64.rpm >/dev/null 2>&1
-            stop_progress "$pid"
-            rpm  --quiet -q rpmforge-release
-      if [ "$?" = 0 ]
-        then
-          echo
-            GREENTXT "REPOSITORY HAS BEEN INSTALLED  -  OK"
-             else
-             echo
-            REDTXT "REPOSITORY INSTALLATION ERROR"
-        exit
-      fi
             echo
             GREENTXT "Installation of additional packages:"
             echo
             echo -n "     PROCESSING  "
             long_progress &
             pid="$!"
-            yum -q -y install wget curl bc mcrypt sudo crontabs gcc vim mlocate unzip proftpd inotify-tools --exclude=exim >/dev/null 2>&1
+            yum -q -y install bc gcc inotify-tools mcrypt mlocate unzip vim wget curl sudo >/dev/null 2>&1
             stop_progress "$pid"
             echo
            rpm  --quiet -q wget
