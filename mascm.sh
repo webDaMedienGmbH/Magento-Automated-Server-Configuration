@@ -303,6 +303,10 @@ if [ "${sys_update}" == "y" ]; then
             GREENTXT "THE SYSTEM IS UP TO DATE  -  OK"
             echo "yes" > /root/mascm/.sysupdate
 	    REDTXT "PLEASE REBOOT THE SERVER NOW"
+	    echo
+	    echo
+	    echo
+	    exit 0
           else
          echo
        YELLOWTXT "The System Update was skipped by the user. Next step"
@@ -371,8 +375,7 @@ if [ "${repo_epel_install}" == "y" ];then
              else
              echo
             yum -q -y install wget >/dev/null 2>&1
-        exit
-      fi
+        fi
             echo
         else
 	      echo
