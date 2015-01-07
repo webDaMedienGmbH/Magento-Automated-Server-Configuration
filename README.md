@@ -48,3 +48,4 @@ Get a fully pre-configured server with Magento and LEMP stack in just 15 minutes
 *Turpentine Varnish FPC*<br/>
 
  
+this script was tested on 4gb digitalocean droplet many times, works without any errors.
