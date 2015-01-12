@@ -1,11 +1,11 @@
 #!/bin/bash
 #====================================================================#
 #  MagenX - Automated Server Configuration for Magento               #
-#    Copyright (C) 2014 admin@magenx.com                             #
+#    Copyright (C) 2015 admin@magenx.com                             #
 #       All rights reserved.                                         #
 #====================================================================#
 SELF=$(basename $0)
-MASCM_VER="6.6.2"
+MASCM_VER="6.6.4"
 
 # Software versions 
 MAGENTO_VER="1.9.1.0"
@@ -777,7 +777,6 @@ cd /etc/nginx/conf.d/ && rm -rf *
 wget -q https://raw.githubusercontent.com/magenx/nginx-config/master/magento/conf.d/error_page.conf
 wget -q https://raw.githubusercontent.com/magenx/nginx-config/master/magento/conf.d/extra_protect.conf
 wget -q https://raw.githubusercontent.com/magenx/nginx-config/master/magento/conf.d/headers.conf
-wget -q https://raw.githubusercontent.com/magenx/nginx-config/master/magento/conf.d/limit_req.conf
 wget -q https://raw.githubusercontent.com/magenx/nginx-config/master/magento/conf.d/maintenance.conf
 wget -q https://raw.githubusercontent.com/magenx/nginx-config/master/magento/conf.d/multishop.conf
 wget -q https://raw.githubusercontent.com/magenx/nginx-config/master/magento/conf.d/spider.conf
@@ -1073,6 +1072,32 @@ sed -i '/<global>/ a\
         </backend_options> \
         </cache>' ${MY_SHOP_PATH}/app/etc/local.xml
 echo
+echo "---> DISABLING MAGENTO LOGS"
+echo
+sed -i '/<\/admin>/ a\
+<frontend> \
+        <events> \
+            <controller_action_predispatch> \
+            <observers><log><type>disabled</type></log></observers> \
+            </controller_action_predispatch> \
+            <controller_action_postdispatch> \
+            <observers><log><type>disabled</type></log></observers> \
+            </controller_action_postdispatch> \
+            <customer_login> \
+            <observers><log><type>disabled</type></log></observers> \
+            </customer_login> \
+            <customer_logout> \
+            <observers><log><type>disabled</type></log></observers> \
+            </customer_logout> \
+            <sales_quote_save_after> \
+            <observers><log><type>disabled</type></log></observers> \
+            </sales_quote_save_after> \
+            <checkout_quote_destroy> \
+            <observers><log><type>disabled</type></log></observers> \
+            </checkout_quote_destroy> \
+        </events> \
+</frontend>' ${MY_SHOP_PATH}/app/etc/local.xml
+echo
 echo "---> CLEANING UP INDEXES LOCKS AND RUNNING RE-INDEX ALL"
 echo
 rm -rf  ${MY_SHOP_PATH}/var/locks/*
@@ -1080,27 +1105,6 @@ php ${MY_SHOP_PATH}/shell/indexer.php --reindexall
 echo
 chmod +x /root/app_monitor.sh
 /root/app_monitor.sh &
-echo
-echo "---> TRUNCATE LOGS WEEKLY AS CRONJOB"
-cat > /root/truncate_logs.sh <<END
-#!/bin/bash
-TABLES="log_url log_url_info log_visitor log_visitor_info"
-for table in \${TABLES}
-do
-  echo "Truncating \$table from ${DB_NAME} database"
-  mysql -u ${DB_USER_NAME} -p${DB_PASS} -h ${DB_HOST} ${DB_NAME} -e "TRUNCATE TABLE \${table};"
-done
-END
-chmod +x /root/truncate_logs.sh
-GREENTXT "WRITING DATA TO CRON"
-        crontab -l > magecron
-        echo "0 6 * * 1 /bin/bash /root/truncate_logs.sh" >> magecron
-        crontab magecron
-        rm magecron
-        crontab -l
-        echo
-        WHITETXT "Edit crontab if you need different settings"
-        echo
 echo
 echo
     GREENTXT "NOW LOGIN TO YOUR BACKEND AND CHECK EVERYTHING"
