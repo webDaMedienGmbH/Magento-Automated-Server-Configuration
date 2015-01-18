@@ -5,11 +5,11 @@
 #       All rights reserved.                                         #
 #====================================================================#
 SELF=$(basename $0)
-MASCM_VER="6.6.7"
+MASCM_VER="6.7"
 
 # Software versions 
 MAGENTO_VER="1.9.1.0"
-PHPMYADMIN_VER="4.3.4"
+PHPMYADMIN_VER="4.3.7"
 
 # Simple colors
 RED="\e[31;40m"
