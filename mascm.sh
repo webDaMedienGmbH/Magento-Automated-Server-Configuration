@@ -5,7 +5,7 @@
 #       All rights reserved.                                         #
 #====================================================================#
 SELF=$(basename $0)
-MASCM_VER="6.6.4"
+MASCM_VER="6.6.7"
 
 # Software versions 
 MAGENTO_VER="1.9.1.0"
@@ -1105,6 +1105,19 @@ php ${MY_SHOP_PATH}/shell/indexer.php --reindexall
 echo
 chmod +x /root/app_monitor.sh
 /root/app_monitor.sh &
+echo
+echo
+echo "---> CREATE SAMPLE LOGROTATE SCRIPT FOR MAGENTO LOGS"
+cat >> /etc/logrotate.d/magento <<END
+${MY_SHOP_PATH}/var/log/*.log
+{
+weekly
+rotate 4
+notifempty
+missingok
+compress
+}
+END
 echo
 echo
     GREENTXT "NOW LOGIN TO YOUR BACKEND AND CHECK EVERYTHING"
