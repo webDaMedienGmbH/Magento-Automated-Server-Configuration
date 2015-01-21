@@ -813,34 +813,34 @@ echo
     OPCACHE_FILE=$(head -c 500 /dev/urandom | tr -dc 'a-zA-Z' | fold -w 7 | head -n 1)
     wget -qO ${OPCACHE_FILE}_opcache_gui.php https://raw.githubusercontent.com/amnuts/opcache-gui/master/index.php
     echo
-    GREENTXT "OPCACHE interface was installed to http://www.${MY_DOMAIN}/${OPCACHE_FILE}_opcache_gui.php"
+    GREENTXT "OPCACHE interface was installed to http://www.${MY_DOMAIN}/opcache_${OPCACHE_FILE}_gui.php"
 echo
 echo
 echo
 GREENTXT "INSTALLING Magento /app/ folder monitor and opcache invalidation script"
 pause '------> Press [Enter] key to continue'
-cat > /root/app_monitor.sh <<END
+cat > /root/zend_opcache_monitor.sh <<END
 #!/bin/bash
 ## monitor app folder and log modified files
 /usr/bin/inotifywait -e modify,move \
     -mrq --timefmt %a-%b-%d-%T --format '%w%f %T' \
-    --excludei '/(feeds?|cache|log|session|report|locks|media|skin|tmp)/|\.(xml|html?|css|js|gif|jpe?g|png|ico|te?mp|txt|csv|swp|sql|t?gz|zip|svn?g|git|log|ini)~?' \
-    ${MY_SHOP_PATH}/app | while read line; do
-    echo "\$line " >> /var/log/app_monitor.log
+    --excludei '/(cache|log|session|report|locks|media|skin|tmp)/|\.(xml|html?|css|js|gif|jpe?g|png|ico|te?mp|txt|csv|swp|sql|t?gz|zip|svn?g|git|log|ini)~?' \
+    ${MY_SHOP_PATH}/ | while read line; do
+    echo "\$line " >> /var/log/zend_opcache_monitor.log
     FILE=\$(echo \${line} | cut -d' ' -f1 | sed -e 's/\/\./\//g' | cut -f1-2 -d'.')
     TARGETEXT="(php|phtml)"
     EXTENSION="\${FILE##*.}"
   if [[ "\$EXTENSION" =~ \$TARGETEXT ]];
     then
-    curl --silent "http://${MY_DOMAIN}/${OPCACHE_FILE}_opcache_gui.php?page=invalidate&file=\${FILE}" >/dev/null 2>&1
+    curl --silent "http://${MY_DOMAIN}/opcache_${OPCACHE_FILE}_gui.php?page=invalidate&file=\${FILE}" >/dev/null 2>&1
   fi
 done
 END
 echo
-    GREENTXT "Script was installed to /root/app_monitor.sh"
+    GREENTXT "Script was installed to /root/zend_opcache_monitor.sh"
 echo
 echo
-    echo "/root/app_monitor.sh &" >> /etc/rc.local
+    echo "/root/zend_opcache_monitor.sh &" >> /etc/rc.local
 echo
 echo
 GREENTXT "VARNISH DAEMON CONFIGURATION FILE"
