@@ -895,7 +895,7 @@ fi
 "database")
 printf "\033c"
 WHITETXT "============================================================================="
-service mysql restart
+/bin/systemctl start mysql.service
 echo
 WHITETXT "CREATING MAGENTO DATABASE AND DATABASE USER"
 echo
@@ -1160,8 +1160,8 @@ if [ "${new_ssh_set}" == "y" ];then
      echo
         GREENTXT "SSH PORT HAS BEEN UPDATED  -  OK"
         GREENTXT "ROOT LOGIN  -  DISABLED"
-        service sshd restart
-        netstat -tulnp | grep sshd
+        /bin/systemctl restart sshd.service
+        ss -tlp | grep sshd
      echo
 fi
 echo
@@ -1176,11 +1176,11 @@ if [ "${new_ssh_test}" == "y" ];then
         else
         mv /etc/ssh/sshd_config.BACK /etc/ssh/sshd_config
         REDTXT "Writing your sshd_config back ... \033[01;32m ok"
-        service sshd restart
+        /bin/systemctl restart sshd.service
         echo
         GREENTXT "SSH PORT HAS BEEN UPDATED  -  OK"
         GREENTXT "ROOT LOGIN  -  ENABLED"
-        netstat -tulnp | grep sshd
+        ss -tlp | grep sshd
 fi
 echo
 echo
