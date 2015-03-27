@@ -407,7 +407,7 @@ if [ "${repo_percona_install}" == "y" ];then
             echo
               GREENTXT "DATABASE HAS BEEN INSTALLED  -  OK"
               echo
-              chkconfig mysql on
+              systemctl enable mysql
               echo
               WHITETXT "Downloading my.cnf file from MagenX Github repository"
               wget -qO /etc/my.cnf https://raw.githubusercontent.com/magenx/magento-mysql/master/my.cnf/my.cnf
@@ -477,7 +477,7 @@ END
         then
           echo
             GREENTXT "NGINX HAS BEEN INSTALLED  -  OK"
-            chkconfig nginx on
+            systemctl enable nginx
               else
              echo
             REDTXT "NGINX INSTALLATION ERROR"
@@ -519,8 +519,8 @@ if [ "${repo_remi_install}" == "y" ];then
          then
            echo
              GREENTXT "PHP HAS BEEN INSTALLED  -  OK"
-             chkconfig php-fpm on
-             chkconfig httpd off
+             systemctl enable php-fpm
+             systemctl disable httpd
              yum list installed | awk '/php.*x86_64/ {print "      ",$1}'
                 else
                echo
@@ -541,8 +541,8 @@ if [ "${repo_remi_install}" == "y" ];then
          then
            echo
              GREENTXT "MEMCACHED AND REDIS WERE INSTALLED"
-             chkconfig memcached on
-             chkconfig redis on
+             systemctl enable memcached
+             systemctl enable redis
                 else
                echo
              REDTXT "MEMCACHED AND REDIS INSTALLATION ERROR"
