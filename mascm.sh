@@ -5,11 +5,11 @@
 #       All rights reserved.                                         #
 #====================================================================#
 SELF=$(basename $0)
-MASCM_VER="6.7"
+MASCM_VER="6.9"
 
 # Software versions 
 MAGENTO_VER="1.9.1.0"
-PHPMYADMIN_VER="4.3.7"
+PHPMYADMIN_VER="4.3.12"
 
 # Simple colors
 RED="\e[31;40m"
@@ -132,7 +132,7 @@ if grep "CentOS.* 6\." /etc/redhat-release  > /dev/null 2>&1; then
   else
   echo
   REDTXT "ERROR: UNABLE TO DETERMINE DISTRIBUTION TYPE."
-  YELLOWTXT "------> THIS CONFIGURATION FOR CENTOS 6."
+  YELLOWTXT "------> THIS CONFIGURATION FOR CENTOS 6"
   echo
   exit 1
 fi
@@ -611,7 +611,7 @@ echo
 WHITETXT "YOU HAVE TO CHECK THEM AFTER ANYWAY"
 cat > /etc/sysctl.conf <<END
 fs.file-max = 700000
-fs.inotify.max_user_watches=500000
+fs.inotify.max_user_watches = 500000
 vm.swappiness = 10
 net.ipv4.ip_forward = 0
 net.ipv4.conf.default.rp_filter = 1
@@ -713,8 +713,8 @@ WHITETXT "memcached config loaded ... \033[01;32m  ok"
 echo -e '\nfastcgi_read_timeout 7200;\nfastcgi_send_timeout 7200;\nfastcgi_connect_timeout 65;\n' >> /etc/nginx/fastcgi_params
 WHITETXT "fastcgi_params loaded ... \033[01;32m  ok"
 echo
-echo "*         soft    nofile          100000" >> /etc/security/limits.conf
-echo "*         hard    nofile          500000" >> /etc/security/limits.conf
+echo "*         soft    nofile          500000" >> /etc/security/limits.conf
+echo "*         hard    nofile          700000" >> /etc/security/limits.conf
   else
         YELLOWTXT "Configuration was skipped by the user. Next step"
 fi
@@ -1103,8 +1103,8 @@ echo
 rm -rf  ${MY_SHOP_PATH}/var/locks/*
 php ${MY_SHOP_PATH}/shell/indexer.php --reindexall
 echo
-chmod +x /root/app_monitor.sh
-/root/app_monitor.sh &
+chmod +x /root/zend_opcache_monitor.sh
+/root/zend_opcache_monitor.sh &
 echo
 echo
 echo "---> CREATE SAMPLE LOGROTATE SCRIPT FOR MAGENTO LOGS"
