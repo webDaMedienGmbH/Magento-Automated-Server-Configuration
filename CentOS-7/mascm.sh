@@ -16,7 +16,8 @@ REPO_PERCONA="http://www.percona.com/redir/downloads/percona-release/redhat/late
 REPO_NGINX="http://nginx.org/packages/mainline/centos/7/x86_64/"
 REPO_REMI="http://rpms.famillecollet.com/enterprise/remi-release-7.rpm"
 
-PHP_PACKAGES=(cli common fpm opcache gd curl mbstring bcmath soap mcrypt mysql pdo xml xmlrpc pecl-memcache pecl-redis pecl-geoip)
+PHP_PACKAGES=(cli common fpm opcache gd curl mbstring bcmath soap mcrypt mysql pdo xml xmlrpc pecl-memcache pecl-redis pecl-lzf pecl-geoip)
+PERCONA_PACKAGES=(client-56 server-56)
 
 # Simple colors
 RED="\e[31;40m"
@@ -134,7 +135,7 @@ if [[ ${EUID} -ne 0 ]]; then
 fi
 
 # do we have CentOS 6?
-if grep "CentOS.* 7\." /etc/redhat-release  > /dev/null 2>&1; then
+if grep "CentOS.* 7\." /etc/centos-release  > /dev/null 2>&1; then
   GREENTXT "PASS: CENTOS RELEASE 7"
   else
   echo
@@ -399,9 +400,9 @@ if [ "${repo_percona_install}" == "y" ];then
               echo -n "     PROCESSING  "
               long_progress &
               pid="$!"
-              yum -y -q install Percona-Server-client-56 Percona-Server-server-56  >/dev/null 2>&1
+              yum -y -q install ${PERCONA_PACKAGES[@]/#/Percona-Server-}  >/dev/null 2>&1
               stop_progress "$pid"
-              rpm  --quiet -q Percona-Server-client-56 Percona-Server-server-56
+              rpm  --quiet -q ${PERCONA_PACKAGES[@]/#/Percona-Server-}
         if [ "$?" = 0 ] # if package installed then configure
           then
             echo
@@ -1058,7 +1059,7 @@ sed -i '/<global>/ a\
             <compress_data>1</compress_data> \
             <compress_tags>1</compress_tags> \
             <compress_threshold>204800</compress_threshold> \
-            <compression_lib>gzip</compression_lib> \
+            <compression_lib>lzf</compression_lib> \
         </backend_options> \
         </cache>' ${MY_SHOP_PATH}/app/etc/local.xml
 echo
