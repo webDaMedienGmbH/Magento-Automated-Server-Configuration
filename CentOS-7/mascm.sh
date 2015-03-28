@@ -16,7 +16,9 @@ REPO_PERCONA="http://www.percona.com/redir/downloads/percona-release/redhat/late
 REPO_NGINX="http://nginx.org/packages/mainline/centos/7/x86_64/"
 REPO_REMI="http://rpms.famillecollet.com/enterprise/remi-release-7.rpm"
 
-PHP_PACKAGES=(cli common fpm opcache gd curl mbstring bcmath soap mcrypt mysql pdo xml xmlrpc pecl-memcache pecl-redis pecl-lzf pecl-geoip)
+EXTRA_PACKAGES="gcc inotify-tools mcrypt mlocate unzip vim wget curl sudo bc"
+PHP_PACKAGES=(cli common fpm opcache gd curl mbstring bcmath soap mcrypt mysql pdo xml xmlrpc) 
+PHP_PECL_PACKAGES=(pecl-memcache pecl-redis pecl-lzf pecl-geoip)
 PERCONA_PACKAGES=(client-56 server-56)
 
 # Simple colors
@@ -352,12 +354,12 @@ if [ "${repo_epel_install}" == "y" ];then
       fi
             echo
             echo
-            GREENTXT "Installation of additional packages:"
+            GREENTXT "Installation of extra packages:"
             echo
             echo -n "     PROCESSING  "
             long_progress &
             pid="$!"
-            yum -q -y install bc gcc inotify-tools mcrypt mlocate unzip vim wget curl sudo >/dev/null 2>&1
+            yum -q -y install ${EXTRA_PACKAGES} >/dev/null 2>&1
             stop_progress "$pid"
             echo
            rpm  --quiet -q wget
@@ -367,7 +369,7 @@ if [ "${repo_epel_install}" == "y" ];then
             GREENTXT "ALL PACKAGES WERE INSTALLED OK"
              else
              echo
-            yum -q -y install wget >/dev/null 2>&1
+            REDTXT "EXTRA PACKAGES INSTALLATION ERROR"
         fi
             echo
         else
@@ -513,7 +515,7 @@ if [ "${repo_remi_install}" == "y" ];then
             echo -n "     PROCESSING  "
             long_progress &
             pid="$!"
-            yum --enablerepo=remi,remi-php56 -y -q install php ${PHP_PACKAGES[@]/#/php-} >/dev/null 2>&1
+            yum --enablerepo=remi,remi-php56 -y -q install php ${PHP_PACKAGES[@]/#/php-} ${PHP_PECL_PACKAGES[@]/#/php-} >/dev/null 2>&1
             stop_progress "$pid"
             rpm  --quiet -q php
        if [ "$?" = 0 ]
