@@ -11,15 +11,19 @@ MASCM_VER="7.1-beta"
 MAGENTO_VER="1.9.1.0"
 PHPMYADMIN_VER="4.4.1"
 
+# Webmin Control Panel
 WEBMIN="http://prdownloads.sourceforge.net/webadmin/webmin-1.740-1.noarch.rpm"
 WEBMINTHEME="https://github.com/qooob/authentic-theme/archive/master.zip"
+WEBMIN_NGINX="http://www.justindhoffman.com/sites/justindhoffman.com/files/nginx-0.08.wbm__0.gz"
 PERL_MODULES=""
 
+# Repositories
 REPO_EPEL="http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-5.noarch.rpm"
 REPO_PERCONA="http://www.percona.com/redir/downloads/percona-release/redhat/latest/percona-release-0.1-3.noarch.rpm"
 REPO_NGINX="http://nginx.org/packages/mainline/centos/7/x86_64/"
 REPO_REMI="http://rpms.famillecollet.com/enterprise/remi-release-7.rpm"
 
+# WebStack Packages
 EXTRA_PACKAGES="gcc inotify-tools mcrypt mlocate unzip vim wget curl sudo bc"
 PHP_PACKAGES=(cli common fpm opcache gd curl mbstring bcmath soap mcrypt mysql pdo xml xmlrpc) 
 PHP_PECL_PACKAGES=(pecl-memcache pecl-redis pecl-lzf pecl-geoip)
