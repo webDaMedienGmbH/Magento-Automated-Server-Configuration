@@ -250,14 +250,14 @@ printf "\033c"
         echo
         WHITETXT "-> Install repository and LEMP packages :  ${YELLOW}\tlemp"
         WHITETXT "-> Download latest Magento package      :  ${YELLOW}\t\tmagento"
-        WHITETXT "-> Setup Magento database               :  ${YELLOW}\t\tdatabase"
+        WHITETXT "-> Setup Magento database               :  ${YELLOW}\t\t\tdatabase"
         WHITETXT "-> Install Magento (no sample data)     :  ${YELLOW}\t\tinstall"
         echo
         BLUETXT ":::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
         echo
         WHITETXT "-> Change root user and ssh port        :  ${YELLOW}\t\tprotect"
         WHITETXT "-> Install CSF firewall                 :  ${YELLOW}\t\t\tfirewall"
-        WHITETXT "-> Install Webmin Control Panel         :  ${YELLOW}\t\t\twebmin"
+        WHITETXT "-> Install Webmin Control Panel         :  ${YELLOW}\t\twebmin"
         echo
         BLUETXT ":::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
         echo
