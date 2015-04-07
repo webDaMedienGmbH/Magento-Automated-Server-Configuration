@@ -26,7 +26,7 @@ EXTRA_PACKAGES="gcc inotify-tools mcrypt mlocate unzip vim wget curl sudo bc"
 PHP_PACKAGES=(cli common fpm opcache gd curl mbstring bcmath soap mcrypt mysql pdo xml xmlrpc) 
 PHP_PECL_PACKAGES=(pecl-memcache pecl-redis pecl-lzf pecl-geoip)
 PERCONA_PACKAGES=(client-56 server-56)
-PERL_MODULES=(libwww-perl ExtUtils-CBuilder ExtUtils-MakeMaker TermReadKey DBI DBD-MySQL Digest-HMAC Digest-SHA1 Test-Simple Moose)
+PERL_MODULES=(libwww-perl ExtUtils-CBuilder ExtUtils-MakeMaker TermReadKey DBI DBD-MySQL Digest-HMAC Digest-SHA1 Test-Simple Moose Net-SSLeay)
 
 # Debug Tools
 MYSQL_TUNER="https://raw.githubusercontent.com/major/MySQLTuner-perl/master/mysqltuner.pl"
@@ -1261,6 +1261,15 @@ if [ "${csf_test}" == "y" ];then
                echo
     fi
 fi
+echo
+echo
+pause '---> Press [Enter] key to show menu'
+;;
+###################################################################################
+#                               WEBMIN HERE YOU GO                                #
+###################################################################################
+"webmin")
+REDTXT "beta"
 echo
 echo
 pause '---> Press [Enter] key to show menu'
