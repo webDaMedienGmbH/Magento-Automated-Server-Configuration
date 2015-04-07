@@ -13,7 +13,6 @@ PHPMYADMIN_VER="4.4.1"
 
 # Webmin Control Panel
 WEBMIN="http://prdownloads.sourceforge.net/webadmin/webmin-1.740-1.noarch.rpm"
-WEBMIN_THEME="https://github.com/qooob/authentic-theme/archive/master.zip"
 WEBMIN_NGINX="http://www.justindhoffman.com/sites/justindhoffman.com/files/nginx-0.08.wbm__0.gz"
 
 # Repositories
@@ -27,7 +26,7 @@ EXTRA_PACKAGES="gcc inotify-tools mcrypt mlocate unzip vim wget curl sudo bc"
 PHP_PACKAGES=(cli common fpm opcache gd curl mbstring bcmath soap mcrypt mysql pdo xml xmlrpc) 
 PHP_PECL_PACKAGES=(pecl-memcache pecl-redis pecl-lzf pecl-geoip)
 PERCONA_PACKAGES=(client-56 server-56)
-PERL_MODULES=""
+PERL_MODULES=(libwww-perl ExtUtils-CBuilder ExtUtils-MakeMaker TermReadKey DBI DBD-MySQL)
 
 # Debug Tools
 MYSQL_TUNER="https://raw.githubusercontent.com/major/MySQLTuner-perl/master/mysqltuner.pl"
