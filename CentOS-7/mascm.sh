@@ -5,11 +5,15 @@
 #       All rights reserved.                                         #
 #====================================================================#
 SELF=$(basename $0)
-MASCM_VER="7.1-a"
+MASCM_VER="7.1-beta"
 
 # Software versions
 MAGENTO_VER="1.9.1.0"
 PHPMYADMIN_VER="4.3.12"
+
+WEBMIN=""
+WEBMINTHEME=""
+PERL_MODULES=""
 
 REPO_EPEL="http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-5.noarch.rpm"
 REPO_PERCONA="http://www.percona.com/redir/downloads/percona-release/redhat/latest/percona-release-0.1-3.noarch.rpm"
