@@ -9,10 +9,10 @@ MASCM_VER="7.1-beta"
 
 # Software versions
 MAGENTO_VER="1.9.1.0"
-PHPMYADMIN_VER="4.3.12"
+PHPMYADMIN_VER="4.4.1"
 
-WEBMIN=""
-WEBMINTHEME=""
+WEBMIN="http://prdownloads.sourceforge.net/webadmin/webmin-1.740-1.noarch.rpm"
+WEBMINTHEME="https://github.com/qooob/authentic-theme/archive/master.zip"
 PERL_MODULES=""
 
 REPO_EPEL="http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-5.noarch.rpm"
