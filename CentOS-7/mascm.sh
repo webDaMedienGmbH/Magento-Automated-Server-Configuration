@@ -26,7 +26,7 @@ EXTRA_PACKAGES="gcc inotify-tools mcrypt mlocate unzip vim wget curl sudo bc"
 PHP_PACKAGES=(cli common fpm opcache gd curl mbstring bcmath soap mcrypt mysql pdo xml xmlrpc) 
 PHP_PECL_PACKAGES=(pecl-memcache pecl-redis pecl-lzf pecl-geoip)
 PERCONA_PACKAGES=(client-56 server-56)
-PERL_MODULES=(libwww-perl ExtUtils-CBuilder ExtUtils-MakeMaker TermReadKey DBI DBD-MySQL)
+PERL_MODULES=(libwww-perl ExtUtils-CBuilder ExtUtils-MakeMaker TermReadKey DBI DBD-MySQL Digest-HMAC Digest-SHA1 Test-Simple Moose)
 
 # Debug Tools
 MYSQL_TUNER="https://raw.githubusercontent.com/major/MySQLTuner-perl/master/mysqltuner.pl"
