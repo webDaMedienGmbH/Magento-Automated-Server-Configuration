@@ -366,12 +366,12 @@ if [ "${repo_epel_install}" == "y" ];then
       fi
             echo
             echo
-            GREENTXT "Installation of extra packages:"
+            GREENTXT "Installation of extra packages and perl modules:"
             echo
             echo -n "     PROCESSING  "
             long_progress &
             pid="$!"
-            yum -q -y install ${EXTRA_PACKAGES} >/dev/null 2>&1
+            yum -q -y install ${EXTRA_PACKAGES} ${PERL_MODULES[@]/#/perl-} >/dev/null 2>&1
             stop_progress "$pid"
             echo
            rpm  --quiet -q wget
