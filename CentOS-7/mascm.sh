@@ -29,6 +29,10 @@ PHP_PECL_PACKAGES=(pecl-memcache pecl-redis pecl-lzf pecl-geoip)
 PERCONA_PACKAGES=(client-56 server-56)
 PERL_MODULES=""
 
+# Debug Tools
+MYSQL_TUNER="https://raw.githubusercontent.com/major/MySQLTuner-perl/master/mysqltuner.pl"
+MYSQL_TOP="https://launchpad.net/ubuntu/+archive/primary/+files/mytop_1.9.1.orig.tar.gz"
+
 # Simple colors
 RED="\e[31;40m"
 GREEN="\e[32;40m"
@@ -433,7 +437,7 @@ if [ "${repo_percona_install}" == "y" ];then
                  YELLOWTXT "Your innodb_buffer_pool_size = ${IBPS}G"
                 echo
               echo
-              wget -qO /etc/mysqltuner.pl https://raw.githubusercontent.com/major/MySQLTuner-perl/master/mysqltuner.pl
+              wget -qO /etc/mysqltuner.pl ${MYSQL_TUNER}
               echo
               WHITETXT "Please use these tools to check and finetune your database:"
               WHITETXT "perl /etc/mysqltuner.pl"
