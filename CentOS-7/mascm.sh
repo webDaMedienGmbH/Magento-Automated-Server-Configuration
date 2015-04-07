@@ -26,7 +26,7 @@ EXTRA_PACKAGES="gcc inotify-tools mcrypt mlocate unzip vim wget curl sudo bc"
 PHP_PACKAGES=(cli common fpm opcache gd curl mbstring bcmath soap mcrypt mysql pdo xml xmlrpc) 
 PHP_PECL_PACKAGES=(pecl-memcache pecl-redis pecl-lzf pecl-geoip)
 PERCONA_PACKAGES=(client-56 server-56)
-PERL_MODULES=(libwww-perl ExtUtils-CBuilder ExtUtils-MakeMaker TermReadKey DBI DBD-MySQL Digest-HMAC Digest-SHA1 Test-Simple Moose Net-SSLeay)
+PERL_MODULES=(libwww-perl Time-HiRes ExtUtils-CBuilder ExtUtils-MakeMaker TermReadKey DBI DBD-MySQL Digest-HMAC Digest-SHA1 Test-Simple Moose Net-SSLeay)
 
 # Debug Tools
 MYSQL_TUNER="https://raw.githubusercontent.com/major/MySQLTuner-perl/master/mysqltuner.pl"
@@ -1233,22 +1233,6 @@ if [ "${csf_test}" == "y" ];then
                echo
                pause '---> Press [Enter] key to continue'
                echo
-               GREENTXT "Installing perl modules:"
-               echo
-               echo -n "     PROCESSING  "
-               start_progress &
-               pid="$!"
-               yum -q -y install perl-libwww-perl perl-Time-HiRes >/dev/null 2>&1
-               stop_progress "$pid"
-               rpm  --quiet -q perl-libwww-perl perl-Time-HiRes
-           if [ "$?" = 0 ]
-             then
-                 GREENTXT "PERL MODULES WERE INSTALLED  -  OK"
-                 else
-                 REDTXT "ERROR"
-             exit
-           fi
-             echo
                GREENTXT "Running CSF installation"
                echo
                echo -n "     PROCESSING  "
@@ -1269,7 +1253,37 @@ pause '---> Press [Enter] key to show menu'
 #                               WEBMIN HERE YOU GO                                #
 ###################################################################################
 "webmin")
-REDTXT "beta"
+echo
+echo -n "---> Start the Webmin Control Panel installation? [y/n][n]:"
+read webmin_install
+if [ "${webmin_install}" == "y" ];then
+          echo
+            GREENTXT "Installation of Webmin package:"
+            echo
+            echo -n "     PROCESSING  "
+            start_progress &
+            pid="$!"
+            yum -y -q install ${WEBMIN} >/dev/null 2>&1
+            stop_progress "$pid"
+            rpm  --quiet -q webmin
+      if [ "$?" = 0 ]
+        then
+          echo
+            GREENTXT "WEBMIN HAS BEEN INSTALLED  -  OK"
+            sed -i 's/theme=gray-theme/theme=authentic-theme/' /etc/webmin/config
+            sed -i 's/preroot=gray-theme/preroot=authentic-theme/' /etc/webmin/miniserv.conf
+            sed -i 's/port=10000/port=17571/' /etc/webmin/miniserv.conf
+            sed -i 's/listen=10000/listen=17571/' /etc/webmin/miniserv.conf
+            service webmin restart  >/dev/null 2>&1
+            YELLOWTXT "Access Webmin using port :17571"
+               else
+              echo
+            REDTXT "WEBMIN INSTALLATION ERROR"
+      fi
+        else
+          echo
+            YELLOWTXT "Webmin installation was skipped by the user. Next step"
+fi
 echo
 echo
 pause '---> Press [Enter] key to show menu'
