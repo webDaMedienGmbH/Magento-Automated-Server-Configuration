@@ -144,7 +144,7 @@ if [[ ${EUID} -ne 0 ]]; then
   GREENTXT "PASS: ROOT!"
 fi
 
-# do we have CentOS 6?
+# do we have CentOS 7?
 if grep "CentOS.* 7\." /etc/centos-release  > /dev/null 2>&1; then
   GREENTXT "PASS: CENTOS RELEASE 7"
   else
@@ -247,13 +247,14 @@ printf "\033c"
         echo
         WHITETXT "-> Install repository and LEMP packages :  ${YELLOW}\tlemp"
         WHITETXT "-> Download latest Magento package      :  ${YELLOW}\t\tmagento"
-        WHITETXT "-> Setup Magento database enter         :  ${YELLOW}\t\tdatabase"
+        WHITETXT "-> Setup Magento database               :  ${YELLOW}\t\tdatabase"
         WHITETXT "-> Install Magento (no sample data)     :  ${YELLOW}\t\tinstall"
         echo
         BLUETXT ":::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
         echo
         WHITETXT "-> Change root user and ssh port        :  ${YELLOW}\t\tprotect"
         WHITETXT "-> Install CSF firewall                 :  ${YELLOW}\t\t\tfirewall"
+        WHITETXT "-> Install Webmin Control Panel         :  ${YELLOW}\t\t\twebmin"
         echo
         BLUETXT ":::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
         echo
