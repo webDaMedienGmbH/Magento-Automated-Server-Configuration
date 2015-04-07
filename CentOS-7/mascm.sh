@@ -1276,6 +1276,7 @@ if [ "${webmin_install}" == "y" ];then
             sed -i 's/listen=10000/listen=17571/' /etc/webmin/miniserv.conf
             service webmin restart  >/dev/null 2>&1
             YELLOWTXT "Access Webmin using port :17571"
+            REDTXT "Please enable Two-factor authentication"
                else
               echo
             REDTXT "WEBMIN INSTALLATION ERROR"
