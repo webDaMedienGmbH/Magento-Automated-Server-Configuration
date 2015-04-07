@@ -13,7 +13,7 @@ PHPMYADMIN_VER="4.4.1"
 
 # Webmin Control Panel
 WEBMIN="http://prdownloads.sourceforge.net/webadmin/webmin-1.740-1.noarch.rpm"
-WEBMINTHEME="https://github.com/qooob/authentic-theme/archive/master.zip"
+WEBMIN_THEME="https://github.com/qooob/authentic-theme/archive/master.zip"
 WEBMIN_NGINX="http://www.justindhoffman.com/sites/justindhoffman.com/files/nginx-0.08.wbm__0.gz"
 PERL_MODULES=""
 
