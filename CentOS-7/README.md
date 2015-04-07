@@ -3,5 +3,5 @@
 *Varnish 4 .latest*<br/>
 
 **Additional**:<br/>
-*Webmin contorl panel*<br/>
+*Webmin control panel*<br/>
 *mytop - database monitoring*<br/>
