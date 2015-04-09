@@ -3,7 +3,7 @@
 #  MagenX - Automated Server Configuration for Magento               #
 #    Copyright (C) 2015 admin@magenx.com                             #
 #       All rights reserved.                                         #
-#====================================================================#
+#====================================================================#pipi
 SELF=$(basename $0)
 MASCM_VER="7.1-beta"
 
@@ -1270,10 +1270,15 @@ if [ "${webmin_install}" == "y" ];then
         then
           echo
             GREENTXT "WEBMIN HAS BEEN INSTALLED  -  OK"
+            echo
             sed -i 's/theme=gray-theme/theme=authentic-theme/' /etc/webmin/config
             sed -i 's/preroot=gray-theme/preroot=authentic-theme/' /etc/webmin/miniserv.conf
             sed -i 's/port=10000/port=17571/' /etc/webmin/miniserv.conf
             sed -i 's/listen=10000/listen=17571/' /etc/webmin/miniserv.conf
+            ## nginx module
+            cd /usr/local/src/
+            wget -q ${WEBMIN_NGINX} -O webmin_nginx
+            perl /usr/libexec/webmin/install-module.pl $_ >/dev/null 2>&1
             service webmin restart  >/dev/null 2>&1
             YELLOWTXT "Access Webmin using port :17571"
             REDTXT "Please enable Two-factor authentication"
