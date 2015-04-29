@@ -9,7 +9,7 @@ MASCM_VER="6.9"
 
 # Software versions 
 MAGENTO_VER="1.9.1.0"
-PHPMYADMIN_VER="4.3.12"
+PHPMYADMIN_VER="4.4.4"
 
 # Simple colors
 RED="\e[31;40m"
