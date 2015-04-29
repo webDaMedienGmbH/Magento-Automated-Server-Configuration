@@ -994,6 +994,7 @@ echo
 WHITETXT "============================================================================="
 echo
 GREENTXT "NOW INSTALLING MAGENTO WITHOUT SAMPLE DATA"
+MAGE_ADMIN_PATH=$(head -c 500 /dev/urandom | tr -dc 'a-zA-Z' | fold -w 10 | head -n 1)
 MY_SHOP_PATH=$(awk '/webshop/ { print $3 }' /root/mascm/.mascm_index)
 cd ${MY_SHOP_PATH}
 chmod +x mage
@@ -1014,6 +1015,7 @@ php -f install.php -- \
 --secure_base_url "" \
 --skip_url_validation "yes" \
 --use_secure_admin "no" \
+--admin_frontname "${MAGE_ADMIN_PATH}" \
 --admin_firstname "${MAGE_ADMIN_FNAME}" \
 --admin_lastname "${MAGE_ADMIN_LNAME}" \
 --admin_email "${MAGE_ADMIN_EMAIL}" \
@@ -1029,6 +1031,7 @@ GREENTXT "ok"
     WHITETXT "============================================================================="
     WHITETXT " MAGENTO ADMIN ACCOUNT"
     echo
+    echo "      Admin path: ${MAGE_SITE_URL}${MAGE_ADMIN_PATH}"
     echo "      Username: ${MAGE_ADMIN_LOGIN}"
     echo "      Password: ${MAGE_ADMIN_PASS}"
     echo
