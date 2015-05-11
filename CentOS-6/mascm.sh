@@ -8,7 +8,7 @@ SELF=$(basename $0)
 MASCM_VER="6.9"
 
 # Software versions 
-MAGENTO_VER="1.9.1.0"
+MAGENTO_VER="1.9.1.1"
 PHPMYADMIN_VER="4.4.4"
 
 # Simple colors
