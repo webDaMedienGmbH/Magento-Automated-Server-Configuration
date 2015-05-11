@@ -264,7 +264,7 @@ if [ "${secure_tmp}" == "y" ];then
 	mkdir /tmp
 	mount -t tmpfs -o rw,noexec,nosuid tmpfs /tmp
 	chmod 1777 /tmp
-	echo "tmpfs		/tmp	tmpfs	rw,noexec,nosuid	0	0" >> /etc/fstab
+	echo "tmpfs  /tmp  tmpfs  rw,noexec,nosuid  0  0" >> /etc/fstab
 	rm -rf /var/tmp
 	ln -s /tmp /var/tmp
 	echo
