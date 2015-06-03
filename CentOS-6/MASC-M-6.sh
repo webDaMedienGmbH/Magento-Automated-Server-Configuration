@@ -643,7 +643,7 @@ net.core.wmem_max = 16777216
 net.core.rmem_default = 8388608
 net.core.wmem_default = 8388608
 net.core.netdev_max_backlog = 262144
-net.core.somaxconn = 262144
+net.core.somaxconn = 65535
 END
 
 sysctl -q -p
