@@ -344,7 +344,7 @@ if [ "${repo_epel_install}" == "y" ];then
             echo -n "     PROCESSING  "
             long_progress &
             pid="$!"
-            yum -q -y install bc gcc inotify-tools mcrypt mlocate unzip vim wget curl sudo >/dev/null 2>&1
+            yum -q -y install bc gcc inotify-tools rsync mcrypt mlocate unzip vim wget curl sudo >/dev/null 2>&1
             stop_progress "$pid"
             echo
            rpm  --quiet -q wget
