@@ -8,7 +8,7 @@ SELF=$(basename $0)
 MASCM_VER="6.9"
 
 # Software versions 
-MAGENTO_VER="1.9.2.0"
+MAGENTO_VER="1.9"
 PHPMYADMIN_VER="4.4.10"
 
 # Simple colors
@@ -344,7 +344,7 @@ if [ "${repo_epel_install}" == "y" ];then
             echo -n "     PROCESSING  "
             long_progress &
             pid="$!"
-            yum -q -y install bc gcc inotify-tools rsync mcrypt mlocate unzip vim wget curl sudo >/dev/null 2>&1
+            yum -q -y install svn bc gcc inotify-tools rsync mcrypt mlocate unzip vim wget curl sudo >/dev/null 2>&1
             stop_progress "$pid"
             echo
            rpm  --quiet -q wget
@@ -747,7 +747,8 @@ if [ "${new_down}" == "y" ];then
         echo -n "      DOWNLOADING MAGENTO  "
         long_progress &
         pid="$!"
-        wget -qO - http://www.magentocommerce.com/downloads/assets/${MAGENTO_VER}/magento-${MAGENTO_VER}.tar.gz | tar -xzp --strip 1
+        svn -q checkout http://svn.magentocommerce.com/source/branches/${MAGENTO_VER} .
+       # wget -qO - http://www.magentocommerce.com/downloads/assets/${MAGENTO_VER}/magento-${MAGENTO_VER}.tar.gz | tar -xzp --strip 1
         stop_progress "$pid"
         echo
      echo
