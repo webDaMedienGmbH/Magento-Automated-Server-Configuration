@@ -739,18 +739,25 @@ FPM_USER=$(grep "user" $FPM | grep "=" | awk '{print $3}')
 echo -n "---> Download latest Magento version (${MAGENTO_VER}) ? [y/n][n]:"
 read new_down
 if [ "${new_down}" == "y" ];then
-     read -e -p "---> Edit your installation folder full path: " -i "/var/www/html/myshop.com" MY_SHOP_PATH
+     read -e -p "---> Enter folder full path: " -i "/var/www/html/myshop.com" MY_SHOP_PATH
         echo "  Magento will be downloaded to:"
         GREENTXT ${MY_SHOP_PATH}
-        pause '------> Press [Enter] key to continue'
         mkdir -p ${MY_SHOP_PATH} && cd $_
         echo -n "      DOWNLOADING MAGENTO  "
         long_progress &
         pid="$!"
         svn -q checkout http://svn.magentocommerce.com/source/branches/${MAGENTO_VER} .
-       # wget -qO - http://www.magentocommerce.com/downloads/assets/${MAGENTO_VER}/magento-${MAGENTO_VER}.tar.gz | tar -xzp --strip 1
+        #wget -qO - http://www.magentocommerce.com/downloads/assets/${MAGENTO_VER}/magento-${MAGENTO_VER}.tar.gz | tar -xzp --strip 1
         stop_progress "$pid"
         echo
+        else
+        echo "      You are going to move your own files then"
+        read -e -p "---> Edit your installation folder full path: " -i "/var/www/html/myshop.com" MY_SHOP_PATH
+        GREENTXT ${MY_SHOP_PATH}
+        if [ ! -d "${MY_SHOP_PATH}" ]; then
+        mkdir -p ${MY_SHOP_PATH}
+        fi
+fi
      echo
 WHITETXT "============================================================================="
 GREENTXT "      == MAGENTO DOWNLOADED AND READY FOR INSTALLATION =="
@@ -889,14 +896,8 @@ echo "--------------------------------------------------------------------------
 BLUEBG " CONFIGURATION IS COMPLETE "
 echo "-------------------------------------------------------------------------------------"
 echo
-pause '------> Press [Enter] key to show menu'
-echo
-else
-echo
-echo
 pause '---> Press [Enter] key to show menu'
 printf "\033c"
-fi
 ;;
 ###################################################################################
 #                                MAGENTO DATABASE SETUP                           #
