@@ -9,7 +9,7 @@ MASCM_VER="6.9"
 
 # Software versions 
 MAGENTO_VER="1.9"
-PHPMYADMIN_VER="4.4.10"
+PHPMYADMIN_VER="4.4.12"
 
 # Simple colors
 RED="\e[31;40m"
@@ -487,7 +487,7 @@ if [ "${repo_remi_install}" == "y" ];then
             echo -n "     PROCESSING  "
             quick_progress &
             pid="$!"
-            rpm -Uvh http://rpms.famillecollet.com/enterprise/6/remi/x86_64/remi-release-6.5-1.el6.remi.noarch.rpm >/dev/null 2>&1
+            rpm -U http://rpms.remirepo.net/enterprise/remi-release-6.rpm >/dev/null 2>&1
             stop_progress "$pid"
             rpm  --quiet -q remi-release
       if [ "$?" = 0 ]
@@ -607,8 +607,8 @@ if [ "${load_configs}" == "y" ];then
 echo
 WHITETXT "YOU HAVE TO CHECK THEM AFTER ANYWAY"
 cat > /etc/sysctl.conf <<END
-fs.file-max = 700000
-fs.inotify.max_user_watches = 500000
+fs.file-max = 1000000
+fs.inotify.max_user_watches = 700000
 vm.swappiness = 10
 net.ipv4.ip_forward = 0
 net.ipv4.conf.default.rp_filter = 1
