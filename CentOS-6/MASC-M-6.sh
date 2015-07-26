@@ -772,6 +772,7 @@ sed -i "s/example.com/${MY_DOMAIN}/g" /etc/nginx/www/magento.conf
 sed -i "s,root /var/www/html,root ${MY_SHOP_PATH},g" /etc/nginx/www/magento.conf
 
 cd /etc/nginx/conf.d/ && rm -rf *
+wget -q https://raw.githubusercontent.com/magenx/nginx-config/master/magento/conf.d/export.conf
 wget -q https://raw.githubusercontent.com/magenx/nginx-config/master/magento/conf.d/error_page.conf
 wget -q https://raw.githubusercontent.com/magenx/nginx-config/master/magento/conf.d/extra_protect.conf
 wget -q https://raw.githubusercontent.com/magenx/nginx-config/master/magento/conf.d/headers.conf
