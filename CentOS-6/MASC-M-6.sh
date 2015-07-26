@@ -757,6 +757,8 @@ if [ "${new_down}" == "y" ];then
         if [ ! -d "${MY_SHOP_PATH}" ]; then
         mkdir -p ${MY_SHOP_PATH}
         fi
+        echo "      Move your magento files to this folder now"
+        pause '------> Press [Enter] key to continue'
 fi
      echo
 WHITETXT "============================================================================="
