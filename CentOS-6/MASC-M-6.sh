@@ -784,6 +784,7 @@ cd /etc/nginx/conf.d/ && rm -rf *
 wget -q https://raw.githubusercontent.com/magenx/nginx-config/master/magento/conf.d/export.conf
 wget -q https://raw.githubusercontent.com/magenx/nginx-config/master/magento/conf.d/error_page.conf
 wget -q https://raw.githubusercontent.com/magenx/nginx-config/master/magento/conf.d/extra_protect.conf
+wget -q https://raw.githubusercontent.com/magenx/nginx-config/master/magento/conf.d/hhvm.conf
 wget -q https://raw.githubusercontent.com/magenx/nginx-config/master/magento/conf.d/headers.conf
 wget -q https://raw.githubusercontent.com/magenx/nginx-config/master/magento/conf.d/maintenance.conf
 wget -q https://raw.githubusercontent.com/magenx/nginx-config/master/magento/conf.d/multishop.conf
