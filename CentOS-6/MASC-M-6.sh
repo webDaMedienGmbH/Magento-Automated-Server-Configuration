@@ -5,10 +5,11 @@
 #       All rights reserved.                                         #
 #====================================================================#
 SELF=$(basename $0)
-MASCM_VER="6.9"
+MASCM_VER="6.9.2a"
 
 # Software versions 
 #MAGE_LATEST=$(wget -q -O- http://connect20.magentocommerce.com/community/Mage_All_Latest/releases.xml | tail -6 | grep -Po '(?<=<v>).*(?=</v>)')
+MAGENTO_TMP_FILE="https://www.dropbox.com/s/fo8tq9wdgozhxbt/magento-1.9.2.1-2015-08-03-06-35-45.tar.gz"
 MAGENTO_VER="1.9.2.1"
 PHPMYADMIN_VER="4.4.13.1"
 
@@ -747,7 +748,7 @@ if [ "${new_down}" == "y" ];then
         echo -n "      DOWNLOADING MAGENTO  "
         long_progress &
         pid="$!"
-        wget -qO- https://www.dropbox.com/s/fo8tq9wdgozhxbt/magento-1.9.2.1-2015-08-03-06-35-45.tar.gz | tar -xzp --strip 1
+        wget -qO- ${MAGENTO_TMP_FILE} | tar -xzp --strip 1
         stop_progress "$pid"
         echo
         else
