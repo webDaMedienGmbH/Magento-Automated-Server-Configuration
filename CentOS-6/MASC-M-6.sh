@@ -8,8 +8,9 @@ SELF=$(basename $0)
 MASCM_VER="6.9"
 
 # Software versions 
-MAGENTO_VER="1.9"
-PHPMYADMIN_VER="4.4.12"
+#MAGE_LATEST=$(wget -q -O- http://connect20.magentocommerce.com/community/Mage_All_Latest/releases.xml | tail -6 | grep -Po '(?<=<v>).*(?=</v>)')
+MAGENTO_VER="1.9.2.1"
+PHPMYADMIN_VER="4.4.13.1"
 
 # Simple colors
 RED="\e[31;40m"
@@ -746,8 +747,7 @@ if [ "${new_down}" == "y" ];then
         echo -n "      DOWNLOADING MAGENTO  "
         long_progress &
         pid="$!"
-        svn -q checkout http://svn.magentocommerce.com/source/branches/${MAGENTO_VER} .
-        #wget -qO - http://www.magentocommerce.com/downloads/assets/${MAGENTO_VER}/magento-${MAGENTO_VER}.tar.gz | tar -xzp --strip 1
+        wget -qO- https://www.dropbox.com/s/fo8tq9wdgozhxbt/magento-1.9.2.1-2015-08-03-06-35-45.tar.gz | tar -xzp --strip 1
         stop_progress "$pid"
         echo
         else
