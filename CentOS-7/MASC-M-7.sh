@@ -724,7 +724,7 @@ echo
         echo -n "      DOWNLOADING MAGENTO  "
         long_progress &
         pid="$!"
-        wget -qO - ${MAGENTO_TMP_FILE}
+        wget -qO - ${MAGENTO_TMP_FILE} | tar -xzp
         stop_progress "$pid"
         echo
 fi
