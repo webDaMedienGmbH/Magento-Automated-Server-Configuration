@@ -5,14 +5,14 @@
 #       All rights reserved.                                         #
 #====================================================================#
 SELF=$(basename $0)
-MASCM_VER="7.7.1"
+MASCM_VER="7.7.2"
 
 ### DEFINE LINKS AND PACKAGES STARTS ###
 
 # Software versions
 #MAGENTO_VER=$(wget -q -O- http://connect20.magentocommerce.com/community/Mage_All_Latest/releases.xml | tail -6 | grep -Po '(?<=<v>).*(?=</v>)')
-MAGENTO_TMP_FILE="https://www.dropbox.com/s/fo8tq9wdgozhxbt/magento-1.9.2.1-2015-08-03-06-35-45.tar.gz"
-MAGENTO_VER="1.9.2.1"
+MAGENTO_TMP_FILE="https://www.dropbox.com/s/v6libswo5zd68q2/magento-1.9.2.2-2015-10-27-03-19-32.tar.gz"
+MAGENTO_VER="1.9.2.2"
 PHPMYADMIN_VER="4.5.1"
 AOE_SCHEDULER="1.2.2"
 
@@ -724,7 +724,7 @@ echo
         echo -n "      DOWNLOADING MAGENTO  "
         long_progress &
         pid="$!"
-        wget -qO - ${MAGENTO_TMP_FILE} | tar -xzp --strip 1
+        wget -qO - ${MAGENTO_TMP_FILE}
         stop_progress "$pid"
         echo
 fi
