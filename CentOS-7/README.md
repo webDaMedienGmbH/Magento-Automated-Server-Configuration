@@ -2,7 +2,7 @@
 MASC-M<sup>™</sup>
 ======
 
----->> Magento **1.9.2.1**
+---->> Magento **1.9.2.2**
 
 #### MagenX - Automated Server Configuration for Magento  <br/>
 Get a fully pre-configured server with Magento and LEMP stack in just ~15 minutes.  <br/>
