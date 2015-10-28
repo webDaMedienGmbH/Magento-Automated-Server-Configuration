@@ -761,13 +761,13 @@ do
 wget -q ${NGINX_EXTRA_CONF_URL}${CONFIG}
 done
 echo
-sed -i "s/user = apache/user = ${MY_DOMAIN%.*}/" /etc/php-fpm.d/www.conf
-sed -i "s/group = apache/group = ${MY_DOMAIN%.*}/" /etc/php-fpm.d/www.conf
+sed -i "s/user = apache/user = ${MY_DOMAIN%%.*}/" /etc/php-fpm.d/www.conf
+sed -i "s/group = apache/group = ${MY_DOMAIN%%.*}/" /etc/php-fpm.d/www.conf
 echo
 pause '------> Press [Enter] key to continue'
 mkdir -p /root/mascm/
 cat >> /root/mascm/.mascm_index <<END
-webshop ${MY_DOMAIN}    ${MY_SHOP_PATH}    ${MY_DOMAIN%.*}
+webshop ${MY_DOMAIN}    ${MY_SHOP_PATH}    ${MY_DOMAIN%%.*}
 END
 echo
 ###################################################################################
@@ -777,9 +777,9 @@ echo
 GREENTXT "Now we set up the PROFTPD server"
 pause '------> Press [Enter] key to continue'
 echo
-     useradd -d ${MY_SHOP_PATH} -s /sbin/nologin ${MY_DOMAIN%.*}  >/dev/null 2>&1
+     useradd -d ${MY_SHOP_PATH} -s /sbin/nologin ${MY_DOMAIN%%.*}  >/dev/null 2>&1
      LINUX_USER_PASS=$(head -c 500 /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 15 | head -n 1)
-     echo "${MY_DOMAIN%.*}:${LINUX_USER_PASS}"  | chpasswd  >/dev/null 2>&1
+     echo "${MY_DOMAIN%%.*}:${LINUX_USER_PASS}"  | chpasswd  >/dev/null 2>&1
      wget -qO /etc/proftpd.conf ${PROFTPD_CONF}
      ## change proftpd config
      SERVER_IP_ADDR=$(ip route get 1 | awk '{print $NF;exit}')
@@ -793,7 +793,7 @@ echo
      echo
      /bin/systemctl restart  proftpd.service
      echo
-     WHITETXT "We have created a user: ${REDBG}${MY_DOMAIN%.*}"
+     WHITETXT "We have created a user: ${REDBG}${MY_DOMAIN%%.*}"
      WHITETXT "With a password: ${REDBG}${LINUX_USER_PASS}"
      WHITETXT "FTP PORT: ${REDBG}${FTP_PORT} , Your GeoIP location: ${REDBG}${USER_GEOIP//,/}"
 echo
@@ -1213,7 +1213,7 @@ cat >> ${MY_SHOP_PATH}/images_opt.sh <<END
     EXTENSION="\${FILE##*.}"
   if [[ "\${EXTENSION}" =~ \${TARGETEXT} ]];
     then
-   su - ${MY_DOMAIN%.*} -s /bin/bash -c "${MY_SHOP_PATH}/wesley.pl \${FILE} > /dev/null"
+   su - ${MY_DOMAIN%%.*} -s /bin/bash -c "${MY_SHOP_PATH}/wesley.pl \${FILE} > /dev/null"
   fi
 done
 END
@@ -1226,20 +1226,20 @@ pgrep images_opt.sh > /dev/null || ${MY_SHOP_PATH}/images_opt.sh &
 pgrep zend_opcache.sh > /dev/null || ${MY_SHOP_PATH}/zend_opcache.sh &
 END
 echo
-        crontab -l -u ${MY_DOMAIN%.*} > magecron
+        crontab -l -u ${MY_DOMAIN%%.*} > magecron
         echo "MAILTO="${MAGE_ADMIN_EMAIL}"" >> magecron
         echo "* * * * * ! test -e ${MY_SHOP_PATH}/maintenance.flag && /bin/bash ${MY_SHOP_PATH}/scheduler_cron.sh --mode always" >> magecron
 	echo "* * * * * ! test -e ${MY_SHOP_PATH}/maintenance.flag && /bin/bash ${MY_SHOP_PATH}/scheduler_cron.sh --mode default" >> magecron
         echo "*/5 * * * * /bin/bash ${MY_SHOP_PATH}/cron_check.sh" >> magecron
 	echo "*/10 * * * * ! test -e ${MY_SHOP_PATH}/maintenance.flag && cd ${MY_SHOP_PATH}/shell && /usr/bin/php scheduler.php --action watchdog" >> magecron
-        crontab -u ${MY_DOMAIN%.*} magecron
+        crontab -u ${MY_DOMAIN%%.*} magecron
         rm magecron
 echo
 cd ${MY_SHOP_PATH}
 mkdir -p var/log
 find . -type f -exec chmod 644 {} \;
 find . -type d -exec chmod 755 {} \;
-chown -R ${MY_DOMAIN%.*}:${MY_DOMAIN%.*} ${MY_SHOP_PATH}
+chown -R ${MY_DOMAIN%%.*}:${MY_DOMAIN%%.*} ${MY_SHOP_PATH}
 rm -rf index.php.sample LICENSE_AFL.txt LICENSE.html LICENSE.txt RELEASE_NOTES.txt php.ini.sample dev
 chmod +x cron_check.sh images_opt.sh zend_opcache.sh scheduler_cron.sh mage cron.sh wesley.pl
 ${MY_SHOP_PATH}/zend_opcache.sh &
