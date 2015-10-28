@@ -850,17 +850,19 @@ echo
     echo "${MY_SHOP_PATH}/zend_opcache.sh &" >> /etc/rc.local
 echo
 echo
+if yum list installed "varnish" >/dev/null 2>&1; then
 GREENTXT "VARNISH DAEMON CONFIGURATION FILE"
 echo
 wget -qO /etc/systemd/system/varnish.service https://raw.githubusercontent.com/magenx/MASC-M/master/tmp/varnish.service
 sed -i "s,VCL_PATH,${MY_SHOP_PATH}/var/default.vcl,g" /etc/systemd/system/varnish.service
-systemctl daemon-reload
-systemctl enable varnish
+systemctl daemon-reload  >/dev/null 2>&1
+systemctl enable varnish  >/dev/null 2>&1
 echo
 echo 'Varnish secret key -->'$(cat /etc/varnish/secret)'<-- copy it'
 echo
 WHITETXT "Varnish settings were loaded ${GREEN} [ok]"
 echo
+fi
 echo
 /bin/systemctl start nginx.service
 /bin/systemctl start php-fpm.service
