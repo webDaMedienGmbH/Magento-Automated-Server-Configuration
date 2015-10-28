@@ -5,7 +5,7 @@
 #       All rights reserved.                                         #
 #====================================================================#
 SELF=$(basename $0)
-MASCM_VER="7.7.2"
+MASCM_VER="7.7.5"
 
 ### DEFINE LINKS AND PACKAGES STARTS ###
 
@@ -851,19 +851,11 @@ echo
 echo
 echo
 GREENTXT "VARNISH DAEMON CONFIGURATION FILE"
-echo -e '\nDAEMON_OPTS="-a :80 \
-             -T localhost:6082 \
-             -f '${MY_SHOP_PATH}'/var/default.vcl \
-             -u varnish -g varnish \
-             -p thread_pool_min=200 \
-             -p thread_pool_max=4000 \
-             -p thread_pool_add_delay=2 \
-             -p cli_timeout=25 \
-             -p cli_buffer=26384 \
-             -p esi_syntax=0x2 \
-             -p session_linger=100 \
-             -S /etc/varnish/secret \
-             -s malloc,2G"' >> /etc/sysconfig/varnish
+echo
+wget -qO /etc/systemd/system/varnish.service https://raw.githubusercontent.com/magenx/MASC-M/master/tmp/varnish.service
+sed -i "s,VCL_PATH,${MY_SHOP_PATH}/var/default.vcl,g" /etc/systemd/system/varnish.service
+systemctl daemon-reload
+systemctl enable varnish
 echo
 echo 'Varnish secret key -->'$(cat /etc/varnish/secret)'<-- copy it'
 echo
