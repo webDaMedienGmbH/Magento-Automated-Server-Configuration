@@ -5,7 +5,7 @@
 #       All rights reserved.                                         #
 #====================================================================#
 SELF=$(basename $0)
-MASCM_VER="7.7.5"
+MASCM_VER="7.7.6"
 
 ### DEFINE LINKS AND PACKAGES STARTS ###
 
@@ -1183,7 +1183,7 @@ alert_check () {
     if [ \$(grep "Infected.*[1-9].*" \${LOG_FILE} | wc -l) != 0 ]
     then
         mail -s "INFECTED FILES FOUND ON \${HOSTNAME}" "${MAGE_ADMIN_EMAIL}" < \${LOG_FILE}
-        cp \${LOG_FILE} \${LOG_FILE}_CHECK_ME_NOW
+        cp \${LOG_FILE} \${LOG_FILE}_INFECTED_\$(date +"%m-%d-%Y")
         echo "" > \${LOG_FILE}
     else
         echo "" > \${LOG_FILE}
