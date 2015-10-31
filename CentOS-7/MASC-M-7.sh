@@ -5,7 +5,7 @@
 #       All rights reserved.                                         #
 #====================================================================#
 SELF=$(basename $0)
-MASCM_VER="7.7.6"
+MASCM_VER="7.7.8"
 
 ### DEFINE LINKS AND PACKAGES STARTS ###
 
@@ -795,7 +795,8 @@ echo
      echo
      WHITETXT "We have created a user: ${REDBG}${MY_DOMAIN%%.*}"
      WHITETXT "With a password: ${REDBG}${LINUX_USER_PASS}"
-     WHITETXT "FTP PORT: ${REDBG}${FTP_PORT} , Your GeoIP location: ${REDBG}${USER_GEOIP//,/}"
+     WHITETXT "FTP PORT: ${REDBG}${FTP_PORT}"
+     WHITETXT "Your GeoIP location: ${REDBG}${USER_GEOIP//,/}"
 echo
 GREENTXT "Installing phpMyAdmin - advanced MySQL interface"
 pause '------> Press [Enter] key to continue'
