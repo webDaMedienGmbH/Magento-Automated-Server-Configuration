@@ -992,6 +992,7 @@ MAGE_ADMIN_PATH=$(head -c 500 /dev/urandom | tr -dc 'a-zA-Z' | fold -w 12 | head
 MY_SHOP_PATH=$(awk '/webshop/ { print $3 }' /root/mascm/.mascm_index)
 cd ${MY_SHOP_PATH}
 chmod +x mage
+sed -i "s/CURLOPT_SSL_CIPHER_LIST, 'TLSv1'/CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1/" downloader/lib/Mage/HTTP/Client/Curl.php
 ./mage mage-setup .
 
 php -f install.php -- \
@@ -1125,7 +1126,6 @@ echo "---> NOW WE INSTALL SELECTED EXTENSIONS"
 echo
 cd ${MY_SHOP_PATH}
 ./mage config-set preferred_state beta >/dev/null 2>&1
-sed -i "/CURLOPT_SSL_CIPHER_LIST/d" downloader/lib/Mage/HTTP/Client/Curl.php
 echo
 echo -n "---> Would you like to install WebShopApps MatrixRate? [y/n][n]:"
 read wsamr
