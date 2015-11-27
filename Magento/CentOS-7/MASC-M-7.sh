@@ -33,11 +33,12 @@ PHP_PACKAGES=(cli common fpm opcache gd curl mbstring bcmath soap mcrypt mysqlnd
 PHP_PECL_PACKAGES=(pecl-redis pecl-lzf pecl-geoip)
 PERCONA_PACKAGES=(client-56 server-56)
 PERL_MODULES=(libwww-perl Time-HiRes ExtUtils-CBuilder ExtUtils-MakeMaker TermReadKey DBI DBD-MySQL Digest-HMAC Digest-SHA1 Test-Simple Moose Net-SSLeay)
-PROFTPD_CONF="https://raw.githubusercontent.com/magenx/MASC-M/master/tmp/proftpd.conf"
+PROFTPD_CONF="https://raw.githubusercontent.com/magenx/Magento-Automated-Server-Configuration-from-MagenX/master/tmp/proftpd.conf"
 
 # Nginx extra configuration
+NGINX_BASE="https://raw.githubusercontent.com/magenx/Magento-nginx-config/master/magento/"
 NGINX_EXTRA_CONF="error_page.conf extra_protect.conf export.conf hhvm.conf headers.conf maintenance.conf multishop.conf pagespeed.conf spider.conf"
-NGINX_EXTRA_CONF_URL="https://raw.githubusercontent.com/magenx/nginx-config/master/magento/conf.d/"
+NGINX_EXTRA_CONF_URL="https://raw.githubusercontent.com/magenx/Magento-nginx-config/master/magento/conf.d/"
 
 # Debug Tools
 MYSQL_TUNER="https://raw.githubusercontent.com/major/MySQLTuner-perl/master/mysqltuner.pl"
@@ -738,16 +739,16 @@ echo "---> CREATING NGINX CONFIGURATION FILES NOW"
 echo
 read -e -p "---> Enter your domain name (without www.): " -i "myshop.com" MY_DOMAIN
 
-wget -qO /etc/nginx/port.conf https://raw.githubusercontent.com/magenx/nginx-config/master/magento/port.conf
-wget -qO /etc/nginx/fastcgi_params https://raw.githubusercontent.com/magenx/nginx-config/master/magento/fastcgi_params
-wget -qO /etc/nginx/nginx.conf https://raw.githubusercontent.com/magenx/nginx-config/master/magento/nginx.conf
+wget -qO /etc/nginx/port.conf ${NGINX_BASE}port.conf
+wget -qO /etc/nginx/fastcgi_params  ${NGINX_BASE}fastcgi_params
+wget -qO /etc/nginx/nginx.conf  ${NGINX_BASE}nginx.conf
 
 sed -i "s/www/sites-enabled/g" /etc/nginx/nginx.conf
 
 mkdir -p /etc/nginx/sites-enabled
 mkdir -p /etc/nginx/sites-available && cd $_
-wget -q https://raw.githubusercontent.com/magenx/nginx-config/master/magento/www/default.conf
-wget -q https://raw.githubusercontent.com/magenx/nginx-config/master/magento/www/magento.conf
+wget -q ${NGINX_BASE}www/default.conf
+wget -q ${NGINX_BASE}www/magento.conf
 
 sed -i "s/example.com/${MY_DOMAIN}/g" /etc/nginx/sites-available/magento.conf
 sed -i "s,root /var/www/html,root ${MY_SHOP_PATH},g" /etc/nginx/sites-available/magento.conf
