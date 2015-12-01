@@ -29,7 +29,7 @@ REPO_HHVM="https://yum.gleez.com/7/x86_64/hhvm-3.9.1-1.el7.centos.x86_64.rpm"
 
 # WebStack Packages
 EXTRA_PACKAGES="boost tbb lz4 libyaml libdwarf bind-utils e2fsprogs svn gcc iptraf inotify-tools net-tools mcrypt mlocate unzip vim wget curl sudo bc mailx clamav-filesystem clamav-server clamav-update clamav-milter-systemd clamav-data clamav-server-systemd clamav-scanner-systemd clamav clamav-milter clamav-lib clamav-scanner proftpd logrotate git patch ipset strace rsyslog gifsicle GeoIP ImageMagick libjpeg-turbo-utils pngcrush lsof goaccess net-snmp net-snmp-utils xinetd python-pip ncftp"
-PHP_PACKAGES=(cli common fpm opcache gd curl mbstring bcmath soap mcrypt mysqlnd pdo xml xmlrpc intl) 
+PHP_PACKAGES=(cli common fpm opcache gd curl mbstring bcmath soap mcrypt mysqlnd pdo xml xmlrpc intl devel) 
 PHP_PECL_PACKAGES=(pecl-redis pecl-lzf pecl-geoip)
 PERCONA_PACKAGES=(client-56 server-56)
 PERL_MODULES=(libwww-perl Time-HiRes ExtUtils-CBuilder ExtUtils-MakeMaker TermReadKey DBI DBD-MySQL Digest-HMAC Digest-SHA1 Test-Simple Moose Net-SSLeay)
