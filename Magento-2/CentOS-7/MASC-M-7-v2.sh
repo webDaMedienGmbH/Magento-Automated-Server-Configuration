@@ -5,7 +5,7 @@
 #       All rights reserved.                                         #
 #====================================================================#
 SELF=$(basename $0)
-MASCM_VER="8.1.7"
+MASCM_VER="8.1.9"
 
 ### DEFINE LINKS AND PACKAGES STARTS ###
 
@@ -958,6 +958,11 @@ echo
 cd ${MY_SHOP_PATH}
 curl -sS https://getcomposer.org/installer | php
 mv composer.phar /usr/local/bin/composer
+echo "---> FIXING PERMISSIONS "
+find . -type f -exec chmod 644 {} \;
+find . -type d -exec chmod 755 {} \;
+chown -R ${MY_DOMAIN%%.*}:${MY_DOMAIN%%.*} ${MY_SHOP_PATH}
+echo
 su ${MY_DOMAIN%%.*} -s /bin/bash -c "composer install"
 echo
 WHITETXT "============================================================================="
