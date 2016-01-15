@@ -640,7 +640,7 @@ END
 sysctl -q -p
 echo
 WHITETXT "sysctl.conf loaded ${GREEN} [ok]"
-cat > /etc/php.d/opcache.ini <<END
+cat > /etc/php.d/10-opcache.ini <<END
 zend_extension=opcache.so
 opcache.enable = 1
 opcache.enable_cli = 1
@@ -1014,7 +1014,7 @@ su ${MY_DOMAIN%%.*} -s /bin/bash -c "bin/magento setup:install --base-url=${MAGE
 --currency=${MAGE_CURRENCY} \
 --timezone=${MAGE_TIMEZONE} \
 --cleanup-database \
---session-save=redis \
+--session-save=db \
 --use-rewrites=1"
 echo
 echo
