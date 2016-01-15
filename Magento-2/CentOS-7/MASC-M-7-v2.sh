@@ -722,7 +722,7 @@ echo
         echo "  Magento will be downloaded to:"
         GREENTXT ${MY_SHOP_PATH}
         mkdir -p ${MY_SHOP_PATH} && cd $_
-        echo -n "      CLONING MAGENTO FROM GITHUB LATEST DEVELOPER VERSION"
+        echo -n "      CLONING MAGENTO FROM GITHUB LATEST DEVELOPER VERSION  "
         git clone https://github.com/magento/magento2.git .
         echo
 fi
@@ -953,17 +953,63 @@ pause '---> Press [Enter] key to show the menu'
 "install")
 printf "\033c"
 WHITETXT "============================================================================="
-WHITETXT "vvv   MAGENTO INSTALLATION WITH COMPOSER   vvv"
+WHITETXT "vvv   MAGENTO PACKAGES INSTALLATION WITH COMPOSER   vvv"
 echo
 cd ${MY_SHOP_PATH}
 curl -sS https://getcomposer.org/installer | php
 mv composer.phar /usr/local/bin/composer
 su ${MY_DOMAIN%%.*} -s /bin/bash -c "composer install"
-#su ${MY_DOMAIN%%.*} -s /bin/bash -c "bin/magento setup:static-content:deploy"
 echo
-WHITETXT "NOW OPEN WEB SETUP INTERFACE AND FINISH INSTALLATION"
-WHITETXT "http://www.${MY_DOMAIN}/setup/"
+WHITETXT "============================================================================="
 echo
+echo "---> ENTER SETUP INFORMATION"
+DB_HOST=$(awk '/database/ { print $2 }' /root/mascm/.mascm_index)
+DB_NAME=$(awk '/database/ { print $3 }' /root/mascm/.mascm_index)
+DB_USER_NAME=$(awk '/database/ { print $4 }' /root/mascm/.mascm_index)
+DB_PASS=$(awk '/database/ { print $5 }' /root/mascm/.mascm_index)
+MY_DOMAIN=$(awk '/webshop/ { print $2 }' /root/mascm/.mascm_index)
+echo
+WHITETXT "Database information"
+read -e -p "---> Enter your database host: " -i "${DB_HOST}"  MAGE_DB_HOST
+read -e -p "---> Enter your database name: " -i "${DB_NAME}"  MAGE_DB_NAME
+read -e -p "---> Enter your database user: " -i "${DB_USER_NAME}"  MAGE_DB_USER_NAME
+read -e -p "---> Enter your database password: " -i "${DB_PASS}"  MAGE_DB_PASS
+echo
+WHITETXT "Administrator and domain"
+read -e -p "---> Enter your First Name: " -i "Name"  MAGE_ADMIN_FNAME
+read -e -p "---> Enter your Last Name: " -i "Lastname"  MAGE_ADMIN_LNAME
+read -e -p "---> Enter your email: " -i "admin@${MY_DOMAIN}"  MAGE_ADMIN_EMAIL
+read -e -p "---> Enter your admins login name: " -i "admin"  MAGE_ADMIN_LOGIN
+MAGE_ADMIN_PASSGEN=$(head -c 500 /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 9 | head -n 1)
+read -e -p "---> Use generated admin password: " -i "${RANDOM}${MAGE_ADMIN_PASSGEN}"  MAGE_ADMIN_PASS
+read -e -p "---> Enter your shop url: " -i "http://www.${MY_DOMAIN}/"  MAGE_SITE_URL
+echo
+WHITETXT "Locale settings"
+read -e -p "---> Enter your locale: " -i "en_US"  MAGE_LOCALE
+read -e -p "---> Enter your timezone: " -i "UTC"  MAGE_TIMEZONE
+read -e -p "---> Enter your currency: " -i "EUR"  MAGE_CURRENCY
+echo
+echo
+GREENTXT "NOW SETUP MAGENTO WITHOUT SAMPLE DATA"
+echo
+pause '---> Press [Enter] key to continue'
+echo
+su ${MY_DOMAIN%%.*} -s /bin/bash -c "bin/magento setup:install --base-url=${MAGE_SITE_URL} \
+--db-host=${MAGE_DB_HOST} \
+--db-name=${MAGE_DB_NAME} \
+--db-user=${MAGE_DB_USER_NAME} \
+--db-password=${MAGE_DB_PASS} \
+--admin-firstname=${MAGE_ADMIN_FNAME} \
+--admin-lastname=${MAGE_ADMIN_LNAME} \
+--admin-email=${MAGE_ADMIN_EMAIL} \
+--admin-user=${MAGE_ADMIN_LOGIN} \
+--admin-password=${MAGE_ADMIN_PASS} \
+--language=${MAGE_LOCALE} \
+--currency=${MAGE_CURRENCY} \
+--timezone=${MAGE_TIMEZONE} \
+--cleanup-database \
+--session-save=redis \
+--use-rewrites=1"
 echo
 echo
 WHITETXT "-= FINAL MAINTENANCE AND CLEANUP =-"
@@ -972,7 +1018,6 @@ echo
 echo "---> CHANGING YOUR env.php FILE WITH REDIS SESSIONS AND CACHE BACKEND"
 echo "---> Lets keep sessions on :6379 and cache on :6380"
 echo
-
 echo
 echo "---> CREATE SIMPLE LOGROTATE SCRIPT FOR MAGENTO LOGS"
 cat >> /etc/logrotate.d/magento <<END
@@ -1054,16 +1099,19 @@ echo
         rm magecron
 echo
 cd ${MY_SHOP_PATH}
+su ${MY_DOMAIN%%.*} -s /bin/bash -c "bin/magento setup:static-content:deploy"
+echo
+echo "---> FIXING PERMISSIONS "
 find . -type f -exec chmod 644 {} \;
 find . -type d -exec chmod 755 {} \;
 chown -R ${MY_DOMAIN%%.*}:${MY_DOMAIN%%.*} ${MY_SHOP_PATH}
 chmod +x cron_check.sh images_opt.sh zend_opcache.sh wesley.pl bin/magento pub/cron.php
-
+echo
 ${MY_SHOP_PATH}/zend_opcache.sh &
 ${MY_SHOP_PATH}/images_opt.sh &
 echo
 echo
-    GREENTXT "NOW LOGIN TO YOUR BACKEND AND CHECK EVERYTHING"
+    GREENTXT "NOW CHECK EVERYTHING AND LOGIN TO YOUR BACKEND"
     echo
   echo
 echo
