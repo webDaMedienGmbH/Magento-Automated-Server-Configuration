@@ -999,6 +999,7 @@ GREENTXT "NOW SETUP MAGENTO WITHOUT SAMPLE DATA"
 echo
 pause '---> Press [Enter] key to continue'
 echo
+chmod +x bin/magento
 su ${MY_DOMAIN%%.*} -s /bin/bash -c "bin/magento setup:install --base-url=${MAGE_SITE_URL} \
 --db-host=${MAGE_DB_HOST} \
 --db-name=${MAGE_DB_NAME} \
@@ -1110,7 +1111,7 @@ echo "---> FIXING PERMISSIONS "
 find . -type f -exec chmod 644 {} \;
 find . -type d -exec chmod 755 {} \;
 chown -R ${MY_DOMAIN%%.*}:${MY_DOMAIN%%.*} ${MY_SHOP_PATH}
-chmod +x cron_check.sh images_opt.sh zend_opcache.sh wesley.pl bin/magento pub/cron.php
+chmod +x ${MY_SHOP_PATH}/{cron_check.sh,images_opt.sh,zend_opcache.sh,wesley.pl,bin/magento,pub/cron.php}
 echo
 ${MY_SHOP_PATH}/zend_opcache.sh &
 ${MY_SHOP_PATH}/images_opt.sh &
