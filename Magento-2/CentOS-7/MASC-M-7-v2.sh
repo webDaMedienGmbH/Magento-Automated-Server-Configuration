@@ -1010,6 +1010,10 @@ alert_check () {
 alert_check
 END
 chmod +x /etc/cron.daily/clamscan
+sed -i "/^Example/d" /etc/clamd.d/scan.conf
+sed -i "/^Example/d" /etc/freshclam.conf
+freshclam
+echo
 echo
 echo "---> IMAGES OPTIMIZATION SCRIPT"
 wget -qO ${MY_SHOP_PATH}/wesley.pl ${REPO_MASCM_TMP}wesley.pl
