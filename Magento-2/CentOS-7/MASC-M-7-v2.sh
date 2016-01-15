@@ -1,11 +1,11 @@
 #!/bin/bash
 #====================================================================#
-#  MagenX - Automated Server Configuration for Magento               #
+#  MagenX - Automated Server Configuration for Magento v2            #
 #    Copyright (C) 2016 admin@magenx.com                             #
 #       All rights reserved.                                         #
 #====================================================================#
 SELF=$(basename $0)
-MASCM_VER="8.1.5"
+MASCM_VER="8.1.7"
 
 ### DEFINE LINKS AND PACKAGES STARTS ###
 
