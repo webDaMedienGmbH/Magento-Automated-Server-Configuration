@@ -30,7 +30,7 @@ REPO_HHVM="https://yum.gleez.com/7/x86_64/hhvm-3.10.1-1.centos.x86_64.rpm"
 # WebStack Packages
 EXTRA_PACKAGES="boost tbb lz4 libyaml libdwarf bind-utils e2fsprogs svn gcc iptraf inotify-tools net-tools mcrypt mlocate unzip vim wget curl sudo bc mailx clamav-filesystem clamav-server clamav-update clamav-milter-systemd clamav-data clamav-server-systemd clamav-scanner-systemd clamav clamav-milter clamav-lib clamav-scanner proftpd logrotate git patch ipset strace rsyslog gifsicle GeoIP ImageMagick libjpeg-turbo-utils pngcrush lsof goaccess net-snmp net-snmp-utils xinetd python-pip ncftp"
 PHP_PACKAGES=(cli common fpm opcache gd curl mbstring bcmath soap mcrypt mysqlnd pdo xml xmlrpc intl) 
-PHP_PECL_PACKAGES=(pecl-redis pecl-lzf pecl-geoip pecl-zip)
+PHP_PECL_PACKAGES=(pecl-redis pecl-lzf pecl-geoip pecl-zip pecl-memcache)
 PERCONA_PACKAGES=(client-56 server-56)
 PERL_MODULES=(libwww-perl Time-HiRes ExtUtils-CBuilder ExtUtils-MakeMaker TermReadKey DBI DBD-MySQL Digest-HMAC Digest-SHA1 Test-Simple Moose Net-SSLeay)
 
@@ -485,12 +485,12 @@ if [ "${repo_remi_install}" == "y" ];then
        fi
          echo
            echo
-            GREENTXT "Installation of Redis package:"
+            GREENTXT "Installation of Redis and Memcached packages:"
             echo
             echo -n "     PROCESSING  "
             start_progress &
             pid="$!"
-            yum --enablerepo=remi -y -q install redis >/dev/null 2>&1
+            yum --enablerepo=remi -y -q install redis memcached >/dev/null 2>&1
             stop_progress "$pid"
             rpm  --quiet -q redis
        if [ "$?" = 0 ]
@@ -519,6 +519,15 @@ rm -rf /usr/lib/systemd/system/redis.service
 systemctl daemon-reload
 systemctl enable redis-6379 >/dev/null 2>&1
 systemctl enable redis-6380 >/dev/null 2>&1
+echo
+cat > /etc/sysconfig/memcached <<END
+PORT="11211"
+USER="memcached"
+MAXCONN="5024"
+CACHESIZE="128"
+OPTIONS="-l 127.0.0.1"
+END
+systemctl enable memcached   >/dev/null 2>&1
                 else
                echo
              REDTXT "REDIS INSTALLATION ERROR"
@@ -862,8 +871,9 @@ fi
 echo
 /bin/systemctl start nginx.service
 /bin/systemctl start php-fpm.service
-service redis-6379 restart
-service redis-6380 restart
+service redis-6379 restart  >/dev/null 2>&1
+service redis-6380 restart  >/dev/null 2>&1
+systemctl start memcached  >/dev/null 2>&1
 echo
 echo
 echo "-------------------------------------------------------------------------------------"
