@@ -5,7 +5,7 @@
 #       All rights reserved.                                         #
 #====================================================================#
 SELF=$(basename $0)
-MASCM_VER="8.2.0"
+MASCM_VER="8.2.1"
 
 ### DEFINE LINKS AND PACKAGES STARTS ###
 
@@ -1014,7 +1014,7 @@ su ${MY_DOMAIN%%.*} -s /bin/bash -c "bin/magento setup:install --base-url=${MAGE
 --currency=${MAGE_CURRENCY} \
 --timezone=${MAGE_TIMEZONE} \
 --cleanup-database \
---session-save=db \
+--session-save=files \
 --use-rewrites=1"
 echo
 echo
