@@ -5,7 +5,7 @@
 #       All rights reserved.                                         #
 #====================================================================#
 SELF=$(basename $0)
-MASCM_VER="8.1.9"
+MASCM_VER="8.2.0"
 
 ### DEFINE LINKS AND PACKAGES STARTS ###
 
@@ -1019,10 +1019,6 @@ su ${MY_DOMAIN%%.*} -s /bin/bash -c "bin/magento setup:install --base-url=${MAGE
 echo
 echo
 WHITETXT "-= FINAL MAINTENANCE AND CLEANUP =-"
-echo
-echo
-echo "---> CHANGING YOUR env.php FILE WITH REDIS SESSIONS AND CACHE BACKEND"
-echo "---> Lets keep sessions on :6379 and cache on :6380"
 echo
 echo
 echo "---> CREATE SIMPLE LOGROTATE SCRIPT FOR MAGENTO LOGS"
