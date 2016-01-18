@@ -11,7 +11,7 @@ MASCM_VER="7.7.8"
 
 # Software versions
 #MAGENTO_VER=$(wget -q -O- http://connect20.magentocommerce.com/community/Mage_All_Latest/releases.xml | tail -6 | grep -Po '(?<=<v>).*(?=</v>)')
-MAGENTO_TMP_FILE="https://www.dropbox.com/s/v6libswo5zd68q2/magento-1.9.2.2-2015-10-27-03-19-32.tar.gz"
+MAGENTO_TMP_FILE="https://www.dropbox.com/s/h6qmn9yvriyxlhw/magento-1.9.2.2-2015-10-27-03-19-32.tar.gz"
 MAGENTO_VER="1.9.2.2"
 PHPMYADMIN_VER="4.5.1"
 AOE_SCHEDULER="1.2.2"
