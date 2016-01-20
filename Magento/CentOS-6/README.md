@@ -6,7 +6,7 @@
 *Memcached .latest*<br/>
 *Redis .latest*<br/>
 *Varnish 3 .latest*<br/>
-*Magento 1.9.2.2 .latest*<br/>
+*Magento 1.9.2.3 .latest*<br/>
 
 **Additional**:<br/>
 *phpMyAdmin 4.latest - advanced database management*<br/>
