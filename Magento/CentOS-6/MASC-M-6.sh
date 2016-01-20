@@ -1,16 +1,16 @@
 #!/bin/bash
 #====================================================================#
 #  MagenX - Automated Server Configuration for Magento               #
-#    Copyright (C) 2015 admin@magenx.com                             #
+#    Copyright (C) 2016 admin@magenx.com                             #
 #       All rights reserved.                                         #
 #====================================================================#
 SELF=$(basename $0)
-MASCM_VER="6.9.5"
+MASCM_VER="6.9.8"
 
 # Software versions 
 #MAGE_LATEST=$(wget -q -O- http://connect20.magentocommerce.com/community/Mage_All_Latest/releases.xml | tail -6 | grep -Po '(?<=<v>).*(?=</v>)')
-MAGENTO_TMP_FILE="https://www.dropbox.com/s/h6qmn9yvriyxlhw/magento-1.9.2.2-2015-10-27-03-19-32.tar.gz"
-MAGENTO_VER="1.9.2.2"
+MAGENTO_TMP_FILE="https://www.dropbox.com/s/38rdgi1kjwdyl2x/magento-1.9.2.3-2016-01-20-03-02-19.tar.gz"
+MAGENTO_VER="1.9.2.3"
 PHPMYADMIN_VER="4.5.1"
 
 # Simple colors
