@@ -5,7 +5,7 @@
 #       All rights reserved.                                         #
 #====================================================================#
 SELF=$(basename $0)
-MASCM_VER="7.8.0"
+MASCM_VER="7.8.1"
 
 ### DEFINE LINKS AND PACKAGES STARTS ###
 
@@ -13,7 +13,7 @@ MASCM_VER="7.8.0"
 #MAGENTO_VER=$(wget -q -O- http://connect20.magentocommerce.com/community/Mage_All_Latest/releases.xml | tail -6 | grep -Po '(?<=<v>).*(?=</v>)')
 MAGENTO_TMP_FILE="https://www.dropbox.com/s/38rdgi1kjwdyl2x/magento-1.9.2.3-2016-01-20-03-02-19.tar.gz"
 MAGENTO_VER="1.9.2.3"
-PHPMYADMIN_VER="4.5.1"
+PHPMYADMIN_VER="4.5.3.1"
 AOE_SCHEDULER="1.2.2"
 
 # Webmin Control Panel
