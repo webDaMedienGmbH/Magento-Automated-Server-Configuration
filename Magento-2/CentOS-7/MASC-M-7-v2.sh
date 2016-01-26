@@ -5,13 +5,13 @@
 #       All rights reserved.                                         #
 #====================================================================#
 SELF=$(basename $0)
-MASCM_VER="8.2.1"
+MASCM_VER="8.2.3"
 
 ### DEFINE LINKS AND PACKAGES STARTS ###
 
 # Software versions
-MAGENTO_VER="2.0"
-REPO_MAGENTO="https://github.com/magento/magento2.git"
+MAGENTO_VER="2.0.1"
+REPO_MAGENTO="composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition"
 PHPMYADMIN_VER="4.5.3.1"
 
 REPO_MASCM_TMP="https://raw.githubusercontent.com/magenx/Magento-Automated-Server-Configuration-from-MagenX/master/tmp/"
@@ -720,19 +720,26 @@ printf "\033c"
 ###################################################################################
 echo
 echo "-------------------------------------------------------------------------------------"
-BLUEBG "| DOWNLOADING MAGENTO, PHPMYADMIN AND CONFIGURING NGINX |"
+BLUEBG "| DOWNLOADING MAGENTO AND CONFIGURING WEBSTACK TOOLS |"
 echo "-------------------------------------------------------------------------------------"
 echo
 echo -n "---> Download latest Magento version (${MAGENTO_VER}) ? [y/n][n]:"
 read new_down
 if [ "${new_down}" == "y" ];then
 echo
-     read -e -p "---> Enter folder full path: " -i "/var/www/html/myshop.com" MY_SHOP_PATH
+     read -e -p "---> Enter your domain name (without www.): " -i "myshop.com" MY_DOMAIN
+     read -e -p "---> Enter installation folder full path: " -i "/var/www/html/myshop.com" MY_SHOP_PATH
         echo "  Magento will be downloaded to:"
         GREENTXT ${MY_SHOP_PATH}
         mkdir -p ${MY_SHOP_PATH} && cd $_
-        echo -n "      CLONING MAGENTO FROM GITHUB LATEST DEVELOPER VERSION  "
-        git clone https://github.com/magento/magento2.git .
+        useradd -d ${MY_SHOP_PATH} -s /sbin/nologin ${MY_DOMAIN%%.*}  >/dev/null 2>&1
+        LINUX_USER_PASS=$(head -c 500 /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 15 | head -n 1)
+        echo "${MY_DOMAIN%%.*}:${LINUX_USER_PASS}"  | chpasswd  >/dev/null 2>&1
+        echo
+        echo -n "      DOWNLOADING LATEST MAGENTO ${MAGENTO_VER} PACKAGES  "
+        pause '------> Press [Enter] key to start installation'
+        echo
+        su ${MY_DOMAIN%%.*} -s /bin/bash -c "${REPO_MAGENTO} ."
         echo
 fi
      echo
@@ -741,10 +748,8 @@ GREENTXT "      == MAGENTO DOWNLOADED AND READY FOR INSTALLATION =="
 WHITETXT "============================================================================="
 echo
 echo
-echo "---> CREATING NGINX CONFIGURATION FILES NOW"
+echo "---> NGINX CONFIGURATION"
 echo
-read -e -p "---> Enter your domain name (without www.): " -i "myshop.com" MY_DOMAIN
-
 wget -qO /etc/nginx/fastcgi_params  ${NGINX_BASE}fastcgi_params
 wget -qO /etc/nginx/nginx.conf  ${NGINX_BASE}nginx.conf
 
@@ -781,9 +786,6 @@ echo
 GREENTXT "Now we set up the PROFTPD server"
 pause '------> Press [Enter] key to continue'
 echo
-     useradd -d ${MY_SHOP_PATH} -s /sbin/nologin ${MY_DOMAIN%%.*}  >/dev/null 2>&1
-     LINUX_USER_PASS=$(head -c 500 /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 15 | head -n 1)
-     echo "${MY_DOMAIN%%.*}:${LINUX_USER_PASS}"  | chpasswd  >/dev/null 2>&1
      wget -qO /etc/proftpd.conf ${REPO_MASCM_TMP}proftpd.conf
      ## change proftpd config
      SERVER_IP_ADDR=$(ip route get 1 | awk '{print $NF;exit}')
