@@ -972,8 +972,8 @@ cd ${MY_SHOP_PATH}
 curl -sS https://getcomposer.org/installer | php
 mv composer.phar /usr/local/bin/composer
 echo "---> FIXING PERMISSIONS "
-find . -type f -exec chmod 644 {} \;
-find . -type d -exec chmod 755 {} \;
+find . -type f -exec chmod 640 {} \;
+find . -type d -exec chmod 750 {} \;
 chown -R ${MY_DOMAIN%%.*}:${MY_DOMAIN%%.*} ${MY_SHOP_PATH}
 echo
 su ${MY_DOMAIN%%.*} -s /bin/bash -c "composer install"
