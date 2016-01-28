@@ -770,6 +770,7 @@ do
 wget -q ${NGINX_EXTRA_CONF_URL}${CONFIG}
 done
 echo
+usermod -G ${MY_DOMAIN%%.*} nginx
 sed -i "s/user = apache/user = ${MY_DOMAIN%%.*}/" /etc/php-fpm.d/www.conf
 sed -i "s/group = apache/group = ${MY_DOMAIN%%.*}/" /etc/php-fpm.d/www.conf
 echo
