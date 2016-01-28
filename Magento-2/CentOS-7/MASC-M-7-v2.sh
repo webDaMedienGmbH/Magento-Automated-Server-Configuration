@@ -5,14 +5,15 @@
 #       All rights reserved.                                         #
 #====================================================================#
 SELF=$(basename $0)
-MASCM_VER="8.2.3"
+MASCM_VER="8.2.5"
 
 ### DEFINE LINKS AND PACKAGES STARTS ###
 
 # Software versions
-MAGENTO_VER="2.0.1"
+MAGENTO_VER=$(curl -s https://api.github.com/repos/magento/magento2/releases 2>&1 | head -12 | grep 'tag_name' | grep -oP '(?<=")\d.*(?=")')
 REPO_MAGENTO="composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition"
-PHPMYADMIN_VER="4.5.3.1"
+
+PHPMYADMIN_VER="4.5.4"
 
 REPO_MASCM_TMP="https://raw.githubusercontent.com/magenx/Magento-Automated-Server-Configuration-from-MagenX/master/tmp/"
 
