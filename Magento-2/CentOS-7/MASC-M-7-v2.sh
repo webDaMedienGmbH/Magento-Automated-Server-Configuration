@@ -897,35 +897,27 @@ WHITETXT "======================================================================
 echo
 WHITETXT "CREATING MAGENTO DATABASE AND DATABASE USER"
 echo
-echo -n "---> Generate MySQL ROOT strong password? [y/n][n]:"
-read mysql_rpass_gen
-if [ "${mysql_rpass_gen}" == "y" ];then
+pause '------> Press [Enter] key to generate MySQL ROOT strong password'
    echo
-       MYSQL_ROOT_PASSGEN=$(head -c 500 /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 15 | head -n 1)
-       WHITETXT "MySQL ROOT password: ${REDBG}${MYSQL_ROOT_PASSGEN}"
+       MYSQL_ROOT_PASS=$(head -c 500 /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 15 | head -n 1)
+       WHITETXT "MySQL ROOT password: ${REDBG}${MYSQL_ROOT_PASS}"
        GREENTXT "!REMEMBER IT AND KEEP IT SAFE!"
    echo
-fi
-echo -n "---> Start Mysql Secure Installation? [y/n][n]:"
-read mysql_secure
-if [ "${mysql_secure}" == "y" ];then
-   mysql_secure_installation
-fi
+pause '------> Press [Enter] key to start MySQL Secure Installation'
+mysql_secure_installation
 echo
-read -e -p "---> Enter your domain name (without www.): " -i "myshop.com" MY_DOMAIN
-read -e -p "---> Enter MySQL ROOT password : " MYSQL_ROOT_PASS
+echo
+pause '------> Press [Enter] key to generate MySQL USER strong password'
+   MAGE_DB_PASS=$(head -c 500 /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 15 | head -n 1)
+   WHITETXT "MySQL USER password: ${REDBG}${MAGE_DB_PASS}"
+   echo
+echo
 read -e -p "---> Enter Magento database host : " -i "localhost" MAGE_DB_HOST
 read -e -p "---> Enter Magento database name : " -i "magento" MAGE_DB_NAME
 read -e -p "---> Enter Magento database user : " -i "magento" MAGE_DB_USER_NAME
 echo
-echo -n "---> Generate MySQL USER strong password? [y/n][n]:"
-read mysql_upass_gen
-if [ "${mysql_upass_gen}" == "y" ];then
-   MYSQL_USER_PASSGEN=$(head -c 500 /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 15 | head -n 1)
-   WHITETXT "MySQL USER password: ${REDBG}${MYSQL_USER_PASSGEN}"
-fi
 echo
-read -p "---> Enter MySQL USER password : " MAGE_DB_PASS
+pause '------> Press [Enter] key to create MySQL database and user'
 mysql -u root -p${MYSQL_ROOT_PASS} <<EOMYSQL
 CREATE USER '${MAGE_DB_USER_NAME}'@'${MAGE_DB_HOST}' IDENTIFIED BY '${MAGE_DB_PASS}';
 CREATE DATABASE ${MAGE_DB_NAME};
