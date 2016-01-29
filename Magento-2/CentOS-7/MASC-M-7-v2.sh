@@ -729,7 +729,7 @@ echo
      MY_SHOP_PATH="/home/${MY_DOMAIN%%.*}"
      echo
         echo "  Magento will be downloaded to:"
-        GREENTXT ${MY_SHOP_PATH}
+        GREENTXT ${MY_SHOP_PATH}/public_html
         mkdir -p ${MY_SHOP_PATH} && cd $_
         useradd -d ${MY_SHOP_PATH} -s /sbin/nologin ${MY_DOMAIN%%.*}  >/dev/null 2>&1
         LINUX_USER_PASS=$(head -c 500 /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 15 | head -n 1)
