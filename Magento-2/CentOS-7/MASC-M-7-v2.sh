@@ -724,12 +724,10 @@ echo "--------------------------------------------------------------------------
 BLUEBG "| DOWNLOADING MAGENTO AND CONFIGURING WEBSTACK TOOLS |"
 echo "-------------------------------------------------------------------------------------"
 echo
-echo -n "---> Download latest Magento version (${MAGENTO_VER}) ? [y/n][n]:"
-read new_down
-if [ "${new_down}" == "y" ];then
 echo
      read -e -p "---> Enter your domain name (without www.): " -i "myshop.com" MY_DOMAIN
      read -e -p "---> Enter installation folder full path: " -i "/var/www/html/myshop.com" MY_SHOP_PATH
+     echo
         echo "  Magento will be downloaded to:"
         GREENTXT ${MY_SHOP_PATH}
         mkdir -p ${MY_SHOP_PATH} && cd $_
@@ -741,13 +739,9 @@ echo
         curl -sS https://getcomposer.org/installer | php >/dev/null 2>&1
         mv composer.phar /usr/local/bin/composer
         echo
-        echo -n "      DOWNLOADING LATEST MAGENTO ${MAGENTO_VER} PACKAGES  "
-        echo
-        pause '------> Press [Enter] key to start installation'
         echo
         su ${MY_DOMAIN%%.*} -s /bin/bash -c "${REPO_MAGENTO} ."
         echo
-fi
      echo
 WHITETXT "============================================================================="
 GREENTXT "      == MAGENTO DOWNLOADED AND READY FOR INSTALLATION =="
