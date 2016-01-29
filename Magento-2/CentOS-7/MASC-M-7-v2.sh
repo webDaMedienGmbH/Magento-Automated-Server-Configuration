@@ -685,7 +685,7 @@ WHITETXT "opcache.ini loaded ${GREEN} [ok]"
 cp /etc/php.ini /etc/php.ini.BACK
 sed -i 's/^\(max_execution_time = \)[0-9]*/\17200/' /etc/php.ini
 sed -i 's/^\(max_input_time = \)[0-9]*/\17200/' /etc/php.ini
-sed -i 's/^\(memory_limit = \)[0-9]*M/\1512M/' /etc/php.ini
+sed -i 's/^\(memory_limit = \)[0-9]*M/\11024M/' /etc/php.ini
 sed -i 's/^\(post_max_size = \)[0-9]*M/\132M/' /etc/php.ini
 sed -i 's/^\(upload_max_filesize = \)[0-9]*M/\132M/' /etc/php.ini
 sed -i 's/expose_php = On/expose_php = Off/' /etc/php.ini
