@@ -33,7 +33,7 @@ EXTRA_PACKAGES="boost tbb lz4 libyaml libdwarf bind-utils e2fsprogs svn gcc iptr
 PHP_PACKAGES=(cli common fpm opcache gd curl mbstring bcmath soap mcrypt mysqlnd pdo xml xmlrpc intl) 
 PHP_PECL_PACKAGES=(pecl-redis pecl-lzf pecl-geoip pecl-zip pecl-memcache)
 PERCONA_PACKAGES=(client-56 server-56)
-PERL_MODULES=(libwww-perl Time-HiRes ExtUtils-CBuilder ExtUtils-MakeMaker TermReadKey DBI DBD-MySQL Digest-HMAC Digest-SHA1 Test-Simple Moose Net-SSLeay)
+PERL_MODULES=(libwww-perl Template-Toolkit Time-HiRes ExtUtils-CBuilder ExtUtils-MakeMaker TermReadKey DBI DBD-MySQL Digest-HMAC Digest-SHA1 Test-Simple Moose Net-SSLeay)
 
 
 # Nginx extra configuration
