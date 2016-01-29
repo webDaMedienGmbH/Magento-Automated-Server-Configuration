@@ -737,7 +737,11 @@ echo
         LINUX_USER_PASS=$(head -c 500 /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 15 | head -n 1)
         echo "${MY_DOMAIN%%.*}:${LINUX_USER_PASS}"  | chpasswd  >/dev/null 2>&1
         echo
+        curl -sS https://getcomposer.org/installer | php >/dev/null 2>&1
+        mv composer.phar /usr/local/bin/composer
+        echo
         echo -n "      DOWNLOADING LATEST MAGENTO ${MAGENTO_VER} PACKAGES  "
+        echo
         pause '------> Press [Enter] key to start installation'
         echo
         su ${MY_DOMAIN%%.*} -s /bin/bash -c "${REPO_MAGENTO} ."
@@ -961,9 +965,6 @@ printf "\033c"
 WHITETXT "============================================================================="
 WHITETXT "vvv   MAGENTO PACKAGES INSTALLATION WITH COMPOSER   vvv"
 echo
-cd ${MY_SHOP_PATH}
-curl -sS https://getcomposer.org/installer | php
-mv composer.phar /usr/local/bin/composer
 echo "---> FIXING PERMISSIONS "
 find . -type f -exec chmod 640 {} \;
 find . -type d -exec chmod 750 {} \;
