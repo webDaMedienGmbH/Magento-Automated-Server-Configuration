@@ -726,21 +726,21 @@ echo "--------------------------------------------------------------------------
 echo
 echo
      read -e -p "---> Enter your domain name (without www.): " -i "myshop.com" MY_DOMAIN
-     MY_SHOP_PATH="/home/${MY_DOMAIN%%.*}"
+     MY_SHOP_PATH="/home/${MY_DOMAIN%%.*}/public_html"
      echo
         echo "  Magento will be downloaded to:"
-        GREENTXT ${MY_SHOP_PATH}/public_html
+        GREENTXT ${MY_SHOP_PATH}
         mkdir -p ${MY_SHOP_PATH} && cd $_
-        useradd -d ${MY_SHOP_PATH} -s /sbin/nologin ${MY_DOMAIN%%.*}  >/dev/null 2>&1
+        useradd -d ${MY_SHOP_PATH%/*} -s /sbin/nologin ${MY_DOMAIN%%.*}  >/dev/null 2>&1
         LINUX_USER_PASS=$(head -c 500 /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 15 | head -n 1)
         echo "${MY_DOMAIN%%.*}:${LINUX_USER_PASS}"  | chpasswd  >/dev/null 2>&1
-        chown -R ${MY_DOMAIN%%.*}:${MY_DOMAIN%%.*} ${MY_SHOP_PATH}
+        chown -R ${MY_DOMAIN%%.*}:${MY_DOMAIN%%.*} ${MY_SHOP_PATH%/*}
         echo
         curl -sS https://getcomposer.org/installer | php >/dev/null 2>&1
         mv composer.phar /usr/local/bin/composer
         echo
         echo
-        su ${MY_DOMAIN%%.*} -s /bin/bash -c "${REPO_MAGENTO} ./public_html"
+        su ${MY_DOMAIN%%.*} -s /bin/bash -c "${REPO_MAGENTO} ."
         echo
      echo
 WHITETXT "============================================================================="
