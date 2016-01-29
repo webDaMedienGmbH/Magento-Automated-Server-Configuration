@@ -726,7 +726,7 @@ echo "--------------------------------------------------------------------------
 echo
 echo
      read -e -p "---> Enter your domain name (without www.): " -i "myshop.com" MY_DOMAIN
-     read -e -p "---> Enter installation folder full path: " -i "/var/www/html/myshop.com" MY_SHOP_PATH
+     MY_SHOP_PATH="/home/${MY_DOMAIN%%.*}"
      echo
         echo "  Magento will be downloaded to:"
         GREENTXT ${MY_SHOP_PATH}
@@ -740,7 +740,7 @@ echo
         mv composer.phar /usr/local/bin/composer
         echo
         echo
-        su ${MY_DOMAIN%%.*} -s /bin/bash -c "${REPO_MAGENTO} ."
+        su ${MY_DOMAIN%%.*} -s /bin/bash -c "${REPO_MAGENTO} ./public_html"
         echo
      echo
 WHITETXT "============================================================================="
