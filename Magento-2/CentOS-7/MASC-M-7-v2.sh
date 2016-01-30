@@ -961,8 +961,8 @@ WHITETXT "======================================================================
 WHITETXT "vvv   MAGENTO PACKAGES INSTALLATION WITH COMPOSER   vvv"
 echo
 echo "---> FIXING PERMISSIONS "
-find . -type f -exec chmod 640 {} \;
-find . -type d -exec chmod 750 {} \;
+find . -type f -exec chmod 660 {} \;
+find . -type d -exec chmod 770 {} \;
 chown -R ${MY_DOMAIN%%.*}:${MY_DOMAIN%%.*} ${MY_SHOP_PATH}
 echo
 su ${MY_DOMAIN%%.*} -s /bin/bash -c "composer install"
@@ -1106,8 +1106,8 @@ cd ${MY_SHOP_PATH}
 su ${MY_DOMAIN%%.*} -s /bin/bash -c "bin/magento setup:static-content:deploy"
 echo
 echo "---> FIXING PERMISSIONS "
-find . -type f -exec chmod 644 {} \;
-find . -type d -exec chmod 755 {} \;
+find . -type f -exec chmod 660 {} \;
+find . -type d -exec chmod 770 {} \;
 chown -R ${MY_DOMAIN%%.*}:${MY_DOMAIN%%.*} ${MY_SHOP_PATH}
 chmod +x ${MY_SHOP_PATH}/{cron_check.sh,images_opt.sh,zend_opcache.sh,wesley.pl,bin/magento,pub/cron.php}
 echo
