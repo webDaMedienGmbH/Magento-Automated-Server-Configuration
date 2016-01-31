@@ -961,11 +961,11 @@ WHITETXT "======================================================================
 WHITETXT "vvv   MAGENTO PACKAGES INSTALLATION WITH COMPOSER   vvv"
 echo
 echo "---> FIXING PERMISSIONS "
+cd ${MY_SHOP_PATH}
 find . -type f -exec chmod 660 {} \;
 find . -type d -exec chmod 770 {} \;
 chown -R ${MY_DOMAIN%%.*}:${MY_DOMAIN%%.*} ${MY_SHOP_PATH}
 echo
-su ${MY_DOMAIN%%.*} -s /bin/bash -c "composer install"
 echo
 WHITETXT "============================================================================="
 echo
@@ -1061,7 +1061,6 @@ END
 chmod +x /etc/cron.daily/clamscan
 sed -i "/^Example/d" /etc/clamd.d/scan.conf
 sed -i "/^Example/d" /etc/freshclam.conf
-freshclam
 echo
 echo
 echo "---> IMAGES OPTIMIZATION SCRIPT"
