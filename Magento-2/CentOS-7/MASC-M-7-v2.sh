@@ -728,7 +728,7 @@ echo
      read -e -p "---> Enter your domain name (without www.): " -i "myshop.com" MY_DOMAIN
      MY_SHOP_PATH="/home/${MY_DOMAIN%%.*}/public_html"
      echo
-        echo "  Magento will be downloaded to:"
+        echo "  Magento ${MAGENTO_VER} will be downloaded to:"
         GREENTXT ${MY_SHOP_PATH}
         mkdir -p ${MY_SHOP_PATH} && cd $_
         useradd -d ${MY_SHOP_PATH%/*} -s /sbin/nologin ${MY_DOMAIN%%.*}  >/dev/null 2>&1
@@ -958,7 +958,7 @@ pause '---> Press [Enter] key to show the menu'
 "install")
 printf "\033c"
 WHITETXT "============================================================================="
-WHITETXT "vvv   MAGENTO PACKAGES INSTALLATION WITH COMPOSER   vvv"
+WHITETXT "vvv   MAGENTO ${MAGENTO_VER} PACKAGES INSTALLATION WITH COMPOSER   vvv"
 echo
 echo "---> FIXING PERMISSIONS "
 cd ${MY_SHOP_PATH}
@@ -997,7 +997,7 @@ read -e -p "---> Enter your timezone: " -i "UTC"  MAGE_TIMEZONE
 read -e -p "---> Enter your currency: " -i "EUR"  MAGE_CURRENCY
 echo
 echo
-GREENTXT "NOW SETUP MAGENTO WITHOUT SAMPLE DATA"
+GREENTXT "NOW SETUP MAGENTO ${MAGENTO_VER} WITHOUT SAMPLE DATA"
 echo
 pause '---> Press [Enter] key to continue'
 echo
