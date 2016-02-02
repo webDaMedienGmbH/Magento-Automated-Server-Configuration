@@ -14,7 +14,6 @@ to create server template:<br/>
 1. configure your server with `MASC-M-7-v2.sh`<br/>
 2. add `reset_server_m2.sh` to `/root/` and `chmod +x`<br/>
 3. execute in `~/.bash_profile` after login <br/>
-<br/>
 ```
 if [ -f /root/.reset_server_m2.sh ]; then
         /root/.reset_server_m2.sh
