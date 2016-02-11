@@ -446,7 +446,7 @@ fi
 echo
 WHITETXT "============================================================================="
 echo
-echo -n "---> Start the Remi repository and PHP 5.5 installation? [y/n][n]:"
+echo -n "---> Start the Remi repository and PHP 5.6 installation? [y/n][n]:"
 read repo_remi_install
 if [ "${repo_remi_install}" == "y" ];then
           echo
@@ -463,7 +463,7 @@ if [ "${repo_remi_install}" == "y" ];then
           echo
             GREENTXT "REPOSITORY HAS BEEN INSTALLED  -  OK"
             echo
-            GREENTXT "Installation of PHP 5.5:"
+            GREENTXT "Installation of PHP 5.6:"
             echo
             echo -n "     PROCESSING  "
             long_progress &
