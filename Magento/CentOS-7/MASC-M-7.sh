@@ -25,7 +25,7 @@ REPO_EPEL="http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-5.noar
 REPO_PERCONA="http://www.percona.com/redir/downloads/percona-release/redhat/latest/percona-release-0.1-3.noarch.rpm"
 REPO_NGINX="http://nginx.org/packages/mainline/centos/7/x86_64/"
 REPO_REMI="http://rpms.famillecollet.com/enterprise/remi-release-7.rpm"
-REPO_HHVM="https://yum.gleez.com/7/x86_64/hhvm-3.9.1-1.el7.centos.x86_64.rpm"
+REPO_HHVM="https://yum.gleez.com/7/x86_64/hhvm-3.10.1-1.centos.x86_64.rpm"
 
 # WebStack Packages
 EXTRA_PACKAGES="boost tbb lz4 libyaml libdwarf bind-utils e2fsprogs svn gcc iptraf inotify-tools net-tools mcrypt mlocate unzip vim wget curl sudo bc mailx clamav-filesystem clamav-server clamav-update clamav-milter-systemd clamav-data clamav-server-systemd clamav-scanner-systemd clamav clamav-milter clamav-lib clamav-scanner proftpd logrotate git patch ipset strace rsyslog gifsicle GeoIP ImageMagick libjpeg-turbo-utils pngcrush lsof goaccess net-snmp net-snmp-utils xinetd python-pip ncftp"
@@ -468,7 +468,7 @@ if [ "${repo_remi_install}" == "y" ];then
             echo -n "     PROCESSING  "
             long_progress &
             pid="$!"
-            yum --enablerepo=remi,remi-php55 -y -q install php ${PHP_PACKAGES[@]/#/php-} ${PHP_PECL_PACKAGES[@]/#/php-} >/dev/null 2>&1
+            yum --enablerepo=remi,remi-php56 -y -q install php ${PHP_PACKAGES[@]/#/php-} ${PHP_PECL_PACKAGES[@]/#/php-} >/dev/null 2>&1
             stop_progress "$pid"
             rpm  --quiet -q php
        if [ "$?" = 0 ]
