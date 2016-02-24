@@ -5,7 +5,7 @@
 #       All rights reserved.                                         #
 #====================================================================#
 SELF=$(basename $0)
-MASCM_VER="8.5.0"
+MASCM_VER="8.5.1"
 
 ### DEFINE LINKS AND PACKAGES STARTS ###
 
@@ -13,7 +13,7 @@ MASCM_VER="8.5.0"
 MAGENTO_VER=$(curl -s https://api.github.com/repos/magento/magento2/releases 2>&1 | head -12 | grep 'tag_name' | grep -oP '(?<=")\d.*(?=")')
 REPO_MAGENTO="composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition"
 
-PHPMYADMIN_VER="4.5.4.1"
+PHPMYADMIN_VER="4.5.5"
 
 REPO_MASCM_TMP="https://raw.githubusercontent.com/magenx/Magento-Automated-Server-Configuration-from-MagenX/master/tmp/"
 
