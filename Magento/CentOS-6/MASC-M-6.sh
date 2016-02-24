@@ -5,13 +5,13 @@
 #       All rights reserved.                                         #
 #====================================================================#
 SELF=$(basename $0)
-MASCM_VER="6.9.8"
+MASCM_VER="6.9.9"
 
 # Software versions 
 #MAGE_LATEST=$(wget -q -O- http://connect20.magentocommerce.com/community/Mage_All_Latest/releases.xml | tail -6 | grep -Po '(?<=<v>).*(?=</v>)')
-MAGENTO_TMP_FILE="https://www.dropbox.com/s/38rdgi1kjwdyl2x/magento-1.9.2.3-2016-01-20-03-02-19.tar.gz"
-MAGENTO_VER="1.9.2.3"
-PHPMYADMIN_VER="4.5.3.1"
+MAGENTO_TMP_FILE="https://www.dropbox.com/s/oy4t5lzy1wfxqir/magento-1.9.2.4-2016-02-23-06-04-07.tar.gz"
+MAGENTO_VER="1.9.2.4"
+PHPMYADMIN_VER="4.5.5"
 
 # Simple colors
 RED="\e[31;40m"
