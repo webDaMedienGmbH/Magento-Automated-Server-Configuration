@@ -140,6 +140,7 @@ MAGELOCAL=$(php bin/magento --version | rev | cut -d' ' -f1)
 echo "" >> /root/mascm/.reset_index
 echo " > Latest Magento version: ${MAGELATEST}"  >> /root/mascm/.reset_index
 echo " > Installed version: ${MAGELOCAL}"  >> /root/mascm/.reset_index
+if [[ "${MAGELOCAL//./}" -lt "${MAGELATEST//./}" ]]; then echo " > You need to upgrade to ${MAGELATEST}"  >> /root/mascm/.reset_index; fi
 echo "" >> /root/mascm/.reset_index
 ## set lock file
 touch ${FLAG}
