@@ -468,7 +468,7 @@ if [ "${repo_remi_install}" == "y" ];then
             echo -n "     PROCESSING  "
             long_progress &
             pid="$!"
-            yum --enablerepo=remi,remi-php56 -y -q install php ${PHP_PACKAGES[@]/#/php-} ${PHP_PECL_PACKAGES[@]/#/php-} >/dev/null 2>&1
+            yum --enablerepo=remi,remi-php70 -y -q install php ${PHP_PACKAGES[@]/#/php-} ${PHP_PECL_PACKAGES[@]/#/php-} >/dev/null 2>&1
             stop_progress "$pid"
             rpm  --quiet -q php
        if [ "$?" = 0 ]
