@@ -5,7 +5,7 @@
 #       All rights reserved.                                         #
 #====================================================================#
 SELF=$(basename $0)
-MASCM_VER="7.8.5"
+MASCM_VER="7.8.8"
 
 ### DEFINE LINKS AND PACKAGES STARTS ###
 
