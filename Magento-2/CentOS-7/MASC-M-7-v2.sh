@@ -24,6 +24,7 @@ WEBMIN_NGINX="https://github.com/magenx/webmin-nginx/archive/nginx-0.08.wbm__0.t
 # Repositories
 REPO_EPEL="http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-5.noarch.rpm"
 REPO_PERCONA="http://www.percona.com/redir/downloads/percona-release/redhat/latest/percona-release-0.1-3.noarch.rpm"
+PERCONA_TOOLKIT="https://www.percona.com/downloads/percona-toolkit/2.2.17/RPM/percona-toolkit-2.2.17-1.noarch.rpm"
 REPO_NGINX="http://nginx.org/packages/mainline/centos/7/x86_64/"
 REPO_REMI="http://rpms.famillecollet.com/enterprise/remi-release-7.rpm"
 REPO_HHVM="https://yum.gleez.com/7/x86_64/hhvm-3.12.0-1.el7.centos.x86_64.rpm"
@@ -378,8 +379,11 @@ if [ "${repo_percona_install}" == "y" ];then
               wget -qO /etc/mysqltuner.pl ${MYSQL_TUNER}
               wget -qO - ${MYSQL_TOP} | tar -xzp && cd mytop*
               perl Makefile.PL && make && make install  >/dev/null 2>&1
+              yum -y -q install ${PERCONA_TOOLKIT} >/dev/null 2>&1
               echo
               WHITETXT "Please use these tools to check and finetune your database:"
+              echo
+              WHITETXT "Percona Toolkit with pt- commands"
               WHITETXT "mytop"
               WHITETXT "perl /etc/mysqltuner.pl"
               echo
