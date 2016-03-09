@@ -18,7 +18,7 @@ PHPMYADMIN_VER="4.5.5"
 REPO_MASCM_TMP="https://raw.githubusercontent.com/magenx/Magento-Automated-Server-Configuration-from-MagenX/master/tmp/"
 
 # Webmin Control Panel
-WEBMIN="http://prdownloads.sourceforge.net/webadmin/webmin-1.780-1.noarch.rpm"
+WEBMIN="http://prdownloads.sourceforge.net/webadmin/webmin-1.791-1.noarch.rpm"
 WEBMIN_NGINX="https://github.com/magenx/webmin-nginx/archive/nginx-0.08.wbm__0.tar.gz"
 
 # Repositories
