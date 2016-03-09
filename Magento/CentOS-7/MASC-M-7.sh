@@ -17,7 +17,7 @@ PHPMYADMIN_VER="4.5.5"
 AOE_SCHEDULER="1.3.1"
 
 # Webmin Control Panel
-WEBMIN="http://prdownloads.sourceforge.net/webadmin/webmin-1.770-1.noarch.rpm"
+WEBMIN="http://prdownloads.sourceforge.net/webadmin/webmin-1.791-1.noarch.rpm"
 WEBMIN_NGINX="https://github.com/magenx/webmin-nginx/archive/nginx-0.08.wbm__0.tar.gz"
 
 # Repositories
