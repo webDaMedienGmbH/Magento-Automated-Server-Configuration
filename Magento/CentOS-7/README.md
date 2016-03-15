@@ -2,7 +2,7 @@
 MASC-M<sup>™</sup>
 ======
 
----->> Magento **1.9.2.3**
+---->> Magento **1.9.2.4**
 
 #### MagenX - Automated Server Configuration for Magento  <br/>
 Get a fully pre-configured server with Magento and LEMP stack in just ~15 minutes.  <br/>
@@ -16,3 +16,5 @@ including: <br/>
 - PROFTPD <br/>
 - AOE_SCHEDULER <br/>
 - AOE_PROFILER <br/>
+
+php 7 and Percona tool-kit
