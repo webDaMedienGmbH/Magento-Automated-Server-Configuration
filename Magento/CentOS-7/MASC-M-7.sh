@@ -5,7 +5,7 @@
 #       All rights reserved.                                         #
 #====================================================================#
 SELF=$(basename $0)
-MASCM_VER="7.8.9"
+MASCM_VER="7.9.1"
 
 ### DEFINE LINKS AND PACKAGES STARTS ###
 
@@ -13,7 +13,7 @@ MASCM_VER="7.8.9"
 #MAGENTO_VER=$(wget -q -O- http://connect20.magentocommerce.com/community/Mage_All_Latest/releases.xml | tail -6 | grep -Po '(?<=<v>).*(?=</v>)')
 MAGENTO_TMP_FILE="https://www.dropbox.com/s/oy4t5lzy1wfxqir/magento-1.9.2.4-2016-02-23-06-04-07.tar.gz"
 MAGENTO_VER="1.9.2.4"
-PHPMYADMIN_VER="4.5.5"
+PHPMYADMIN_VER="4.5.5.1"
 AOE_SCHEDULER="1.3.1"
 
 # Webmin Control Panel
@@ -998,6 +998,8 @@ MY_SHOP_PATH=$(awk '/webshop/ { print $3 }' /root/mascm/.mascm_index)
 cd ${MY_SHOP_PATH}
 chmod +x mage
 sed -i "s/CURLOPT_SSL_CIPHER_LIST, 'TLSv1'/CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1/" downloader/lib/Mage/HTTP/Client/Curl.php
+sed -i '555s/.*/$out .= $this->getBlock($callback[0])->{$callback[1]}();/' app/code/core/Mage/Core/Model/Layout.php
+
 ./mage mage-setup .
 
 php -f install.php -- \
