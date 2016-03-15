@@ -5,7 +5,7 @@
 #       All rights reserved.                                         #
 #====================================================================#
 SELF=$(basename $0)
-MASCM_VER="8.5.1"
+MASCM_VER="8.5.2"
 
 ### DEFINE LINKS AND PACKAGES STARTS ###
 
@@ -673,7 +673,7 @@ opcache.fast_shutdown = 0
 opcache.enable_file_override = 0
 opcache.optimization_level = 0xffffffff
 opcache.inherited_hack = 1
-opcache.blacklist_filename=/etc/php.d/opcache.blacklist.txt
+opcache.blacklist_filename=/etc/php.d/opcache-default.blacklist
 opcache.max_file_size = 0
 opcache.consistency_checks = 0
 opcache.force_restart_timeout = 60
