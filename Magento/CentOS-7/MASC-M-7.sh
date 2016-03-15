@@ -644,7 +644,7 @@ END
 sysctl -q -p
 echo
 WHITETXT "sysctl.conf loaded ${GREEN} [ok]"
-cat > /etc/php.d/opcache.ini <<END
+cat > /etc/php.d/*opcache*.ini <<END
 zend_extension=opcache.so
 opcache.enable = 1
 opcache.enable_cli = 1
@@ -663,7 +663,7 @@ opcache.fast_shutdown = 0
 opcache.enable_file_override = 0
 opcache.optimization_level = 0xffffffff
 opcache.inherited_hack = 1
-opcache.blacklist_filename=/etc/php.d/opcache.blacklist.txt
+opcache.blacklist_filename=/etc/php.d/opcache-default.blacklist
 opcache.max_file_size = 0
 opcache.consistency_checks = 0
 opcache.force_restart_timeout = 60
