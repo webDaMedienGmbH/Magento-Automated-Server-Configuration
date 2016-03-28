@@ -5,7 +5,7 @@
 #       All rights reserved.                                         #
 #====================================================================#
 SELF=$(basename $0)
-MASCM_VER="8.5.2"
+MASCM_VER="8.5.5"
 
 ### DEFINE LINKS AND PACKAGES STARTS ###
 
@@ -1116,6 +1116,7 @@ chmod +x ${MY_SHOP_PATH}/{cron_check.sh,images_opt.sh,zend_opcache.sh,wesley.pl,
 echo
 ${MY_SHOP_PATH}/zend_opcache.sh &
 ${MY_SHOP_PATH}/images_opt.sh &
+chown -R ${MY_DOMAIN%%.*}:${MY_DOMAIN%%.*} /var/lib/php/session
 echo
 echo
     GREENTXT "NOW CHECK EVERYTHING AND LOGIN TO YOUR BACKEND"
