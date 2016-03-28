@@ -1083,7 +1083,7 @@ cat >> ${MY_SHOP_PATH}/images_opt.sh <<END
     EXTENSION="\${FILE##*.}"
   if [[ "\${EXTENSION}" =~ \${TARGETEXT} ]];
     then
-   su ${MY_DOMAIN%%.*} -s /bin/bash -c "${MY_SHOP_PATH}/wesley.pl \${FILE} > /dev/null"
+   su ${MY_DOMAIN%%.*} -s /bin/bash -c "${MY_SHOP_PATH}/wesley.pl \${FILE} >/dev/null 2>&1"
   fi
 done
 END
